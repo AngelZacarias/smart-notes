@@ -1,37 +1,38 @@
-/*!
-
-=========================================================
-* Material Dashboard React - v1.10.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/material-dashboard-react
-* Copyright 2021 Creative Tim (https://www.creative-tim.com)
-* Licensed under MIT (https://github.com/creativetimofficial/material-dashboard-react/blob/master/LICENSE.md)
-
-* Coded by Creative Tim
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-*/
 import React from "react";
 import ReactDOM from "react-dom";
 import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
+import { ApolloProvider } from '@apollo/client/react';
+import { ApolloClient, InMemoryCache, createHttpLink } from '@apollo/client';
+
+//Material UI and templates
+import "assets/css/material-dashboard-react.css?v=1.10.0";
+import { ThemeProvider } from "@material-ui/styles";
 
 // core components
-import Admin from "layouts/Admin.js";
-import RTL from "layouts/RTL.js";
+import GeneralDashboard from "layouts/GeneralDashboard";
+import SubjectDashboard from "layouts/SubjectDashboard";
+import theme from './ThemeConfig';
 
-import "assets/css/material-dashboard-react.css?v=1.10.0";
+const serverLink = createHttpLink({
+  uri: 'http://localhost:5000'
+});
+
+const client = new ApolloClient({
+  link: serverLink,
+  cache: new InMemoryCache()
+});
 
 ReactDOM.render(
-  <BrowserRouter>
-    <Switch>
-      <Route path="/admin" component={Admin} />
-      <Route path="/rtl" component={RTL} />
-      <Redirect from="/" to="/admin/dashboard" />
-    </Switch>
-  </BrowserRouter>,
+  <ApolloProvider client={client}>
+    <ThemeProvider theme={theme}>
+      <BrowserRouter>
+          <Switch>
+            <Route path="/dashboard" component={GeneralDashboard} />
+            <Route path="/subject" component={SubjectDashboard} />
+            <Redirect from="/" to="/dashboard/subjects" />
+          </Switch>
+        </BrowserRouter>
+    </ThemeProvider>
+  </ApolloProvider>,
   document.getElementById("root")
 );

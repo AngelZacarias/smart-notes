@@ -15,8 +15,7 @@ import Notifications from "@material-ui/icons/Notifications";
 import Dashboard from "@material-ui/icons/Dashboard";
 import Search from "@material-ui/icons/Search";
 // core components
-import CustomInput from "components/CustomInput/CustomInput.js";
-import Button from "components/CustomButtons/Button.js";
+import { Button, TextField } from "@material-ui/core";
 
 import styles from "assets/jss/material-dashboard-react/components/rtlHeaderLinksStyle.js";
 
@@ -40,16 +39,9 @@ export default function RTLNavbarLinks() {
   return (
     <div>
       <div className={classes.searchWrapper}>
-        <CustomInput
-          formControlProps={{
-            className: classes.margin + " " + classes.search,
-          }}
-          inputProps={{
-            placeholder: "جستجو...",
-            inputProps: {
-              "aria-label": "Search",
-            },
-          }}
+        <TextField
+          label="Buscar personas"
+          variant="filled"
         />
         <Button color="white" aria-label="edit" justIcon round>
           <Search />

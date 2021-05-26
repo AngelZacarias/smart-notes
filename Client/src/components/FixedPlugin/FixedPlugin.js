@@ -10,7 +10,7 @@ import imagine2 from "assets/img/sidebar-2.jpg";
 import imagine3 from "assets/img/sidebar-3.jpg";
 import imagine4 from "assets/img/sidebar-4.jpg";
 
-import Button from "components/CustomButtons/Button.js";
+import { Button } from "@material-ui/core";
 
 export default function FixedPlugin(props) {
   const [classes, setClasses] = React.useState("dropdown show");
@@ -36,13 +36,13 @@ export default function FixedPlugin(props) {
               <div>
                 <span
                   className={
-                    props.bgColor === "purple"
-                      ? "badge filter badge-purple active"
-                      : "badge filter badge-purple"
+                    props.bgColor === "primary"
+                      ? "badge filter badge-primary active"
+                      : "badge filter badge-primary"
                   }
-                  data-color="purple"
+                  data-color="primary"
                   onClick={() => {
-                    props.handleColorClick("purple");
+                    props.handleColorClick("primary");
                   }}
                 />
                 <span
@@ -139,22 +139,20 @@ export default function FixedPlugin(props) {
           </li>
 
           <li className="button-container">
-            <div className="button-container">
               <Button
-                color="success"
-                href="https://www.creative-tim.com/product/material-dashboard-react?ref=mdr-fixed-plugin"
+                variant="contained"
+                color="primary"
                 target="_blank"
                 fullWidth
               >
                 Download free!
               </Button>
-            </div>
           </li>
           <li className="button-container">
             <div className="button-container">
               <Button
-                color="warning"
-                href="https://www.creative-tim.com/product/material-dashboard-pro-react?ref=mdr-fixed-plugin"
+                variant="contained"
+                color="secondary"
                 target="_blank"
                 fullWidth
               >
@@ -164,9 +162,8 @@ export default function FixedPlugin(props) {
           </li>
           <li className="button-container">
             <Button
-              color="info"
+              color="secondary"
               fullWidth
-              href="https://demos.creative-tim.com/material-dashboard-react/#/documentation/tutorial?ref=mdr-fixed-plugin"
               target="_blank"
             >
               Documentation
@@ -184,7 +181,7 @@ FixedPlugin.propTypes = {
   handleFixedClick: PropTypes.func,
   rtlActive: PropTypes.bool,
   fixedClasses: PropTypes.string,
-  bgColor: PropTypes.oneOf(["purple", "blue", "green", "orange", "red"]),
+  bgColor: PropTypes.oneOf(["primary", "blue", "green", "orange", "red"]),
   handleColorClick: PropTypes.func,
   handleImageClick: PropTypes.func,
 };

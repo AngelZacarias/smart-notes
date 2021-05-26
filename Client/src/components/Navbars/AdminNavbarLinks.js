@@ -15,9 +15,9 @@ import Person from "@material-ui/icons/Person";
 import Notifications from "@material-ui/icons/Notifications";
 import Dashboard from "@material-ui/icons/Dashboard";
 import Search from "@material-ui/icons/Search";
+
 // core components
-import CustomInput from "components/CustomInput/CustomInput.js";
-import Button from "components/CustomButtons/Button.js";
+import { Button, TextField } from "@material-ui/core";
 
 import styles from "assets/jss/material-dashboard-react/components/headerLinksStyle.js";
 
@@ -50,25 +50,16 @@ export default function AdminNavbarLinks() {
   return (
     <div>
       <div className={classes.searchWrapper}>
-        <CustomInput
-          formControlProps={{
-            className: classes.margin + " " + classes.search,
-          }}
-          inputProps={{
-            placeholder: "Search",
-            inputProps: {
-              "aria-label": "Search",
-            },
-          }}
+        <TextField 
+          variant="filled"
+          label="Buscar personas"
         />
-        <Button color="white" aria-label="edit" justIcon round>
+        <Button color="secondary" aria-label="edit" >
           <Search />
         </Button>
       </div>
       <Button
-        color={window.innerWidth > 959 ? "transparent" : "white"}
-        justIcon={window.innerWidth > 959}
-        simple={!(window.innerWidth > 959)}
+        color="secondary"
         aria-label="Dashboard"
         className={classes.buttonLink}
       >
@@ -79,9 +70,7 @@ export default function AdminNavbarLinks() {
       </Button>
       <div className={classes.manager}>
         <Button
-          color={window.innerWidth > 959 ? "transparent" : "white"}
-          justIcon={window.innerWidth > 959}
-          simple={!(window.innerWidth > 959)}
+          color="secondary"
           aria-owns={openNotification ? "notification-menu-list-grow" : null}
           aria-haspopup="true"
           onClick={handleClickNotification}
@@ -157,9 +146,7 @@ export default function AdminNavbarLinks() {
       </div>
       <div className={classes.manager}>
         <Button
-          color={window.innerWidth > 959 ? "transparent" : "white"}
-          justIcon={window.innerWidth > 959}
-          simple={!(window.innerWidth > 959)}
+          color="secondary"
           aria-owns={openProfile ? "profile-menu-list-grow" : null}
           aria-haspopup="true"
           onClick={handleClickProfile}
