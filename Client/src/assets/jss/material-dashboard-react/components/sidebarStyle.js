@@ -101,7 +101,8 @@ const sidebarStyle = (theme) => ({
     marginRight: "15px",
   },
   img: {
-    width: "35px",
+    width: "80%",
+    paddingBottom: "10px",
     top: "22px",
     position: "absolute",
     verticalAlign: "middle",
@@ -185,7 +186,7 @@ const sidebarStyle = (theme) => ({
   whiteFont: {
     color: whiteColor,
   },
-  purple: {
+  primary: {
     backgroundColor: primaryColor[0],
     ...primaryBoxShadow,
     "&:hover,&:focus": {

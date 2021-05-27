@@ -34,13 +34,13 @@ const switchRoutes = (
       }
       return null;
     })}
-    <Redirect from="/rtl" to="/rtl/rtl-page" />
+    <Redirect from="/subject" to="/subject/about" />
   </Switch>
 );
 
 const useStyles = makeStyles(styles);
 
-export default function RTL({ ...rest }) {
+export default function SubjectDashboard({ ...rest }) {
   // styles
   const classes = useStyles();
   // ref to help us initialize PerfectScrollbar on windows devices
