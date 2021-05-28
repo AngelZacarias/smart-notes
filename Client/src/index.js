@@ -11,6 +11,7 @@ import { ThemeProvider } from "@material-ui/styles";
 // core components
 import GeneralDashboard from "layouts/GeneralDashboard";
 import SubjectDashboard from "layouts/SubjectDashboard";
+import SignInSide from "views/Login/SignInSide";
 import theme from './ThemeConfig';
 
 const serverLink = createHttpLink({
@@ -29,6 +30,7 @@ ReactDOM.render(
           <Switch>
             <Route path="/dashboard" component={GeneralDashboard} />
             <Route path="/subject" component={SubjectDashboard} />
+            <Route path="/login" component={SignInSide} />
             <Redirect from="/" to="/dashboard/subjects" />
           </Switch>
         </BrowserRouter>
