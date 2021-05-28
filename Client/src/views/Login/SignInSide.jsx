@@ -8,6 +8,9 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import { useEffect, useState } from "react";
+import { useMutation } from '@apollo/client';
+import { gql } from '@apollo/client';
+
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -43,12 +46,11 @@ const useStyles = makeStyles((theme) => ({
 /* global gapi */
 export default function SignInSide() {
   //Auth Google
+  const [sendMutation, { data: userDataResponse }] = useMutation(REGISTER_USER);
   const [something, setSomething] = useState(false);
 
   useEffect(() => {
-    // console.log("SOMETHING IS FALSE");
-    if (something) 
-      // console.log("SOMETHING IS TRUE");
+    if (something) {
       gapi.load('auth2', () => {
         var auth2 = gapi.auth2.getAuthInstance({
           client_id: "120055253095-6fqkpo06vfhm9ulk2ckjsm86jqlhlgjb.apps.googleusercontent.com",
@@ -61,9 +63,24 @@ export default function SignInSide() {
           console.log("Correo:", googleUser.Ft.pu)
           console.log("Url imagen perfil:", googleUser.Ft.vK)
           console.log("token:", googleUser.qc.id_token)
+          
+          sendMutation({
+            variables: {
+              name: googleUser.Ft.xV,
+              lastName: googleUser.Ft.sT,
+              email: googleUser.Ft.pu,
+              token: googleUser.qc.id_token
+            }
+          });
         });
       });
+      setSomething(false); //no puedo porque es constante
+    }
   }, [something]);
+
+  useEffect(() => {
+    console.log("USERDATARESPOSE CAMBIÓ A:", userDataResponse);
+  }, [userDataResponse]);
 
   const classes = useStyles();
 
@@ -90,3 +107,17 @@ export default function SignInSide() {
     </Grid>
   );
 }
+
+const REGISTER_USER = gql`
+mutation($name: String!, $lastName: String!, $email: String!, $token: String!){
+  createUserFromGoogleAuth(name: $name, lastName: $lastName, email: $email, token: $token){
+    id,
+    name,
+    lastName,
+    email,
+    active,
+    createdAt,
+    updatedAt
+  }
+}
+`;

@@ -1,5 +1,6 @@
 const Subject = require('../../models/Subject');
-
+const User = require("../../models/User");
+var _ = require('lodash');
 module.exports = {
     Query: {
         async getSubjects(){
@@ -42,6 +43,37 @@ module.exports = {
                 ...response._doc,
                 id: response._id
             }
-        }
+        },
+
+        async createUserFromGoogleAuth(parent, args, context, info){
+          //¿Y si cambian el nombre de la cuenta de google?
+          const email = args.email;
+          try {
+            const user = await User.findOne({ email });
+            if (user) 
+              throw new Error("User already exists")
+          } catch(err) {
+            throw new Error(err);
+          }
+          //Meter en el context el token
+          if(_.some(args, _.isEmpty)) 
+            throw new Error("Wrong user's data");
+          
+          args.name = _.camelCase
+          const newUser = new User({
+            name: args.name, //Cambiar el nombre a primera capital las demás minúsculas
+            lastName: args.lastName, //Hacer que solo sea un apellido
+            email: args.email,
+            password: "", //Porque viene de googleauth
+            active: true,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+          });
+          const response = await newUser.save();
+          return {
+            ...response._doc,
+            id: response._id
+          };
+        },
     }
 }
