@@ -6,6 +6,7 @@ const userSchema = new Schema({
     active: Boolean,
     name: String,
     lastName: String,
+    normalAuth: Boolean,
     createdAt: String,
     updatedAt: String,
 });
