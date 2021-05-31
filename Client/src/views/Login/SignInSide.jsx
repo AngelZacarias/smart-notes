@@ -10,7 +10,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { useEffect, useState } from "react";
 import { useMutation } from '@apollo/client';
 import { gql } from '@apollo/client';
-
+import { Redirect } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -48,6 +48,7 @@ export default function SignInSide() {
   //Auth Google
   const [sendMutation, { data: userDataResponse }] = useMutation(REGISTER_USER);
   const [something, setSomething] = useState(false);
+  const [redirectToDashboardSubjects, setRedirectTo] = useState(true);
 
   useEffect(() => {
     if (something) {
@@ -74,14 +75,22 @@ export default function SignInSide() {
           });
         });
       });
-      setSomething(false); //no puedo porque es constante
+      setSomething(false);
     }
   }, [something]);
 
   useEffect(() => {
-    console.log("USERDATARESPOSE CAMBIÓ A:", userDataResponse);
+    console.log("userDataResponse: ", userDataResponse);
+    if(userDataResponse) {
+      setRedirectTo(false);
+    }
+    if(!redirectToDashboardSubjects) {
+      console.log(redirectToDashboardSubjects)
+      return <Redirect to="/dashboard/subjects" />
+    }
+    else 
+      return <Redirect to="/login" />
   }, [userDataResponse]);
-
   const classes = useStyles();
 
   return (
