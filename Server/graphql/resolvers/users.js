@@ -1,6 +1,9 @@
 const User = require("../../models/User");
 var _ = require('lodash');
 const bcrypt = require("bcrypt");
+const  { sayHello } = require("../../utils/say-hi");
+
+
 
 module.exports = {
   Query: {
@@ -22,6 +25,7 @@ module.exports = {
   },
   Mutation:{
     async createUserFromGoogleAuth(parent, args, context, info){
+      sayHello();
       console.log(context);
       const email = args.email;
       try {
