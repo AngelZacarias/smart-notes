@@ -1,16 +1,14 @@
+import { gql, useMutation } from '@apollo/client';
 import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';
-import React from "react";
-import { Formik } from "formik" ;
-import * as Yup from "yup";
 import Link from '@material-ui/core/Link';
-import { useMutation } from '@apollo/client';
-import { gql } from '@apollo/client';
-import { useEffect, useState } from "react";
+import TextField from '@material-ui/core/TextField';
+import { Formik } from "formik";
+import React, { useEffect, useState } from "react";
+import * as Yup from "yup";
 
 export default function ValidatedSignUpForm() {
-  const [sendMutationSignIn, {data: userDataResponse }] = useMutation(NORMAL_REGISTER_USER);
+  const [sendMutationSignIn, { data: userDataResponse }] = useMutation(NORMAL_REGISTER_USER);
   const [signInFlag, setSignInFlag] = useState(
     {
       signIn: false,
@@ -24,7 +22,10 @@ export default function ValidatedSignUpForm() {
 
   useEffect(() => {
     if(signInFlag.signIn) {
-      sendMutationSignIn({ //Checar por qué no funciona esta parte, no toma los valores
+      console.log("signInFlag dio true!");
+      console.log(signInFlag);
+
+      sendMutationSignIn({
         variables: {
           name: signInFlag.name,
           lastname: signInFlag.lastname,
@@ -32,35 +33,48 @@ export default function ValidatedSignUpForm() {
           password: signInFlag.password,
           confirmPassword: signInFlag.confirmPassword
         }
-      }).then(data => {
-        alert("User created:", data)
-      }).catch(err => {
-        alert(err);
+      }).catch(apolloError => {
+        const error = apolloError // from async try/catch, onError method, or a promise .catch
+        console.log(JSON.stringify(error, null, 2));
+        // alert(error);
       });
-      setSignInFlag({signIn: false});
+      setSignInFlag({
+        signIn: false,
+        name: "",
+        lastname: "",
+        email: "",
+        password: "",
+        confirmPassword: "",
+      });
     }
   }, [signInFlag]);
 
   useEffect(() => {
     console.log(userDataResponse)
+    if (userDataResponse)
+      window.location.href = "/login";
   }, [userDataResponse]);
+
   return (
     <Formik
       initialValues={{name: "", lastname: "", email: "", password: "", confirmPassword: ""}}
       onSubmit={ (values, { setSubmitting }) => {
-        setTimeout(() => {
-          console.log("Sing up", values);
-          setSubmitting(false);
-          //aqui poner la bandera setsomething signInEvent
-          setSignInFlag({ 
-            signIn: true, //Aunque yo ponga esta bandera, no funciona, me da status 400 en el alert. El backend funciona bien. Investigar
-            name: values.name,
-            lastname: values.lastname,
-            email: values.email,
-            password: values.password,
-            confirmPassword: values.confirmPassword
-          })
-        }, 500);
+        // setTimeout(() => {
+        //   console.log("Sing up", values);
+        //   setSubmitting(false);
+        //   //aqui poner la bandera setsomething signInEvent
+
+        // }, 1500);
+        console.log("Sing up", values);
+        setSubmitting(false);
+        setSignInFlag({ 
+          signIn: true, //Aunque yo ponga esta bandera, no funciona, me da status 400 en el alert. El backend funciona bien. Investigar
+          name: values.name,
+          lastname: values.lastname,
+          email: values.email,
+          password: values.password,
+          confirmPassword: values.confirmPassword
+        });
       }}
       
       validationSchema = { Yup.object().shape({
@@ -213,8 +227,8 @@ export default function ValidatedSignUpForm() {
 }
 
 const NORMAL_REGISTER_USER = gql`
-mutation($name: String!, $lastName: String!, $email: String!, $password: String!, $confirmPassword: String!) {
-  createUserFromNormalSignUp(name: $name, lastName: $lastName, email: $email, password: $password, confirmPassword: $confirmPassword) {
+mutation($name: String!, $lastname: String!, $email: String!, $password: String!, $confirmPassword: String!) {
+  createUserFromNormalSignUp(name: $name, lastName: $lastname, email: $email, password: $password, confirmPassword: $confirmPassword) {
     id,
     name,
     lastName,

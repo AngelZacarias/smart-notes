@@ -1,21 +1,20 @@
-import React from 'react';
+import { gql, useMutation } from '@apollo/client';
 import Avatar from '@material-ui/core/Avatar';
-import Button from '@material-ui/core/Button';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import Paper from '@material-ui/core/Paper';
-import Grid from '@material-ui/core/Grid';
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
-import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
-import { useEffect, useState } from "react";
-import { useMutation } from '@apollo/client';
-import { gql } from '@apollo/client';
-import { Redirect } from "react-router-dom";
-import TextField from '@material-ui/core/TextField';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
-import Link from '@material-ui/core/Link';
 import Box from '@material-ui/core/Box';
+import Button from '@material-ui/core/Button';
+import Checkbox from '@material-ui/core/Checkbox';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Grid from '@material-ui/core/Grid';
+import Link from '@material-ui/core/Link';
+import Paper from '@material-ui/core/Paper';
+import { makeStyles } from '@material-ui/core/styles';
+import TextField from '@material-ui/core/TextField';
+import Typography from '@material-ui/core/Typography';
+import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
+import { Formik } from "formik";
+import React, { useEffect, useState } from 'react';
+
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -53,7 +52,14 @@ export default function SignInSide() {
   //Auth Google
   const [sendMutation, { data: userDataResponse }] = useMutation(REGISTER_USER);
   const [something, setSomething] = useState(false);
-  const [redirectToDashboardSubjects, setRedirectTo] = useState(true);
+  const [logInFlag, setLogInFlag] = useState(
+    {
+      login: false,
+      email: "",
+      password: "",
+    }
+  )
+  const [sendMutationNormalLogin, {data: userDataResponseNormalLogin }] = useMutation(NORMAL_LOGIN_USER);
 
   useEffect(() => {
     if (something) {
@@ -88,23 +94,39 @@ export default function SignInSide() {
 
   useEffect(() => {
     console.log("userDataResponse: ", userDataResponse);
-    if(userDataResponse) {
-      setRedirectTo(false);
-    }
-    if(!redirectToDashboardSubjects) {
-      console.log(redirectToDashboardSubjects)
-      return <Redirect to="/dashboard/subjects" />
-    }
-    else 
-      return <Redirect to="/login" />
+    if(userDataResponse) 
+      window.location.href = "/dashboard/subjects";
   }, [userDataResponse]);
+
+  useEffect(() => {
+    if(logInFlag.logIn) {
+      sendMutationNormalLogin({
+        variables: {
+          email: logInFlag.email,
+          password: logInFlag.password
+        }
+      }).catch(err => {
+        alert(err);
+      });
+      setLogInFlag({
+        logIn: false,
+        email: "",
+        password: ""
+      });
+    }
+  }, [logInFlag])
+
+  useEffect(() => {
+    console.log("userDataResponseNormalLogin", userDataResponseNormalLogin);
+    //To do If then window.location
+  }, [userDataResponseNormalLogin])
 
   function Copyright() {
     return (
       <Typography variant="body2" color="textSecondary" align="center">
         {'Copyright © '}
         <Link color="inherit" href="https://material-ui.com/">
-          Your Website
+          SmartNotes
         </Link>{' '}
         {new Date().getFullYear()}
         {'.'}
@@ -125,57 +147,82 @@ export default function SignInSide() {
           </Avatar>
           {/* Normal login */}
           <Typography component="h1" variant="h5">
-            Iniciar sesión
+            SmartNotes - Iniciar sesión
           </Typography>
-          <form className={classes.form} noValidate>
-            <TextField
-              variant="outlined"
-              margin="normal"
-              required
-              fullWidth
-              id="email"
-              label="Correo electrónico"
-              name="email"
-              autoComplete="email"
-              autoFocus
-            />
-            <TextField
-              variant="outlined"
-              margin="normal"
-              required
-              fullWidth
-              name="password"
-              label="Contraseña"
-              type="password"
-              id="password"
-              autoComplete="current-password"
-            />
-            <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
-            />
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              color="primary"
-              className={classes.submit}
-            >
-              Iniciar sesión
-            </Button>
-            <Grid container>
-              <Grid item xs>
-                <Link href="#" variant="body2">
-                  ¿Olvidaste tu contraseña?
-                </Link>
-              </Grid>
-              <Grid item>
-                <Link href="/sign-up" >
-                  {"¿No tienes cuenta? Regístrate aquí"}
-                </Link>
-              </Grid>
-            </Grid>
-          </form>
+          {/* Aquí inicia Formik */}
+          <Formik
+            initialValues={{email: "", password: ""}}
+            onSubmit={ (values, {setSubmitting }) => {
+              console.log("Login", values);
+              setSubmitting(false);
+              setLogInFlag({
+                logIn: true,
+                email: values.email,
+                password: values.password
+              });
+            }}
+          >
+          { props => {
+            const {
+              values, isSubmitting
+            } = props;
+            return (
+              <form className={classes.form} noValidate>
+                <TextField
+                  variant="outlined"
+                  margin="normal"
+                  required
+                  fullWidth
+                  id="email"
+                  label="Correo electrónico"
+                  name="email"
+                  autoComplete="email"
+                  autoFocus
+                  value={values.name}
+                />
+                <TextField
+                  variant="outlined"
+                  margin="normal"
+                  required
+                  fullWidth
+                  name="password"
+                  label="Contraseña"
+                  type="password"
+                  id="password"
+                  autoComplete="current-password"
+                  value={values.name}
+                />
+                <FormControlLabel
+                  control={<Checkbox value="remember" color="primary" />}
+                  label="Remember me"
+                />
+                <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  color="primary"
+                  className={classes.submit}
+                  disabled={isSubmitting}
+                  onClick={() => setLogInFlag(true)}
+                >
+                  Iniciar sesión
+                </Button>
+                <Grid container>
+                  <Grid item xs>
+                    <Link href="#" variant="body2">
+                      ¿Olvidaste tu contraseña?
+                    </Link>
+                  </Grid>
+                  <Grid item>
+                    <Link href="/sign-up" >
+                      {"¿No tienes cuenta? Regístrate aquí"}
+                    </Link>
+                  </Grid>
+                </Grid>
+              </form>
+            );
+          }}  
+          </Formik>
           {/* Normal login */}
           <br></br>
           <Typography component="h1" variant="h5">
@@ -199,6 +246,20 @@ export default function SignInSide() {
 const REGISTER_USER = gql`
 mutation($name: String!, $lastName: String!, $email: String!, $token: String!){
   createUserFromGoogleAuth(name: $name, lastName: $lastName, email: $email, token: $token){
+    id,
+    name,
+    lastName,
+    email,
+    active,
+    createdAt,
+    updatedAt
+  }
+}
+`;
+
+const NORMAL_LOGIN_USER = gql`
+mutation($email: String!, $password: String!) {
+  normalLogin(email: $email, password: $password) {
     id,
     name,
     lastName,

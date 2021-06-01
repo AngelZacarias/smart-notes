@@ -2,8 +2,24 @@ const User = require("../../models/User");
 var _ = require('lodash');
 const bcrypt = require("bcrypt");
 
-
 module.exports = {
+  Query: {
+    async normalLogin(parent, args, context, info) {
+      console.log(args);
+      /*
+        To do:
+        Research how to passport basic authenticate
+        How to insert variables in req.context
+        Make use of middlewares in GraphQL
+        Think about how to use check-auth.js or modify it
+      */
+      try {
+
+      } catch(err){
+        console.log(err); //Edit this
+      }
+    }
+  },
   Mutation:{
     async createUserFromGoogleAuth(parent, args, context, info){
       console.log(context);
@@ -11,7 +27,7 @@ module.exports = {
       try {
         const user = await User.findOne({ email });
         if (user) 
-          throw new Error("User already exists")
+          return user;
       } catch(err) {
         throw new Error(err);
       }      
@@ -47,9 +63,8 @@ module.exports = {
       let response;
       try {
         const user = await User.findOne({ email });
-        if (user) {
-          throw new Error("User already exists")
-        }
+        if (user) 
+          return user;
       } catch(err) {
         throw new Error(err);
       }
@@ -76,7 +91,7 @@ module.exports = {
       try {
         response = await newUser.save();
       } catch(err) {
-        throw new Error("aQUI CAYÓ WE 2. Error saving user to DB");
+        throw new Error("Error saving user to DB");
       }
       return {
         ...response._doc,

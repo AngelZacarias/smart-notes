@@ -20,6 +20,7 @@ module.exports = gql`
     type Query{
         getSubjects: [Subject]
         getSubject(subjectId: ID!): Subject
+        normalLogin(email: String!, password: String!): User!
     },
     type Mutation{
         createSubject(name: String!, color: String!) : Subject!
