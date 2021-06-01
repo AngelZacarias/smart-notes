@@ -1,31 +1,35 @@
 version: "3"
 services:
-  smart-notes-app:
-    image: smart-notes-app
-    stdin_open: true
-    ports:
-      - "3000:3000"
-    networks:
-      - merng-app
-  smart-notes-api:
-    image: smart-notes-api
-    ports:
-      - "5000:5000"
-    networks:
-      - merng-app
-    depends_on:
-      - mongo
   mongo:
     image: mongo:3.6.19-xenial
     ports:
       - "27017:27017"
-    networks:
-      - merng-app
     volumes:
       - mongo-data:/data/db
-networks:
-  merng-app:
-    driver: bridge
+
+  smart-notes-api:
+    build: ./server
+    command: npm start
+    volumes:
+      - ./server:/usr/src/smart-notes/server
+      - ./server/node_modules:/usr/src/smart-notes/server/node_modules
+    ports:
+      - "5000:5000"
+    depends_on:
+      - mongo
+
+  smart-notes-app:
+    build: ./client
+    command: yarn start
+    volumes:
+      - ./client:/usr/src/smart-notes/client
+      - ./client/node_modules:/usr/src/smart-notes/client/node_modules
+    ports:
+      - "3000:3000"
+    stdin_open: true
+    tty: true
+
 volumes:
   mongo-data:
     driver: local
+  node-modules:

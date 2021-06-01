@@ -1,14 +1,13 @@
-FROM node:14-slim
+FROM node
 
-WORKDIR /usr/src/app
+WORKDIR /usr/src/smart-notes/server
 
-COPY ./package.json ./
-COPY ./yarn.lock ./
+COPY package*.json /usr/src/smart-notes/server
 
-RUN yarn install
+RUN npm ci
 
-COPY . .
+COPY . /usr/src/smart-notes/server
 
 EXPOSE 5000
 
-CMD [ "index.js" ]
+CMD [ "npm", "start" ]

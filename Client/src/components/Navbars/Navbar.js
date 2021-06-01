@@ -12,7 +12,7 @@ import Menu from "@material-ui/icons/Menu";
 // core components
 import AdminNavbarLinks from "./AdminNavbarLinks.js";
 import RTLNavbarLinks from "./RTLNavbarLinks.js";
-import Button from "components/CustomButtons/Button.js";
+import { Button } from "@material-ui/core";
 
 //hooks
 import { useRouteName } from "hooks";
@@ -33,8 +33,8 @@ export default function Header(props) {
       <Toolbar className={classes.container}>
         <div className={classes.flex}>
           {/* Here we create navbar brand, based on route name */}
-          <Button color="transparent" href="#" className={classes.title}>
-            {routeName}
+          <Button color="primary" href="#" className={classes.title}>
+            <h3>{routeName}</h3>
           </Button>
         </div>
         <Hidden smDown implementation="css">
