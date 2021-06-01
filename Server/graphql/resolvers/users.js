@@ -76,7 +76,7 @@ module.exports = {
       args.lastName = args.lastName[0];
 
       const saltRounds = await bcrypt.genSalt(parseInt(process.env.HASH_SALT_ROUNDS));
-      password = await bcrypt.hash(password, saltRounds);
+      args.password = await bcrypt.hash(password, saltRounds);
 
       const newUser = new User({
         name: args.name,
