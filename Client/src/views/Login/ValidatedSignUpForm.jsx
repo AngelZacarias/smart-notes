@@ -24,7 +24,6 @@ export default function ValidatedSignUpForm() {
     if(signInFlag.signIn) {
       console.log("signInFlag dio true!");
       console.log(signInFlag);
-
       sendMutationSignIn({
         variables: {
           name: signInFlag.name,
@@ -33,10 +32,8 @@ export default function ValidatedSignUpForm() {
           password: signInFlag.password,
           confirmPassword: signInFlag.confirmPassword
         }
-      }).catch(apolloError => {
-        const error = apolloError // from async try/catch, onError method, or a promise .catch
-        console.log(JSON.stringify(error, null, 2));
-        // alert(error);
+      }).catch(error => {
+        alert(error);
       });
       setSignInFlag({
         signIn: false,
@@ -59,16 +56,10 @@ export default function ValidatedSignUpForm() {
     <Formik
       initialValues={{name: "", lastname: "", email: "", password: "", confirmPassword: ""}}
       onSubmit={ (values, { setSubmitting }) => {
-        // setTimeout(() => {
-        //   console.log("Sing up", values);
-        //   setSubmitting(false);
-        //   //aqui poner la bandera setsomething signInEvent
-
-        // }, 1500);
         console.log("Sing up", values);
         setSubmitting(false);
         setSignInFlag({ 
-          signIn: true, //Aunque yo ponga esta bandera, no funciona, me da status 400 en el alert. El backend funciona bien. Investigar
+          signIn: true, 
           name: values.name,
           lastname: values.lastname,
           email: values.email,

@@ -1,9 +1,7 @@
 const User = require("../../models/User");
 var _ = require('lodash');
 const bcrypt = require("bcrypt");
-const  { sayHello } = require("../../utils/say-hi");
-
-
+const { formatName } = require("../../utils/format-names");
 
 module.exports = {
   Query: {
@@ -17,7 +15,7 @@ module.exports = {
         Think about how to use check-auth.js or modify it
       */
       try {
-
+        return true;
       } catch(err){
         console.log(err); //Edit this
       }
@@ -25,7 +23,6 @@ module.exports = {
   },
   Mutation:{
     async createUserFromGoogleAuth(parent, args, context, info){
-      sayHello();
       console.log(context);
       const email = args.email;
       try {
@@ -36,13 +33,9 @@ module.exports = {
         throw new Error(err);
       }      
       if(_.some(args, _.isEmpty)) 
-        throw new Error("Wrong user's data");         
-      args.name = _.capitalize(args.name);
-      args.lastName = _.capitalize(args.lastName);
-      args.name = args.name.split(" ");
-      args.name = args.name[0];
-      args.lastName = args.lastName.split(" ");
-      args.lastName = args.lastName[0];
+        throw new Error("Wrong user's data");
+      args.name = formatName(args.name);    
+      args.lastName = formatName(args.lastName);     
 
       const newUser = new User({
         name: args.name,
@@ -72,12 +65,8 @@ module.exports = {
       } catch(err) {
         throw new Error(err);
       }
-      args.name = _.capitalize(args.name);
-      args.lastName = _.capitalize(args.lastName);
-      args.name = args.name.split(" ");
-      args.name = args.name[0];
-      args.lastName = args.lastName.split(" ");
-      args.lastName = args.lastName[0];
+      args.name = formatName(args.name);    
+      args.lastName = formatName(args.lastName); 
 
       const saltRounds = await bcrypt.genSalt(parseInt(process.env.HASH_SALT_ROUNDS));
       args.password = await bcrypt.hash(password, saltRounds);

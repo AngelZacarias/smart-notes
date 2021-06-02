@@ -1,4 +1,4 @@
-import { gql, useMutation } from '@apollo/client';
+import { gql, useMutation, useLazyQuery } from '@apollo/client';
 import Avatar from '@material-ui/core/Avatar';
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
@@ -14,7 +14,6 @@ import Typography from '@material-ui/core/Typography';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import { Formik } from "formik";
 import React, { useEffect, useState } from 'react';
-
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -48,18 +47,11 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 /* global gapi */
-export default function SignInSide() {
+const SignInSide = () => {
   //Auth Google
   const [sendMutation, { data: userDataResponse }] = useMutation(REGISTER_USER);
   const [something, setSomething] = useState(false);
-  const [logInFlag, setLogInFlag] = useState(
-    {
-      login: false,
-      email: "",
-      password: "",
-    }
-  )
-  const [sendMutationNormalLogin, {data: userDataResponseNormalLogin }] = useMutation(NORMAL_LOGIN_USER);
+  const [getUser, { loading, error, data }] = useLazyQuery(NORMAL_LOGIN_USER);
 
   useEffect(() => {
     if (something) {
@@ -92,34 +84,19 @@ export default function SignInSide() {
     }
   }, [something]);
 
+  //From Google login
   useEffect(() => {
     console.log("userDataResponse: ", userDataResponse);
     if(userDataResponse) 
       window.location.href = "/dashboard/subjects";
   }, [userDataResponse]);
 
+  //From Login
   useEffect(() => {
-    if(logInFlag.logIn) {
-      sendMutationNormalLogin({
-        variables: {
-          email: logInFlag.email,
-          password: logInFlag.password
-        }
-      }).catch(err => {
-        alert(err);
-      });
-      setLogInFlag({
-        logIn: false,
-        email: "",
-        password: ""
-      });
-    }
-  }, [logInFlag])
-
-  useEffect(() => {
-    console.log("userDataResponseNormalLogin", userDataResponseNormalLogin);
-    //To do If then window.location
-  }, [userDataResponseNormalLogin])
+    console.log("Loading:",loading)
+    console.log("Error:", error)
+    console.log("Data", data)
+  }, [loading, error, data]);
 
   function Copyright() {
     return (
@@ -149,25 +126,19 @@ export default function SignInSide() {
           <Typography component="h1" variant="h5">
             SmartNotes - Iniciar sesión
           </Typography>
-          {/* Aquí inicia Formik */}
           <Formik
             initialValues={{email: "", password: ""}}
             onSubmit={ (values, {setSubmitting }) => {
               console.log("Login", values);
               setSubmitting(false);
-              setLogInFlag({
-                logIn: true,
-                email: values.email,
-                password: values.password
-              });
             }}
           >
           { props => {
             const {
-              values, isSubmitting
+              values, isSubmitting, handleChange, handleSubmit
             } = props;
             return (
-              <form className={classes.form} noValidate>
+              <form  noValidate onSubmit={handleSubmit}>
                 <TextField
                   variant="outlined"
                   margin="normal"
@@ -178,7 +149,8 @@ export default function SignInSide() {
                   name="email"
                   autoComplete="email"
                   autoFocus
-                  value={values.name}
+                  value={values.email}
+                  onChange={handleChange}
                 />
                 <TextField
                   variant="outlined"
@@ -190,7 +162,8 @@ export default function SignInSide() {
                   type="password"
                   id="password"
                   autoComplete="current-password"
-                  value={values.name}
+                  value={values.password}
+                  onChange={handleChange}
                 />
                 <FormControlLabel
                   control={<Checkbox value="remember" color="primary" />}
@@ -203,7 +176,7 @@ export default function SignInSide() {
                   color="primary"
                   className={classes.submit}
                   disabled={isSubmitting}
-                  onClick={() => setLogInFlag(true)}
+                  onClick={() => getUser({ variables: { email: values.email, password: values.password } })}
                 >
                   Iniciar sesión
                 </Button>
@@ -223,7 +196,6 @@ export default function SignInSide() {
             );
           }}  
           </Formik>
-          {/* Normal login */}
           <br></br>
           <Typography component="h1" variant="h5">
             SmartNotes - Iniciar sesión con Google
@@ -258,7 +230,7 @@ mutation($name: String!, $lastName: String!, $email: String!, $token: String!){
 `;
 
 const NORMAL_LOGIN_USER = gql`
-mutation($email: String!, $password: String!) {
+query($email: String!, $password: String!) {
   normalLogin(email: $email, password: $password) {
     id,
     name,
@@ -270,3 +242,5 @@ mutation($email: String!, $password: String!) {
   }
 }
 `;
+
+export default SignInSide;

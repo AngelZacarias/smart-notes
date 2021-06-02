@@ -10,7 +10,7 @@ require("dotenv").config();
 const server = new ApolloServer({
     typeDefs: typeDefs,
     resolvers: resolvers,
-    context: ({ req }) => { return { token: req.body.variables.token } },
+    context: ({ req }) => ({ req }),
 });
 
 mongoose.connect(MONGODB, { useNewUrlParser: true, useUnifiedTopology: true })
