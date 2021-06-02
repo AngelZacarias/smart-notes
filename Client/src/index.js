@@ -34,7 +34,7 @@ ReactDOM.render(
             <Route path="/subject" component={SubjectDashboard} />
             <Route path="/login" component={SignInSide} />
             <Route path="/sign-up" component={SignUp} />
-            <Redirect from="/" to="/dashboard/subjects" />
+            <Redirect from="/" to="/login" />
           </Switch>
         </BrowserRouter>
     </ThemeProvider>

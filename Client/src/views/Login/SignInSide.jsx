@@ -87,9 +87,10 @@ const SignInSide = () => {
 
   //From Google login
   useEffect(() => {
-    console.log("userDataResponse: ", userDataResponse);
+    console.log("userDataResponse: ", userDataResponse); //añadirle el token al regresarselo
     if(userDataResponse) 
-      window.location.href = "/dashboard/subjects";
+      // window.location.href = "/dashboard/subjects";
+      console.log("Respuesta de userDataResponse:", userDataResponse)
   }, [userDataResponse]);
 
   //From Login

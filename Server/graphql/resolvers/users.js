@@ -13,12 +13,12 @@ module.exports = {
       console.log(args);
       try {
         user = await User.findOne({ email });
-        if (!user) throw new Error("User not registered.");
       } catch (err) {
         console.log(err);
       }
+      if (!user) throw new Error("No estás registrado");
       if (_.isEmpty(user.password))
-        throw new Error("User must login with google");
+        throw new Error("Debes loguearte con Google");
       const isSamePassword = await bcrypt.compare(args.password, user.password);
       if (isSamePassword) {
         const userPayload = createUserPayload(user);
@@ -26,7 +26,6 @@ module.exports = {
           expiresIn: parseInt(process.env.JWT_EXPIRATION_TIME),
         });
         console.log("Token creado:", token);
-        // context.user = userPayload;
         return {
           token,
         };
@@ -68,12 +67,14 @@ module.exports = {
       const email = args.email;
       let password = args.password;
       let response;
+      let user;
       try {
-        const user = await User.findOne({ email });
-        if (user) return user;
+        user = await User.findOne({ email });
       } catch (err) {
         throw new Error(err);
       }
+      if (user) 
+        throw new Error("Usuario ya registrado")
       args.name = formatName(args.name);
       args.lastName = formatName(args.lastName);
 
