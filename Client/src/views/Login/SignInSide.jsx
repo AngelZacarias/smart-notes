@@ -14,6 +14,7 @@ import Typography from '@material-ui/core/Typography';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import { Formik } from "formik";
 import React, { useEffect, useState } from 'react';
+const { saveTokenToLocalStorage } = require("../../services/user/user-service")
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -93,9 +94,17 @@ const SignInSide = () => {
 
   //From Login
   useEffect(() => {
-    console.log("Loading:",loading)
-    console.log("Error:", error)
-    console.log("Data", data)
+    if (loading)
+      console.log("Loading:", loading)
+    if (error){
+      console.log(JSON.stringify(error, null, 2));
+      alert(error)
+    }
+    if (data){
+      console.log("Esto retorno Data:", data)
+      saveTokenToLocalStorage(data);
+      window.location.href = "/dashboard/subjects";
+    }
   }, [loading, error, data]);
 
   function Copyright() {
@@ -232,13 +241,7 @@ mutation($name: String!, $lastName: String!, $email: String!, $token: String!){
 const NORMAL_LOGIN_USER = gql`
 query($email: String!, $password: String!) {
   normalLogin(email: $email, password: $password) {
-    id,
-    name,
-    lastName,
-    email,
-    active,
-    createdAt,
-    updatedAt
+    token
   }
 }
 `;

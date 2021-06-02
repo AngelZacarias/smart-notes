@@ -1,41 +1,52 @@
 const User = require("../../models/User");
-var _ = require('lodash');
+var _ = require("lodash");
 const bcrypt = require("bcrypt");
 const { formatName } = require("../../utils/format-names");
+const { createUserPayload } = require("../../services/user/user-service");
+const jwt = require("jsonwebtoken");
 
 module.exports = {
   Query: {
     async normalLogin(parent, args, context, info) {
+      const email = args.email;
+      let user;
       console.log(args);
-      /*
-        To do:
-        Research how to passport basic authenticate
-        How to insert variables in req.context
-        Make use of middlewares in GraphQL
-        Think about how to use check-auth.js or modify it
-      */
       try {
-        return true;
-      } catch(err){
-        console.log(err); //Edit this
+        user = await User.findOne({ email });
+        if (!user) throw new Error("User not registered.");
+      } catch (err) {
+        console.log(err);
       }
-    }
+      if (_.isEmpty(user.password))
+        throw new Error("User must login with google");
+      const isSamePassword = await bcrypt.compare(args.password, user.password);
+      if (isSamePassword) {
+        const userPayload = createUserPayload(user);
+        const token = jwt.sign(userPayload, process.env.JWT_KEY, {
+          expiresIn: process.env.JWT_EXPIRATION_TIME,
+        });
+        console.log("Token creado:", token);
+        context.user = userPayload;
+        return {
+          token
+        };
+        //return token, pensar cómo
+      } else throw new Error("Contraseña incorrecta");
+    },
   },
-  Mutation:{
-    async createUserFromGoogleAuth(parent, args, context, info){
+  Mutation: {
+    async createUserFromGoogleAuth(parent, args, context, info) {
       console.log(context);
       const email = args.email;
       try {
         const user = await User.findOne({ email });
-        if (user) 
-          return user;
-      } catch(err) {
+        if (user) return user;
+      } catch (err) {
         throw new Error(err);
-      }      
-      if(_.some(args, _.isEmpty)) 
-        throw new Error("Wrong user's data");
-      args.name = formatName(args.name);    
-      args.lastName = formatName(args.lastName);     
+      }
+      if (_.some(args, _.isEmpty)) throw new Error("Wrong user's data");
+      args.name = formatName(args.name);
+      args.lastName = formatName(args.lastName);
 
       const newUser = new User({
         name: args.name,
@@ -45,12 +56,12 @@ module.exports = {
         active: true,
         normalAuth: false, //Because this comes from google auth
         createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
+        updatedAt: new Date().toISOString(),
       });
       const response = await newUser.save();
       return {
         ...response._doc,
-        id: response._id
+        id: response._id,
       };
     },
 
@@ -60,15 +71,16 @@ module.exports = {
       let response;
       try {
         const user = await User.findOne({ email });
-        if (user) 
-          return user;
-      } catch(err) {
+        if (user) return user;
+      } catch (err) {
         throw new Error(err);
       }
-      args.name = formatName(args.name);    
-      args.lastName = formatName(args.lastName); 
+      args.name = formatName(args.name);
+      args.lastName = formatName(args.lastName);
 
-      const saltRounds = await bcrypt.genSalt(parseInt(process.env.HASH_SALT_ROUNDS));
+      const saltRounds = await bcrypt.genSalt(
+        parseInt(process.env.HASH_SALT_ROUNDS)
+      );
       args.password = await bcrypt.hash(password, saltRounds);
 
       const newUser = new User({
@@ -79,17 +91,17 @@ module.exports = {
         active: true,
         normalAuth: true,
         createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
+        updatedAt: new Date().toISOString(),
       });
       try {
         response = await newUser.save();
-      } catch(err) {
+      } catch (err) {
         throw new Error("Error saving user to DB");
       }
       return {
         ...response._doc,
-        id: response._id
+        id: response._id,
       };
-    }
-  }
-}
+    },
+  },
+};
