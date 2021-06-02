@@ -23,14 +23,13 @@ module.exports = {
       if (isSamePassword) {
         const userPayload = createUserPayload(user);
         const token = jwt.sign(userPayload, process.env.JWT_KEY, {
-          expiresIn: process.env.JWT_EXPIRATION_TIME,
+          expiresIn: parseInt(process.env.JWT_EXPIRATION_TIME),
         });
         console.log("Token creado:", token);
-        context.user = userPayload;
+        // context.user = userPayload;
         return {
-          token
+          token,
         };
-        //return token, pensar cómo
       } else throw new Error("Contraseña incorrecta");
     },
   },
