@@ -55,7 +55,7 @@ export default function AdminNavbarLinks() {
       localStorage.removeItem("JWT_TOKEN");
       window.location.href = "/login";
     }
-    logOut(false);
+    setLogOut(false);
   }, [logOut])
   return (
     <div>
