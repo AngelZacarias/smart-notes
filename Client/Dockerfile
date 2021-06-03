@@ -1,14 +1,14 @@
-FROM node:14-slim
+FROM node
 
-WORKDIR /usr/src/app
+WORKDIR /usr/src/smart-notes/client
+COPY package.json /usr/src/smart-notes/client
+COPY package-lock.json /usr/src/smart-notes/client
 
-COPY ./package.json ./
-COPY ./yarn.lock ./
-
+RUN npm install --legacy-peer-deps
+RUN npm i react-scripts
 RUN yarn install
 
-COPY . .
-
+COPY . /usr/src/smart-notes/client
+# ENV DEBUG=*
 EXPOSE 3000
-
-CMD [ "yarn", "start" ]
+CMD ["yarn", "start"]

@@ -107,10 +107,10 @@ const SignInSide = () => {
   useEffect(() => {
     if(userDataResponse) {
       console.log("Respuesta de userDataResponse:", userDataResponse)
-      setMessage("Has sido registrado exitosamente")
+      setMessage("Inicio de sesión con Google correcto")
       setShowMessage(true)
       saveGoogleTokenToLocalStorage(userDataResponse)
-      setTimeout(() => window.location.href = "/dashboard/subjects", 4000);
+      setTimeout(() => window.location.href = "/dashboard/subjects", 3000);
     }
   }, [userDataResponse]);
 
