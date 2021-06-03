@@ -107,8 +107,10 @@ const SignInSide = () => {
   useEffect(() => {
     if(userDataResponse) {
       console.log("Respuesta de userDataResponse:", userDataResponse)
+      setMessage("Has sido registrado exitosamente")
+      setShowMessage(true)
       saveGoogleTokenToLocalStorage(userDataResponse)
-      window.location.href = "/dashboard/subjects";
+      setTimeout(() => window.location.href = "/dashboard/subjects", 4000);
     }
   }, [userDataResponse]);
 
@@ -236,7 +238,10 @@ const SignInSide = () => {
           </Typography>
           <Button 
             className="g-signin2" 
-            onClick={() => setSomething(true)}
+            onClick={() => {
+              setSomething(true)
+              handleClickLogin
+            }}
             id="googleButtonSignIn"
           >
           </Button>
