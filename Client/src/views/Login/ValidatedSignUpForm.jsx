@@ -6,6 +6,10 @@ import TextField from '@material-ui/core/TextField';
 import { Formik } from "formik";
 import React, { useEffect, useState } from "react";
 import * as Yup from "yup";
+import { IconButton, Snackbar } from '@material-ui/core';
+import Slide from "@material-ui/core/Slide";
+import CloseIcon from "@material-ui/icons/Close";
+
 
 export default function ValidatedSignUpForm() {
   const [sendMutationSignIn, { data: userDataResponse }] = useMutation(NORMAL_REGISTER_USER);
@@ -19,10 +23,22 @@ export default function ValidatedSignUpForm() {
       confirmPassword: "",
     }
   );
+  const [showMessage, setShowMessage] = useState(false);
+  const [message, setMessage] = useState("");
+
+  const handleClickSignUp = () => {
+    setShowMessage(true)
+  }
+
+  const handleCloseMessage = (event, reason) => {
+    if (reason === "clickaway") {
+      return
+    }
+    setShowMessage(false);
+  }
 
   useEffect(() => {
     if(signInFlag.signIn) {
-      console.log("signInFlag dio true!");
       console.log(signInFlag);
       sendMutationSignIn({
         variables: {
@@ -33,7 +49,8 @@ export default function ValidatedSignUpForm() {
           confirmPassword: signInFlag.confirmPassword
         }
       }).catch(error => {
-        alert(error);
+        setMessage(error.graphQLErrors[0].message)
+        setShowMessage(true)
       });
       setSignInFlag({
         signIn: false,
@@ -48,8 +65,10 @@ export default function ValidatedSignUpForm() {
 
   useEffect(() => {
     console.log(userDataResponse)
-    if (userDataResponse)
+    if (userDataResponse) {
+      
       window.location.href = "/login";
+    }
   }, [userDataResponse]);
 
   return (
@@ -199,7 +218,10 @@ export default function ValidatedSignUpForm() {
               variant="contained"
               color="primary"
               disabled={isSubmitting}
-              onClick={() => setSignInFlag(true)}
+              onClick={() => {
+                setSignInFlag(true)
+                handleClickSignUp
+              }}
             >
               Registrarme
             </Button>
@@ -210,6 +232,24 @@ export default function ValidatedSignUpForm() {
                 </Link>
               </Grid>
             </Grid>
+            <Snackbar
+            anchorOrigin={{
+              vertical: "bottom",
+              horizontal: "right"
+            }}
+            TransitionComponent={Slide}
+            open={showMessage}
+            autoHideDuration={4000}
+            onClose={handleCloseMessage}
+            message={message}
+            action={
+              <React.Fragment>
+                <IconButton onClick={handleCloseMessage}>
+                  <CloseIcon />
+                </IconButton>
+              </React.Fragment>
+            } 
+          />
           </form>
         );
     }}
