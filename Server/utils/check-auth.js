@@ -6,11 +6,11 @@ module.exports = (context) =>{
     const authHeader = context.req.headers.authorization;
     if(authHeader){
         const token = authHeader.split('Bearer ')[1];
+        let user;
         if(token){
             try{
-                if (token.length < 500) {
-                  const user = jwt.verify(token, process.env.JWT_KEY);
-                }
+                if (token.length < 500) 
+                  user = jwt.verify(token, process.env.JWT_KEY);
                 else {
                   //Validación de token de google
                 }

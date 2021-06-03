@@ -10,13 +10,13 @@ module.exports = {
     async normalLogin(parent, args, context, info) {
       const email = args.email;
       let user;
-      console.log(args);
       try {
         user = await User.findOne({ email });
       } catch (err) {
         console.log(err);
+        throw new Error("Error con la Base de Datos");
       }
-      if (!user) throw new Error("No estás registrado");
+      if (!user) throw new Error("Dirección de correo no registrada");
       if (_.isEmpty(user.password))
         throw new Error("Debes loguearte con Google");
       const isSamePassword = await bcrypt.compare(args.password, user.password);
@@ -25,7 +25,6 @@ module.exports = {
         const token = jwt.sign(userPayload, process.env.JWT_KEY, {
           expiresIn: parseInt(process.env.JWT_EXPIRATION_TIME),
         });
-        console.log("Token creado:", token);
         return {
           token,
         };

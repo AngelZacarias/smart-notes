@@ -38,7 +38,7 @@ const Subjects = () => {
     const{data:subjects, loading} = useQuery(GET_SUBJECTS, {
       context: {
         headers: {
-          "Authorization": "Bearer " + localStorage.getItem("JWT_TOKEN" | "GOOGLE_TOKEN"),
+          "Authorization": "Bearer " + localStorage.getItem("JWT_TOKEN"), // "| GOOGLE_TOKEN"
         }
       }
     });

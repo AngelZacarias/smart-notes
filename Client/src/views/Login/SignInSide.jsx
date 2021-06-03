@@ -1,4 +1,5 @@
 import { gql, useMutation, useLazyQuery } from '@apollo/client';
+import { IconButton, Snackbar } from '@material-ui/core';
 import Avatar from '@material-ui/core/Avatar';
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
@@ -14,6 +15,9 @@ import Typography from '@material-ui/core/Typography';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import { Formik } from "formik";
 import React, { useEffect, useState } from 'react';
+import Slide from "@material-ui/core/Slide";
+import CloseIcon from "@material-ui/icons/Close";
+
 const { saveTokenToLocalStorage, saveGoogleTokenToLocalStorage } = require("../../services/user/user-service")
 
 const useStyles = makeStyles((theme) => ({
@@ -53,6 +57,19 @@ const SignInSide = () => {
   const [sendMutation, { data: userDataResponse }] = useMutation(REGISTER_USER);
   const [something, setSomething] = useState(false);
   const [getUser, { loading, error, data }] = useLazyQuery(NORMAL_LOGIN_USER);
+  const [showMessage, setShowMessage] = useState(false);
+  const [message, setMessage] = useState("");
+
+  const handleClickLogin = () => {
+    setShowMessage(true)
+  }
+
+  const handleCloseMessage = (event, reason) => {
+    if (reason === "clickaway") {
+      return
+    }
+    setShowMessage(false);
+  }
 
   useEffect(() => {
     if (something) {
@@ -100,8 +117,10 @@ const SignInSide = () => {
     if (loading)
       console.log("Loading:", loading)
     if (error){
+      console.log("Error message:", error.graphQLErrors[0].message)
+      setMessage(error.graphQLErrors[0].message)
+      setShowMessage(true)
       console.log(JSON.stringify(error, null, 2));
-      alert(error)
     }
     if (data){
       console.log("Esto retorno Data:", data)
@@ -188,7 +207,10 @@ const SignInSide = () => {
                   color="primary"
                   className={classes.submit}
                   disabled={isSubmitting}
-                  onClick={() => getUser({ variables: { email: values.email, password: values.password } })}
+                  onClick={() => {
+                    getUser({ variables: { email: values.email, password: values.password } })
+                    handleClickLogin
+                  }}
                 >
                   Iniciar sesión
                 </Button>
@@ -221,6 +243,25 @@ const SignInSide = () => {
           <Box mt={5}>
               <Copyright />
           </Box>
+          {/* Snackbar */}
+          <Snackbar
+            anchorOrigin={{
+              vertical: "bottom",
+              horizontal: "right"
+            }}
+            TransitionComponent={Slide}
+            open={showMessage}
+            autoHideDuration={4000}
+            onClose={handleCloseMessage}
+            message={message}
+            action={
+              <React.Fragment>
+                <IconButton onClick={handleCloseMessage}>
+                  <CloseIcon />
+                </IconButton>
+              </React.Fragment>
+            } 
+          />
         </div>
       </Grid>
     </Grid>
