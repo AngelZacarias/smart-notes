@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import classNames from "classnames";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
@@ -15,6 +15,8 @@ import Person from "@material-ui/icons/Person";
 import Notifications from "@material-ui/icons/Notifications";
 import Dashboard from "@material-ui/icons/Dashboard";
 import Search from "@material-ui/icons/Search";
+import { useState } from 'react';
+
 
 // core components
 import { Button, TextField } from "@material-ui/core";
@@ -24,6 +26,7 @@ import styles from "assets/jss/material-dashboard-react/components/headerLinksSt
 const useStyles = makeStyles(styles);
 
 export default function AdminNavbarLinks() {
+  const [logOut, setLogOut] = useState(false);
   const classes = useStyles();
   const [openNotification, setOpenNotification] = React.useState(null);
   const [openProfile, setOpenProfile] = React.useState(null);
@@ -47,6 +50,14 @@ export default function AdminNavbarLinks() {
   const handleCloseProfile = () => {
     setOpenProfile(null);
   };
+  useEffect(() => {
+    if (logOut) {
+      localStorage.removeItem("JWT_TOKEN");
+      localStorage.removeItem("GOOGLE_TOKEN");
+      window.location.href = "/login";
+    }
+    setLogOut(false);
+  }, [logOut])
   return (
     <div>
       <div className={classes.searchWrapper}>
@@ -194,7 +205,7 @@ export default function AdminNavbarLinks() {
                     </MenuItem>
                     <Divider light />
                     <MenuItem
-                      onClick={handleCloseProfile}
+                      onClick={() => setLogOut(true)}
                       className={classes.dropdownItem}
                     >
                       Logout

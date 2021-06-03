@@ -14,8 +14,11 @@
     "@testing-library/user-event": "^12.1.10",
     "chartist": "0.10.1",
     "classnames": "2.3.1",
+    "cookie-parser": "^1.4.5",
+    "formik": "^2.2.8",
     "graphql": "^15.5.0",
     "history": "5.0.0",
+    "lodash": "^4.17.21",
     "hookrouter": "^1.2.5",
     "immer": "^9.0.1",
     "material-table": "^1.69.2",
@@ -30,6 +33,7 @@
     "react-router-dom": "5.2.0",
     "react-scripts": "4.0.3",
     "react-swipeable-views": "0.13.9",
+    "yup": "^0.32.9",
     "web-vitals": "^1.0.1"
   },
   "scripts": {
