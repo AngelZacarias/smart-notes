@@ -4,7 +4,6 @@ const mongoose = require('mongoose');
 const { MONGODB } = require('./config');
 const typeDefs = require('./graphql/typeDefs');
 const resolvers = require('./graphql/resolvers');
-const { getUser } = require("./services/user/user-service")
 
 require("dotenv").config();
 
