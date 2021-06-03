@@ -16,6 +16,7 @@ module.exports = gql`
       active: Boolean!
       createdAt: String!
       updatedAt: String!
+      token: String
     }
     type Token {
       token: String!
@@ -27,7 +28,7 @@ module.exports = gql`
     },
     type Mutation{
         createSubject(name: String!, color: String!) : Subject!
-        createUserFromGoogleAuth(name: String!, lastName: String!, email: String!, token: String!) : User!
+        createUserFromGoogleAuth(name: String!, lastName: String!, email: String!, token: String!) : User
         createUserFromNormalSignUp(name: String!, lastName: String!, email: String!, password: String!, confirmPassword: String!) : User!
     },
 `;

@@ -34,11 +34,13 @@ module.exports = {
   },
   Mutation: {
     async createUserFromGoogleAuth(parent, args, context, info) {
-      console.log(context);
       const email = args.email;
       try {
         const user = await User.findOne({ email });
-        if (user) return user;
+        if (user) {
+          user.token = args.token;
+          return user;
+        }
       } catch (err) {
         throw new Error(err);
       }
@@ -60,6 +62,7 @@ module.exports = {
       return {
         ...response._doc,
         id: response._id,
+        token: args.token,
       };
     },
 

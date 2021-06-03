@@ -53,6 +53,7 @@ export default function AdminNavbarLinks() {
   useEffect(() => {
     if (logOut) {
       localStorage.removeItem("JWT_TOKEN");
+      localStorage.removeItem("GOOGLE_TOKEN");
       window.location.href = "/login";
     }
     setLogOut(false);

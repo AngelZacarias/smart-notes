@@ -14,7 +14,7 @@ import Typography from '@material-ui/core/Typography';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import { Formik } from "formik";
 import React, { useEffect, useState } from 'react';
-const { saveTokenToLocalStorage } = require("../../services/user/user-service")
+const { saveTokenToLocalStorage, saveGoogleTokenToLocalStorage } = require("../../services/user/user-service")
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -77,6 +77,7 @@ const SignInSide = () => {
               token: googleUser.qc.id_token
             }
           }).catch(err => {
+            console.log(JSON.stringify(err, null, 2));
             alert(err.message);
           });
         });
@@ -87,10 +88,11 @@ const SignInSide = () => {
 
   //From Google login
   useEffect(() => {
-    console.log("userDataResponse: ", userDataResponse); //añadirle el token al regresarselo
-    if(userDataResponse) 
-      // window.location.href = "/dashboard/subjects";
+    if(userDataResponse) {
       console.log("Respuesta de userDataResponse:", userDataResponse)
+      saveGoogleTokenToLocalStorage(userDataResponse)
+      window.location.href = "/dashboard/subjects";
+    }
   }, [userDataResponse]);
 
   //From Login
@@ -228,13 +230,13 @@ const SignInSide = () => {
 const REGISTER_USER = gql`
 mutation($name: String!, $lastName: String!, $email: String!, $token: String!){
   createUserFromGoogleAuth(name: $name, lastName: $lastName, email: $email, token: $token){
-    id,
     name,
     lastName,
     email,
     active,
     createdAt,
-    updatedAt
+    updatedAt,
+    token
   }
 }
 `;

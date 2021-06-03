@@ -8,7 +8,12 @@ module.exports = (context) =>{
         const token = authHeader.split('Bearer ')[1];
         if(token){
             try{
-                const user = jwt.verify(token, process.env.JWT_KEY);
+                if (token.length < 500) {
+                  const user = jwt.verify(token, process.env.JWT_KEY);
+                }
+                else {
+                  //Validación de token de google
+                }
                 return user;
             } catch(err){
                 throw new AuthenticationError('Invalid/Expired token');
