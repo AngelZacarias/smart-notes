@@ -3,7 +3,7 @@ const { model, Schema } = require('mongoose');
 const profileSchema = new Schema({
     bio:{
         type: String,
-        defualt: "",
+        default: "",
     },
     carrer: {
         type: String,
