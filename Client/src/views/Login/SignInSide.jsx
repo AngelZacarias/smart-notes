@@ -18,7 +18,7 @@ import React, { useEffect, useState } from 'react';
 import Slide from "@material-ui/core/Slide";
 import CloseIcon from "@material-ui/icons/Close";
 
-const { saveTokenToLocalStorage, saveGoogleTokenToLocalStorage } = require("../../services/user/user-service")
+const { saveTokenToLocalStorage } = require("../../services/user/user-service")
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -109,7 +109,7 @@ const SignInSide = () => {
       console.log("Respuesta de userDataResponse:", userDataResponse)
       setMessage("Inicio de sesión con Google correcto")
       setShowMessage(true)
-      saveGoogleTokenToLocalStorage(userDataResponse)
+      saveTokenToLocalStorage(userDataResponse)
       setTimeout(() => window.location.href = "/dashboard/subjects", 3000);
     }
   }, [userDataResponse]);

@@ -37,7 +37,11 @@ module.exports = {
       try {
         const user = await User.findOne({ email });
         if (user) {
-          user.token = args.token;
+          const userPayload = createUserPayload(user);
+          const token = jwt.sign(userPayload, process.env.JWT_KEY, {
+            expiresIn: parseInt(process.env.JWT_EXPIRATION_TIME),
+          })
+          user.token = token;
           return user;
         }
       } catch (err) {
