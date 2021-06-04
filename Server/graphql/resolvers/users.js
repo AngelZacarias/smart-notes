@@ -11,7 +11,7 @@ module.exports = {
       const email = args.email;
       let user;
       try {
-        user = await User.findOne({ email });
+        user = await User.findOne({ email }).select('password');
       } catch (err) {
         console.log(err);
         throw new Error("Error con la Base de Datos");
@@ -98,7 +98,7 @@ module.exports = {
       try {
         response = await newUser.save();
       } catch (err) {
-        throw new Error("Error saving user to DB");
+        throw new Error("Error saving user to DB:", err);
       }
       return {
         ...response._doc,
