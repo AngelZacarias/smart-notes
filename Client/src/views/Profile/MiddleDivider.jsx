@@ -5,7 +5,7 @@ import Divider from '@material-ui/core/Divider';
 import Typography from '@material-ui/core/Typography';
 import FacebookIcon from '@material-ui/icons/Facebook';
 import TwitterIcon from '@material-ui/icons/Twitter';
-import InstagramIcon from '@material-ui/icons/Instagram';
+import LinkedInIcon from '@material-ui/icons/LinkedIn';
 import Avatar from '@material-ui/core/Avatar';
 
 const useStyles = makeStyles((theme) => ({
@@ -75,7 +75,7 @@ const MiddleDividers = () => {
           <TwitterIcon fontSize="large"/>
         </Grid>
         <Grid item>
-          <InstagramIcon fontSize="large"/>
+          <LinkedInIcon fontSize="large"/>
         </Grid>
       </div>
     </div>

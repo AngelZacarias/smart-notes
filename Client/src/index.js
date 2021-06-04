@@ -33,6 +33,7 @@ ReactDOM.render(
           <Switch>
             <Route path="/dashboard" component={GeneralDashboard} />
             <Route path="/profile" component={Profile} />
+            {/* <Route path="/profile/:id" component={Profile} /> */}
             <Route path="/subject" component={SubjectDashboard} />
             <Route path="/login" component={SignInSide} />
             <Route path="/sign-up" component={SignUp} />
