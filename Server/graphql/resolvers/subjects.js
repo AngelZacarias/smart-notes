@@ -4,7 +4,7 @@ const checkAuth = require("../../utils/check-auth")
 module.exports = {
     Query: {
         async getSubjects(_, args, context){
-            const user = checkAuth(context);
+            checkAuth(context);
             try {
                 const subjects = await Subject.find();
                 return subjects;

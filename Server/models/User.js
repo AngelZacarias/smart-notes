@@ -4,11 +4,9 @@ const userSchema = new Schema({
     email : {
         type: String,
         required: true,
-        match: '^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
     },
     password: {
         type: String,
-        required: true,
         select: false
     },
     active: {
@@ -37,7 +35,6 @@ const userSchema = new Schema({
     profile: {
         type: Schema.Types.ObjectId,
         ref: 'profile',
-        required: true,
     },
     normalAuth: Boolean,
 });

@@ -12,6 +12,7 @@ module.exports = gql`
         updatedAt: String
         subjects: [Subject]
         profile: Profile
+        token: String
     }
     type Subject{
         id: ID!
@@ -60,16 +61,6 @@ module.exports = gql`
         subject: Subject
         user: User
     }
-    type User{
-      id: ID!
-      name: String!
-      lastName: String!
-      email: String!
-      active: Boolean!
-      createdAt: String!
-      updatedAt: String!
-      token: String
-    }
     type Token {
       token: String!
     }
@@ -78,12 +69,12 @@ module.exports = gql`
         getSubject(subjectId: ID!): Subject
         getTasks: [Task]
         getTask(id: ID!): Task
+        normalLogin(email: String!, password: String!): Token
     },
     type Mutation{
         createSubject(name: String!, color: String!) : Subject!
         updateSubject(id: ID!, name: String!, color: String!) : Subject!
         createTask(subjectId: ID!, assignment: String!, description: String!, deadline: String!) : Task!
-        normalLogin(email: String!, password: String!): Token
         createUserFromGoogleAuth(name: String!, lastName: String!, email: String!, token: String!) : User
         createUserFromNormalSignUp(name: String!, lastName: String!, email: String!, password: String!, confirmPassword: String!) : User!
     },
