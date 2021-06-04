@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 //Graphql
 import { useQuery, gql } from '@apollo/client';
 // material-ui components
@@ -9,10 +9,12 @@ import Card from "components/Card/Card.js";
 import CardBody from "components/Card/CardBody.js";
 import CardHeader from "components/Card/CardHeader.js";
 import CardFooter from "components/Card/CardFooter.js";
-
 import dashboardStyle from "assets/jss/material-dashboard-react/views/dashboardStyle.js";
 
-const styles = {
+//Our components
+import SubjectForm from './SubjectForm';
+
+const useStyles = makeStyles(() => ({
     ...dashboardStyle,
     cardTitle: {
       marginTop: "0",
@@ -27,12 +29,14 @@ const styles = {
         bottom: "20px",
         right: "20px",
     },
-};
-
-const useStyles = makeStyles(styles);
+}));
 
 const Subjects = () => {
     const classes = useStyles();
+    
+    //State
+    const[subjectFormShow, setSubjectFormShow] = useState(false);
+    //const[anchorEl, setAnchorEl] = useState(null);
 
     //State for Query
     const{data:subjects, loading} = useQuery(GET_SUBJECTS);
@@ -47,6 +51,10 @@ const Subjects = () => {
 
     const handleOpenSubject = (id) =>{
         console.log("Selected to open: ",id);
+    }
+
+    const handleClickSubjectForm = () =>{
+        setSubjectFormShow(!subjectFormShow);
     }
 
     return ( 
@@ -100,10 +108,18 @@ const Subjects = () => {
                 
             </Grid>
             <div>
-                <Fab color="primary" aria-label="add" className={classes.fab}>
+                <Fab color="primary" 
+                    aria-label="add" 
+                    className={classes.fab}
+                    onClick={handleClickSubjectForm}
+                >
                     <Add/>
                 </Fab>
             </div>
+            <SubjectForm
+                showForm={subjectFormShow}
+                handleClose={setSubjectFormShow}
+            />
         </div>
      );
 }

@@ -1,3 +1,4 @@
+const { Query } = require('mongoose');
 const Subject = require('../../models/Subject');
 
 module.exports = {
@@ -42,6 +43,32 @@ module.exports = {
                 ...response._doc,
                 id: response._id
             }
+        },
+        async updateSubject(parent, args, context, info){
+            //Validate data
+            if(args.name==="" || args.color===""){
+                throw new Error("All fields are required");
+            }
+            //Update Data
+            const response = await Subject.findByIdAndUpdate(
+                args.id,
+                {
+                    name: args.name,
+                    color: args.color,
+                    createdAt: new Date(),
+                },
+                {new: true},
+            );
+            return{
+                ...response._doc,
+                id: response._id
+            }
+        }
+    },
+    //Resolvers for nested queries
+    Task: {
+        async subject(parent, args, context, info){
+            return await Subject.findById(parent.subject);
         }
     }
 }
