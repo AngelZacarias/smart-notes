@@ -39,6 +39,7 @@ const userSchema = new Schema({
         ref: 'profile',
         required: true,
     },
+    normalAuth: Boolean,
 });
 
 module.exports = model('User', userSchema);

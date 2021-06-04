@@ -1,4 +1,4 @@
-const { gql } = require('apollo-server');
+const { gql } = require("apollo-server");
 
 module.exports = gql`
     type User{
@@ -60,6 +60,19 @@ module.exports = gql`
         subject: Subject
         user: User
     }
+    type User{
+      id: ID!
+      name: String!
+      lastName: String!
+      email: String!
+      active: Boolean!
+      createdAt: String!
+      updatedAt: String!
+      token: String
+    }
+    type Token {
+      token: String!
+    }
     type Query{
         getSubjects: [Subject]
         getSubject(subjectId: ID!): Subject
@@ -70,5 +83,8 @@ module.exports = gql`
         createSubject(name: String!, color: String!) : Subject!
         updateSubject(id: ID!, name: String!, color: String!) : Subject!
         createTask(subjectId: ID!, assignment: String!, description: String!, deadline: String!) : Task!
+        normalLogin(email: String!, password: String!): Token
+        createUserFromGoogleAuth(name: String!, lastName: String!, email: String!, token: String!) : User
+        createUserFromNormalSignUp(name: String!, lastName: String!, email: String!, password: String!, confirmPassword: String!) : User!
     },
 `;

@@ -11,9 +11,11 @@ module.exports = {
     Query:{
         ...subjectsResolvers.Query,
         ...tasksResolvers.Query,
+        ...userResolvers.Query
     },
     Mutation:{
         ...subjectsResolvers.Mutation,
         ...tasksResolvers.Mutation,
+        ...userResolvers.Mutation
     }
 }

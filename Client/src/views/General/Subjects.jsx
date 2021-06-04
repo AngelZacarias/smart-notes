@@ -39,7 +39,13 @@ const Subjects = () => {
     //const[anchorEl, setAnchorEl] = useState(null);
 
     //State for Query
-    const{data:subjects, loading} = useQuery(GET_SUBJECTS);
+    const{data:subjects, loading} = useQuery(GET_SUBJECTS, {
+      context: {
+        headers: {
+          "Authorization": "Bearer " + localStorage.getItem("JWT_TOKEN"), // "| GOOGLE_TOKEN"
+        }
+      }
+    });
 
     useEffect(()=>{
         console.log(subjects)

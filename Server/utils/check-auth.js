@@ -1,4 +1,4 @@
-//const jwt = require('jsonwebtoken');
+const jwt = require('jsonwebtoken');
 const { AuthenticationError } = require('apollo-server');
 const { GOOGLE_SECRET_KEY } = require('../config');
 //TODO: Implement with Google
@@ -6,9 +6,14 @@ module.exports = (context) =>{
     const authHeader = context.req.headers.authorization;
     if(authHeader){
         const token = authHeader.split('Bearer ')[1];
+        let user;
         if(token){
             try{
-                const user = '';//jwt.verify(token, SECRET_KEY);
+                if (token.length < 500) 
+                  user = jwt.verify(token, process.env.JWT_KEY);
+                else {
+                  //Validación de token de google
+                }
                 return user;
             } catch(err){
                 throw new AuthenticationError('Invalid/Expired token');

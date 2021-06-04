@@ -1,9 +1,10 @@
 const { Query } = require('mongoose');
 const Subject = require('../../models/Subject');
-
+const checkAuth = require("../../utils/check-auth")
 module.exports = {
     Query: {
-        async getSubjects(){
+        async getSubjects(_, args, context){
+            const user = checkAuth(context);
             try {
                 const subjects = await Subject.find();
                 return subjects;
