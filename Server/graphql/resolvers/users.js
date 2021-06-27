@@ -106,4 +106,10 @@ module.exports = {
       };
     },
   },
+  //Resolvers for nested queries
+  NestedUserReference: {
+    async user(parent, args, context, info){
+        return await User.findById(parent.user);
+  },
+}
 };
