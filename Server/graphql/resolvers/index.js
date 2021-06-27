@@ -10,11 +10,14 @@ module.exports = {
         //The user owner for this task
         user: userResolvers.NestedUserReference.user,
     },
-    //Nested Queries: 
-    Subject: {
-        //the user owner of this subject
+    Profile: {
         user: userResolvers.NestedUserReference.user,
     },
+    //Nested Queries: 
+    // Subject: {
+    //     //the user owner of this subject
+    //     user: userResolvers.NestedUserReference.user,
+    // },
     // Default Queries
     Query:{
         ...subjectsResolvers.Query,

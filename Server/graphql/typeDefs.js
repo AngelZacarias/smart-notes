@@ -70,6 +70,8 @@ module.exports = gql`
         getTasks: [Task]
         getTask(id: ID!): Task
         normalLogin(email: String!, password: String!): Token
+        getUser(email: String!): User
+        getUserProfile: Profile
     },
     type Mutation{
         createSubject(name: String!, color: String!) : Subject!

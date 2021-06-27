@@ -1,9 +1,15 @@
 const User = require("../../models/User");
+const Profile = require("../../models/Profile")
 var _ = require("lodash");
 const bcrypt = require("bcrypt");
 const { formatName } = require("../../utils/format-names");
-const { createUserPayload } = require("../../services/user/user-service");
+const {
+  createUserPayload,
+  createUserProfile,
+} = require("../../services/user/user-service");
 const jwt = require("jsonwebtoken");
+const checkAuth = require("../../utils/check-auth");
+var ObjectId = require("mongodb").ObjectId;
 
 module.exports = {
   Query: {
@@ -11,7 +17,7 @@ module.exports = {
       const email = args.email;
       let user;
       try {
-        user = await User.findOne({ email }).select('password');
+        user = await User.findOne({ email }).select("password");
       } catch (err) {
         console.log(err);
         throw new Error("Error con la Base de Datos");
@@ -30,17 +36,43 @@ module.exports = {
         };
       } else throw new Error("Contraseña incorrecta");
     },
+
+    async getUser(parent, args, context, info) {
+      let user;
+      const email = args.email;
+      try {
+        user = await User.findOne({ email });
+      } catch (err) {
+        console.log(err);
+      }
+      return user;
+    },
+
+    async getUserProfile(parent, args, context, info) {
+      const user = checkAuth(context);
+      let userProfile;
+      try {
+        userProfile = await Profile.findOne({
+          user: ObjectId(user.id),
+        });
+        console.log(userProfile);
+      } catch (err) {
+        console.log(err);
+      }
+      return userProfile;
+    },
   },
   Mutation: {
     async createUserFromGoogleAuth(parent, args, context, info) {
       const email = args.email;
+      let response;
       try {
         const user = await User.findOne({ email });
         if (user) {
           const userPayload = createUserPayload(user);
           const token = jwt.sign(userPayload, process.env.JWT_KEY, {
             expiresIn: parseInt(process.env.JWT_EXPIRATION_TIME),
-          })
+          });
           user.token = token;
           return user;
         }
@@ -61,7 +93,13 @@ module.exports = {
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       });
-      const response = await newUser.save();
+      try {
+        response = await newUser.save();
+        const newProfile = await createUserProfile(newUser);
+        newProfile.save();
+      } catch (err) {
+        throw new Error("Error saving user to DB:", err);
+      }
       return {
         ...response._doc,
         id: response._id,
@@ -79,8 +117,7 @@ module.exports = {
       } catch (err) {
         throw new Error(err);
       }
-      if (user) 
-        throw new Error("Usuario ya registrado")
+      if (user) throw new Error("Usuario ya registrado");
       args.name = formatName(args.name);
       args.lastName = formatName(args.lastName);
 
@@ -99,8 +136,11 @@ module.exports = {
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       });
+
       try {
         response = await newUser.save();
+        const newProfile = await createUserProfile(newUser);
+        newProfile.save();
       } catch (err) {
         throw new Error("Error saving user to DB:", err);
       }
