@@ -1,9 +1,10 @@
+const { Query } = require('mongoose');
 const Subject = require('../../models/Subject');
 const checkAuth = require("../../utils/check-auth")
 module.exports = {
     Query: {
         async getSubjects(_, args, context){
-            const user = checkAuth(context);
+            checkAuth(context);
             try {
                 const subjects = await Subject.find();
                 return subjects;
@@ -44,5 +45,31 @@ module.exports = {
                 id: response._id
             }
         },
+        async updateSubject(parent, args, context, info){
+            //Validate data
+            if(args.name==="" || args.color===""){
+                throw new Error("All fields are required");
+            }
+            //Update Data
+            const response = await Subject.findByIdAndUpdate(
+                args.id,
+                {
+                    name: args.name,
+                    color: args.color,
+                    createdAt: new Date(),
+                },
+                {new: true},
+            );
+            return{
+                ...response._doc,
+                id: response._id
+            }
+        }
+    },
+    //Resolvers for nested queries
+    Task: {
+        async subject(parent, args, context, info){
+            return await Subject.findById(parent.subject);
+        }
     }
 }

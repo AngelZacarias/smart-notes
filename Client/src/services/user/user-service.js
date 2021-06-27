@@ -1,9 +1,8 @@
 function saveTokenToLocalStorage(data) {
-  localStorage.setItem("JWT_TOKEN", data.normalLogin.token);
+  if (data.normalLogin)
+    localStorage.setItem("JWT_TOKEN", data.normalLogin.token);
+  else
+    localStorage.setItem("JWT_TOKEN", data.createUserFromGoogleAuth.token);
 }
 
-function saveGoogleTokenToLocalStorage(data) {
-  localStorage.setItem("GOOGLE_TOKEN", data.createUserFromGoogleAuth.token);
-}
-
-module.exports = { saveTokenToLocalStorage, saveGoogleTokenToLocalStorage };
+module.exports = { saveTokenToLocalStorage };

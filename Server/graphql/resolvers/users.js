@@ -11,7 +11,7 @@ module.exports = {
       const email = args.email;
       let user;
       try {
-        user = await User.findOne({ email });
+        user = await User.findOne({ email }).select('password');
       } catch (err) {
         console.log(err);
         throw new Error("Error con la Base de Datos");
@@ -37,7 +37,11 @@ module.exports = {
       try {
         const user = await User.findOne({ email });
         if (user) {
-          user.token = args.token;
+          const userPayload = createUserPayload(user);
+          const token = jwt.sign(userPayload, process.env.JWT_KEY, {
+            expiresIn: parseInt(process.env.JWT_EXPIRATION_TIME),
+          })
+          user.token = token;
           return user;
         }
       } catch (err) {
@@ -98,7 +102,7 @@ module.exports = {
       try {
         response = await newUser.save();
       } catch (err) {
-        throw new Error("Error saving user to DB");
+        throw new Error("Error saving user to DB:", err);
       }
       return {
         ...response._doc,
