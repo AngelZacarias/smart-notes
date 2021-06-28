@@ -34,7 +34,7 @@ const userSchema = new Schema({
     }],
     profile: {
         type: Schema.Types.ObjectId,
-        ref: 'profile',
+        ref: 'profiles',
     },
     normalAuth: Boolean,
 });
