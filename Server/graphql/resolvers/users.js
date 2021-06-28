@@ -149,6 +149,10 @@ module.exports = {
         id: response._id,
       };
     },
+
+    async editProfile(parent, args, context, info) {
+      console.log(args);
+    }
   },
   //Resolvers for nested queries
   NestedUserReference: {

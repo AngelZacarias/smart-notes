@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Divider from '@material-ui/core/Divider';
@@ -7,6 +7,9 @@ import FacebookIcon from '@material-ui/icons/Facebook';
 import TwitterIcon from '@material-ui/icons/Twitter';
 import LinkedInIcon from '@material-ui/icons/LinkedIn';
 import Avatar from '@material-ui/core/Avatar';
+import { gql, useQuery } from '@apollo/client';
+import Button from '@material-ui/core/Button';
+import ProfileForm from './ProfileForm';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -38,6 +41,40 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const MiddleDividers = () => {
+  const [profileFormShow, setProfileFormShow] = useState(false);
+
+  //Get user's profile
+  const { data: profile } = useQuery(GET_PROFILE, {
+    context: {
+      headers: {
+        "Authorization": "Bearer " + localStorage.getItem("JWT_TOKEN"),
+      }
+    }
+  });
+
+  const [profileInfo, setProfileInfo] = useState({
+    name: "",
+    lastName: "",
+    email: "",
+    bio: "",
+  });
+
+  useEffect(() => {
+    if (profile) {
+      console.log(profile);
+      setProfileInfo({
+        name: profile.getUserProfile.user.name,
+        lastName: profile.getUserProfile.user.lastName,
+        email: profile.getUserProfile.user.email,
+        bio: profile.getUserProfile.bio, //esto no está bien
+      });
+    }
+  }, [profile]);
+
+  const handleClickProfileForm = () => {
+    setProfileFormShow(!profileFormShow);
+  }
+
   const classes = useStyles();
 
   return (
@@ -51,7 +88,13 @@ const MiddleDividers = () => {
           </Grid>
           <Grid item xs>
             <Typography gutterBottom variant="h4">
-              UserName
+              {profileInfo.name} { profileInfo.lastName}
+            </Typography>
+            <Typography gutterBottom variant="h5">
+              {profileInfo.carrer}
+            </Typography>
+            <Typography gutterBottom variant="h5">
+              {profileInfo.email}
             </Typography>
           </Grid>
         </Grid>
@@ -62,7 +105,7 @@ const MiddleDividers = () => {
           Descripción:
         </Typography>
         <Typography color="textSecondary" variant="body1" align="justify">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam laoreet eget ipsum vitae cursus. Sed dictum varius finibus. Proin mi ante, tristique sit amet finibus a, fermentum nec libero. Maecenas in efficitur diam, in pulvinar diam. Nullam augue purus, aliquet a viverra eget, mollis ut metus. Proin luctus risus at.
+          {profileInfo.bio}
         </Typography>
       </div>
       <Divider variant="middle" />
@@ -77,9 +120,37 @@ const MiddleDividers = () => {
         <Grid item>
           <LinkedInIcon fontSize="large"/>
         </Grid>
+        <Button 
+          variant="contained" 
+          color="primary"
+          onClick={handleClickProfileForm}
+        >
+          Editar perfil
+        </Button>
+        <ProfileForm
+          showForm={profileFormShow}
+          handleClose={setProfileFormShow}
+        />
       </div>
     </div>
   );
 }
+
+const GET_PROFILE = gql`
+  query {
+    getUserProfile {
+      bio,
+      carrer,
+      facebookURL,
+      linkedinURL,
+      twitterURL,
+      user {
+        name,
+        lastName,
+        email
+      }
+    }
+  }
+`;
 
 export default MiddleDividers;

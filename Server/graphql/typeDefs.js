@@ -79,5 +79,6 @@ module.exports = gql`
         createTask(subjectId: ID!, assignment: String!, description: String!, deadline: String!) : Task!
         createUserFromGoogleAuth(name: String!, lastName: String!, email: String!, token: String!) : User
         createUserFromNormalSignUp(name: String!, lastName: String!, email: String!, password: String!, confirmPassword: String!) : User!
+        editProfile(bio: String, carrer: String, facebookURL: String, linkedinURL: String, twitterURL: String) : Profile
     },
 `;
