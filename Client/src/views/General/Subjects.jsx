@@ -36,7 +36,6 @@ const Subjects = () => {
     
     //State
     const[subjectFormShow, setSubjectFormShow] = useState(false);
-    //const[anchorEl, setAnchorEl] = useState(null);
 
     //State for Query
     const{data:subjects, loading} = useQuery(GET_SUBJECTS, {
@@ -73,8 +72,8 @@ const Subjects = () => {
             }
             <Grid container spacing={5}>
                 {
-                    subjects && subjects.getSubjects ?
-                        subjects.getSubjects.map(subject=>(
+                    subjects && subjects.getMyCurrentSubjects ?
+                        subjects.getMyCurrentSubjects.map(subject=>(
                             <Grid item xs={6} sm={3} key={subject.id}>
                                 <Card>
                                     <CardHeader color={subject.color}>
@@ -130,12 +129,13 @@ const Subjects = () => {
      );
 }
 
-const GET_SUBJECTS = gql`
+export const GET_SUBJECTS = gql`
 query{
-  getSubjects{
+  getMyCurrentSubjects{
     id
     name
     color
+    numberOfPendingTasks
   }
 }
 `;

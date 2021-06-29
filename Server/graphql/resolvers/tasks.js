@@ -1,8 +1,10 @@
 const Task = require('../../models/Task');
+const checkAuth = require("../../utils/check-auth");
 
 module.exports = {
     Query:{
-        async getTasks(){
+        async getTasks(parent, args, context){
+            const user = checkAuth(context);
             try {
                 const tasks = await Task.find();
                 return tasks;
@@ -11,6 +13,7 @@ module.exports = {
             }
         },
         async getTask(parent, {id}, context, info){
+            const user = checkAuth(context);
             try{
                 const task = await Task.findById(id);
                 if(task){

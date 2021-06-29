@@ -21,6 +21,7 @@ module.exports = gql`
         active: Boolean
         createdAt: String
         tasks: [Task]
+        user: User
         numberOfPendingTasks: Int
         notes: [Note]
     }
@@ -66,6 +67,7 @@ module.exports = gql`
     }
     type Query{
         getSubjects: [Subject]
+        getMyCurrentSubjects: [Subject]
         getSubject(subjectId: ID!): Subject
         getTasks: [Task]
         getTask(id: ID!): Task
@@ -74,7 +76,16 @@ module.exports = gql`
     type Mutation{
         createSubject(name: String!, color: String!) : Subject!
         updateSubject(id: ID!, name: String!, color: String!) : Subject!
+        deleteSubject(id: ID!) : Subject!
+
+        createSubjectAndSchedule(name: String!, color: String!, daysOfWeek: [Int]!, startHour: String!, endHour: String!) : Subject!
+        updateSubjectAndSchedule(subjectId: ID!, name: String!, color: String!, daysOfWeek: [Int]!, startHour: String!, endHour: String!) : Subject!
+
+        createSchedule(dayOfWeek: Int!, startHour: String!, endHour: String!, subjectId: ID!) : Schedule!
+        deleteSchedule(id: ID!) : Schedule!
+
         createTask(subjectId: ID!, assignment: String!, description: String!, deadline: String!) : Task!
+
         createUserFromGoogleAuth(name: String!, lastName: String!, email: String!, token: String!) : User
         createUserFromNormalSignUp(name: String!, lastName: String!, email: String!, password: String!, confirmPassword: String!) : User!
     },

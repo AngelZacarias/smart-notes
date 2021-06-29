@@ -17,8 +17,11 @@ const theme = createMuiTheme({
         success: {
             main: '#4caf50',
         },
-        error: {
+        danger: {
             main: '#f44336',
+        },
+        rose: {
+            main: '#E22E6D',
         }
     },
 })
