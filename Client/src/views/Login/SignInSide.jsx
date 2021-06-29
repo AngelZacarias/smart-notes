@@ -110,7 +110,7 @@ const SignInSide = () => {
       setMessage("Inicio de sesión con Google correcto")
       setShowMessage(true)
       saveTokenToLocalStorage(userDataResponse)
-      setTimeout(() => window.location.href = "/dashboard/subjects", 3000);
+      setTimeout(() => window.location.href = "/dashboard/subjects", 1000);
     }
   }, [userDataResponse]);
 

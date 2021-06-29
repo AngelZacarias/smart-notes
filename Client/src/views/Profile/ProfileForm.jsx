@@ -1,18 +1,18 @@
-import React, { useState, useEffect } from 'react'
-import { 
-		makeStyles, 
-		Modal, 
-		Paper, 
-		Typography,
-		TextField,
-		FormControl ,
-} from "@material-ui/core";
-import PropTypes from "prop-types";
-import SaveIcon from '@material-ui/icons/Save';
-import Button from '@material-ui/core/Button';
-import { Formik } from 'formik';
 import { gql, useMutation } from '@apollo/client';
+import {
+	FormControl, IconButton, makeStyles,
+	Modal,
+	Paper, Snackbar, TextField, Typography
+} from "@material-ui/core";
+import Button from '@material-ui/core/Button';
+import Slide from "@material-ui/core/Slide";
+import CloseIcon from "@material-ui/icons/Close";
+import SaveIcon from '@material-ui/icons/Save';
+import { Formik } from 'formik';
+import PropTypes from "prop-types";
+import React, { useEffect, useState } from 'react';
 import * as Yup from "yup";
+import { GET_PROFILE } from "./MiddleDivider";
 
 const useStyles = makeStyles((theme) => ({
 		poperContainer:{
@@ -38,8 +38,37 @@ const useStyles = makeStyles((theme) => ({
 const ProfileForm = ({showForm, handleClose}) => {
 	const classes = useStyles();
 
-	const[sendMutationSaveProfile, { data: savedProfileResponse }] = useMutation(EDIT_PROFILE);
+	const handleClickSaveProfile = () => {
+    setShowMessage(true)
+  }
+
+  const handleCloseMessage = (event, reason) => {
+    if (reason === "clickaway") {
+      return
+    }
+    setShowMessage(false);
+  }
+
 	const [saveProfile, setSaveProfile] = useState(false);
+  const [showMessage, setShowMessage] = useState(false);
+	const [message, setMessage] = useState("");
+	const[sendMutationSaveProfile, { data: savedProfileResponse }] = useMutation(EDIT_PROFILE, {
+		context: {
+			headers: {
+				"Authorization": "Bearer " + localStorage.getItem("JWT_TOKEN"),
+			}
+		},
+		refetchQueries: [{ 
+			query: GET_PROFILE, 
+			context: {
+				headers: {
+					"Authorization": "Bearer " + localStorage.getItem("JWT_TOKEN"),
+				} 
+			}
+
+		}],
+		awaitRefetchQueries: true,
+	});
 
 	//State for inputs values
 	const [profile, setProfile] = useState(
@@ -51,20 +80,6 @@ const ProfileForm = ({showForm, handleClose}) => {
 			twitterURL: "",
 		}
 	);
-
-	// const [showMessage, setShowMessage] = useState(false);
-  // const [message, setMessage] = useState("");
-
-  // const handleClickSaveProfile = () => {
-  //   setShowMessage(true);
-  // }
-
-  // const handleCloseMessage = (event, reason) => {
-  //   if (reason === "clickaway") {
-  //     return
-  //   }
-  //   setShowMessage(false);
-  // }
 
 	useEffect(() => {
 		if (saveProfile) {
@@ -79,11 +94,10 @@ const ProfileForm = ({showForm, handleClose}) => {
 					twitterURL: profile.twitterURL
 				}
 			}).catch(error => {
-				console.log(error);
-				// setMessage(error.graphQLErrors[0].message)
-				// setShowMessage(true)
+				console.log("Error aqui", error);
+				setMessage("Algo salió mal");
+				setShowMessage(true);
 			});
-			//Quizá lo siguiente produzca un (ERROR) borrado del perfil? Analizar
 			setProfile({
 				bio: "",
 				carrer: "",
@@ -92,29 +106,16 @@ const ProfileForm = ({showForm, handleClose}) => {
 				twitterURL: ""
 			});
 			setSaveProfile(false);
-			// console.log("ESTO VALE AHORA profile: ", profile);
-			// console.log("ESTO VALE AHORA saveProfile: ", saveProfile);
 		}
 	}, [profile, saveProfile]);
 
-
-
 	useEffect(() => {
-		console.log(savedProfileResponse);
+		if (savedProfileResponse) {
+			console.log(savedProfileResponse);
+			setMessage("Perfil guardado exitosamente")
+			setShowMessage(true)
+		}
 	}, [savedProfileResponse]);
-
-	//Quizás voy a tener que quitar esto
-	// const handleChangeProfileValue = (e) =>{
-	// 	setProfile({
-	// 		// ...profile,
-	// 		[e.target.name]: e.target.value,
-	// 		[e.target.name]: e.target.value,
-	// 		[e.target.name]: e.target.value,
-	// 		[e.target.name]: e.target.value,
-	// 		[e.target.name]: e.target.value,
-	// 	})
-	// 	console.log(profile);
-	// }
 
 	return (
 		<Formik
@@ -129,16 +130,6 @@ const ProfileForm = ({showForm, handleClose}) => {
 				console.log("Editando", values);
 				
 				setSubmitting(false);
-				// setProfile({
-				// 	bio: values.bio,
-				// 	carrer: values.carrer,
-				// 	facebookURL: values.facebookURL,
-				// 	linkedinURL: values.linkedinURL,
-				// 	twitterURL: values.twitterURL
-				// });
-				// console.log("ESTO VALE AHORA profile: ", values);
-
-				// setSaveProfile(true); //quizá quitar esto
 			}}
 
 			validationSchema = { Yup.object().shape({
@@ -260,6 +251,8 @@ const ProfileForm = ({showForm, handleClose}) => {
 											twitterURL: values.twitterURL
 										});
 										setSaveProfile(true)
+										handleClickSaveProfile
+										handleClose(!showForm)
 									}}
 								>
 									Guardar información
@@ -268,6 +261,24 @@ const ProfileForm = ({showForm, handleClose}) => {
 						</form>
 							</Paper>
 						</Modal>
+						<Snackbar
+							anchorOrigin={{
+								vertical: "bottom",
+								horizontal: "right"
+							}}
+							TransitionComponent={Slide}
+							open={showMessage}
+							autoHideDuration={4000}
+							onClose={handleCloseMessage}
+							message={message}
+							action={
+								<React.Fragment>
+									<IconButton onClick={handleCloseMessage}>
+										<CloseIcon />
+									</IconButton>
+								</React.Fragment>
+							} 
+          />
 					</form>
 				);
 			}

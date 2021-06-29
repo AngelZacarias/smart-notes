@@ -10,6 +10,7 @@ const {
 const jwt = require("jsonwebtoken");
 const checkAuth = require("../../utils/check-auth");
 var ObjectId = require("mongodb").ObjectId;
+const { pick } = require("lodash");
 
 module.exports = {
   Query: {
@@ -96,7 +97,7 @@ module.exports = {
       try {
         response = await newUser.save();
         const newProfile = await createUserProfile(newUser);
-        newProfile.save();
+        await newProfile.save();
       } catch (err) {
         throw new Error("Error saving user to DB:", err);
       }
@@ -140,7 +141,7 @@ module.exports = {
       try {
         response = await newUser.save();
         const newProfile = await createUserProfile(newUser);
-        newProfile.save();
+        await newProfile.save();
       } catch (err) {
         throw new Error("Error saving user to DB:", err);
       }
@@ -152,6 +153,26 @@ module.exports = {
 
     async editProfile(parent, args, context, info) {
       console.log(args);
+      let profile;
+      const profileNewValues = {...args};
+      const tokenValidityInfo = checkAuth(context);
+      try {
+        profile = await Profile.findOne({
+          user: ObjectId(tokenValidityInfo.id),
+        });
+        if (!profile) {
+          throw new Error("Error. Unexisting profile");
+        } 
+        profile.bio = profileNewValues.bio;
+        profile.carrer = profileNewValues.carrer;
+        profile.facebookURL = profileNewValues.facebookURL;
+        profile.linkedinURL = profileNewValues.linkedinURL;
+        profile.twitterURL = profileNewValues.twitterURL;
+        await profile.save();
+      } catch (err) {
+        throw new Error("Error saving profile");
+      }
+      return profile;
     }
   },
   //Resolvers for nested queries

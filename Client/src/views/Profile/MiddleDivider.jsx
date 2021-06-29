@@ -10,12 +10,20 @@ import Avatar from '@material-ui/core/Avatar';
 import { gql, useQuery } from '@apollo/client';
 import Button from '@material-ui/core/Button';
 import ProfileForm from './ProfileForm';
+import IconButton from '@material-ui/core/IconButton';
+import PhotoCamera from '@material-ui/icons/PhotoCamera';
 
 const useStyles = makeStyles((theme) => ({
   root: {
     width: '100%',
     maxWidth: 500,
     backgroundColor: theme.palette.background.paper,
+    '& > *': {
+      margin: theme.spacing(1),
+    },
+  },
+  input: {
+    display: 'none',
   },
   chip: {
     margin: theme.spacing(0.5),
@@ -66,7 +74,11 @@ const MiddleDividers = () => {
         name: profile.getUserProfile.user.name,
         lastName: profile.getUserProfile.user.lastName,
         email: profile.getUserProfile.user.email,
-        bio: profile.getUserProfile.bio, //esto no está bien
+        bio: profile.getUserProfile.bio,
+        carrer: profile.getUserProfile.carrer,
+        facebookURL: profile.getUserProfile.facebookURL,
+        linkedinURL: profile.getUserProfile.linkedinURL,
+        twitterURL: profile.getUserProfile.twitterURL,
       });
     }
   }, [profile]);
@@ -86,6 +98,26 @@ const MiddleDividers = () => {
               <Avatar alt="Remy Sharp" src="assets/img/faces/marc.jpg" className={classes.large} />
             </div>
           </Grid>
+          <div className={classes.root}>
+            <input
+              accept="image/*"
+              className={classes.input}
+              id="contained-button-file"
+              multiple
+              type="file"
+            />
+            <label htmlFor="contained-button-file">
+              <Button variant="contained" color="primary" component="span">
+                Subir imagen
+              </Button>
+            </label>
+            <input accept="image/*" className={classes.input} id="icon-button-file" type="file" />
+            <label htmlFor="icon-button-file">
+              <IconButton color="primary" aria-label="upload picture" component="span">
+                <PhotoCamera />
+              </IconButton>
+            </label>
+          </div>
           <Grid item xs>
             <Typography gutterBottom variant="h4">
               {profileInfo.name} { profileInfo.lastName}
@@ -111,15 +143,25 @@ const MiddleDividers = () => {
       <Divider variant="middle" />
 
       <div className={classes.section3}>
-        <Grid item>
+        <Grid item xs={6}>
           <FacebookIcon fontSize="large"/>
+          <Typography color="textSecondary" variant="body1" align="justify">
+            {profileInfo.facebookURL}
+          </Typography>
         </Grid>
         <Grid item>
           <TwitterIcon fontSize="large"/>
+          <Typography color="textSecondary" variant="body1" align="justify">
+            {profileInfo.linkedinURL}
+          </Typography>
         </Grid>
         <Grid item>
           <LinkedInIcon fontSize="large"/>
+          <Typography color="textSecondary" variant="body1" align="justify">
+            {profileInfo.twitterURL}
+          </Typography>
         </Grid>
+        <br />
         <Button 
           variant="contained" 
           color="primary"
@@ -136,7 +178,7 @@ const MiddleDividers = () => {
   );
 }
 
-const GET_PROFILE = gql`
+export const GET_PROFILE = gql`
   query {
     getUserProfile {
       bio,
