@@ -15,6 +15,7 @@ import SignInSide from "views/Login/SignInSide";
 import SignUp from "views/Login/SignUp";
 
 import theme from './ThemeConfig';
+import Profile from "views/General/Profile";
 
 const serverLink = createHttpLink({
   uri: 'http://localhost:5000'
@@ -31,6 +32,8 @@ ReactDOM.render(
       <BrowserRouter>
           <Switch>
             <Route path="/dashboard" component={GeneralDashboard} />
+            <Route path="/profile" component={Profile} />
+            {/* <Route path="/profile/:id" component={Profile} /> */}
             <Route path="/subject" component={SubjectDashboard} />
             <Route path="/login" component={SignInSide} />
             <Route path="/sign-up" component={SignUp} />

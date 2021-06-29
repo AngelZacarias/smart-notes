@@ -27,6 +27,7 @@ const useStyles = makeStyles(styles);
 
 export default function AdminNavbarLinks() {
   const [logOut, setLogOut] = useState(false);
+  const [openUserProfile, setOpenUserProfile] = useState(false);
   const classes = useStyles();
   const [openNotification, setOpenNotification] = React.useState(null);
   const [openProfile, setOpenProfile] = React.useState(null);
@@ -57,7 +58,15 @@ export default function AdminNavbarLinks() {
       window.location.href = "/login";
     }
     setLogOut(false);
-  }, [logOut])
+  }, [logOut]);
+  useEffect(() => {
+    if (openUserProfile) {
+      window.location.href = "/profile"
+      console.log("listo")
+    }
+    setOpenUserProfile(false);
+  }, [openUserProfile]);
+
   return (
     <div>
       <div className={classes.searchWrapper}>
@@ -192,7 +201,7 @@ export default function AdminNavbarLinks() {
                 <ClickAwayListener onClickAway={handleCloseProfile}>
                   <MenuList role="menu">
                     <MenuItem
-                      onClick={handleCloseProfile}
+                      onClick={() => setOpenUserProfile(true)}
                       className={classes.dropdownItem}
                     >
                       Profile
