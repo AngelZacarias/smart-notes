@@ -52,7 +52,7 @@ const MiddleDividers = () => {
   const [profileFormShow, setProfileFormShow] = useState(false);
 
   //Get user's profile
-  const { data: profile } = useQuery(GET_PROFILE, {
+  const { data: profile, error } = useQuery(GET_PROFILE, {
     context: {
       headers: {
         "Authorization": "Bearer " + localStorage.getItem("JWT_TOKEN"),
@@ -81,7 +81,10 @@ const MiddleDividers = () => {
         twitterURL: profile.getUserProfile.twitterURL,
       });
     }
-  }, [profile]);
+    if (error) {
+      console.log(error);
+    }
+  }, [profile, error]);
 
   const handleClickProfileForm = () => {
     setProfileFormShow(!profileFormShow);
