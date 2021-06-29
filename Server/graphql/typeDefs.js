@@ -72,6 +72,8 @@ module.exports = gql`
         getTasks: [Task]
         getTask(id: ID!): Task
         normalLogin(email: String!, password: String!): Token
+        getUser(email: String!): User
+        getUserProfile: Profile
     },
     type Mutation{
         createSubject(name: String!, color: String!) : Subject!
@@ -88,5 +90,6 @@ module.exports = gql`
 
         createUserFromGoogleAuth(name: String!, lastName: String!, email: String!, token: String!) : User
         createUserFromNormalSignUp(name: String!, lastName: String!, email: String!, password: String!, confirmPassword: String!) : User!
+        editProfile(bio: String, carrer: String, facebookURL: String, linkedinURL: String, twitterURL: String) : Profile
     },
 `;

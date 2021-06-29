@@ -18,7 +18,7 @@ import React, { useEffect, useState } from 'react';
 import Slide from "@material-ui/core/Slide";
 import CloseIcon from "@material-ui/icons/Close";
 
-const { saveTokenToLocalStorage, saveGoogleTokenToLocalStorage } = require("../../services/user/user-service")
+const { saveTokenToLocalStorage } = require("../../services/user/user-service")
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -81,17 +81,17 @@ const SignInSide = () => {
         });
         auth2.signIn().then(googleUser => {
           console.log(googleUser);
-          console.log("Nombre completo:", googleUser.Ft.Ve)
-          console.log("Correo:", googleUser.Ft.pu)
-          console.log("Url imagen perfil:", googleUser.Ft.vK)
-          console.log("token:", googleUser.qc.id_token)
+          console.log("Nombre completo:", googleUser.dt.uU)
+          console.log("Correo:", googleUser.dt.qS)
+          console.log("Url imagen perfil:", googleUser.dt.Nt)
+          console.log("token:", googleUser.mc.id_token)
           
           sendMutation({
             variables: {
-              name: googleUser.Ft.xV,
-              lastName: googleUser.Ft.sT,
-              email: googleUser.Ft.pu,
-              token: googleUser.qc.id_token
+              name: googleUser.dt.uU,
+              lastName: googleUser.dt.qS,
+              email: googleUser.dt.Nt,
+              token: googleUser.mc.id_token
             }
           }).catch(err => {
             console.log(JSON.stringify(err, null, 2));
@@ -109,8 +109,8 @@ const SignInSide = () => {
       console.log("Respuesta de userDataResponse:", userDataResponse)
       setMessage("Inicio de sesión con Google correcto")
       setShowMessage(true)
-      saveGoogleTokenToLocalStorage(userDataResponse)
-      setTimeout(() => window.location.href = "/dashboard/subjects", 3000);
+      saveTokenToLocalStorage(userDataResponse)
+      setTimeout(() => window.location.href = "/dashboard/subjects", 1000);
     }
   }, [userDataResponse]);
 

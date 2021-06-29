@@ -15,6 +15,14 @@ module.exports = {
         //the user owner of this subject
         user: userResolvers.NestedUserReference.user,
     },
+    Profile: {
+        user: userResolvers.NestedUserReference.user,
+    },
+    //Nested Queries: 
+    // Subject: {
+    //     //the user owner of this subject
+    //     user: userResolvers.NestedUserReference.user,
+    // },
     // Default Queries
     Query:{
         ...subjectsResolvers.Query,

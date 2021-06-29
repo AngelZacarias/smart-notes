@@ -1,4 +1,5 @@
 const jwt = require("jsonwebtoken");
+const Profile = require("../../models/Profile");
 
 function createUserPayload(user) {
   return {
@@ -11,4 +12,11 @@ function getUser(token) {
   jwt.decode(token, { json: true });
 }
 
-module.exports = { createUserPayload, getUser };
+function createUserProfile(user) {
+  const newProfile = new Profile({
+    user
+  });
+  return newProfile;
+}
+
+module.exports = { createUserPayload, getUser, createUserProfile };

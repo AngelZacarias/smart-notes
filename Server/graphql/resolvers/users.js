@@ -1,9 +1,16 @@
 const User = require("../../models/User");
+const Profile = require("../../models/Profile")
 var _ = require("lodash");
 const bcrypt = require("bcrypt");
 const { formatName } = require("../../utils/format-names");
-const { createUserPayload } = require("../../services/user/user-service");
+const {
+  createUserPayload,
+  createUserProfile,
+} = require("../../services/user/user-service");
 const jwt = require("jsonwebtoken");
+const checkAuth = require("../../utils/check-auth");
+var ObjectId = require("mongodb").ObjectId;
+const { pick } = require("lodash");
 
 module.exports = {
   Query: {
@@ -11,7 +18,7 @@ module.exports = {
       const email = args.email;
       let user;
       try {
-        user = await User.findOne({ email }).select('password');
+        user = await User.findOne({ email }).select("password");
       } catch (err) {
         console.log(err);
         throw new Error("Error con la Base de Datos");
@@ -30,14 +37,44 @@ module.exports = {
         };
       } else throw new Error("Contraseña incorrecta");
     },
+
+    async getUser(parent, args, context, info) {
+      let user;
+      const email = args.email;
+      try {
+        user = await User.findOne({ email });
+      } catch (err) {
+        console.log(err);
+      }
+      return user;
+    },
+
+    async getUserProfile(parent, args, context, info) {
+      const user = checkAuth(context);
+      let userProfile;
+      try {
+        userProfile = await Profile.findOne({
+          user: ObjectId(user.id),
+        });
+        console.log(userProfile);
+      } catch (err) {
+        console.log(err);
+      }
+      return userProfile;
+    },
   },
   Mutation: {
     async createUserFromGoogleAuth(parent, args, context, info) {
       const email = args.email;
+      let response;
       try {
         const user = await User.findOne({ email });
         if (user) {
-          user.token = args.token;
+          const userPayload = createUserPayload(user);
+          const token = jwt.sign(userPayload, process.env.JWT_KEY, {
+            expiresIn: parseInt(process.env.JWT_EXPIRATION_TIME),
+          });
+          user.token = token;
           return user;
         }
       } catch (err) {
@@ -57,7 +94,13 @@ module.exports = {
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       });
-      const response = await newUser.save();
+      try {
+        response = await newUser.save();
+        const newProfile = await createUserProfile(newUser);
+        await newProfile.save();
+      } catch (err) {
+        throw new Error("Error saving user to DB:", err);
+      }
       return {
         ...response._doc,
         id: response._id,
@@ -75,8 +118,7 @@ module.exports = {
       } catch (err) {
         throw new Error(err);
       }
-      if (user) 
-        throw new Error("Usuario ya registrado")
+      if (user) throw new Error("Usuario ya registrado");
       args.name = formatName(args.name);
       args.lastName = formatName(args.lastName);
 
@@ -95,8 +137,11 @@ module.exports = {
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       });
+
       try {
         response = await newUser.save();
+        const newProfile = await createUserProfile(newUser);
+        await newProfile.save();
       } catch (err) {
         throw new Error("Error saving user to DB:", err);
       }
@@ -105,11 +150,35 @@ module.exports = {
         id: response._id,
       };
     },
+
+    async editProfile(parent, args, context, info) {
+      console.log(args);
+      let profile;
+      const profileNewValues = {...args};
+      const tokenValidityInfo = checkAuth(context);
+      try {
+        profile = await Profile.findOne({
+          user: ObjectId(tokenValidityInfo.id),
+        });
+        if (!profile) {
+          throw new Error("Error. Unexisting profile");
+        } 
+        profile.bio = profileNewValues.bio;
+        profile.carrer = profileNewValues.carrer;
+        profile.facebookURL = profileNewValues.facebookURL;
+        profile.linkedinURL = profileNewValues.linkedinURL;
+        profile.twitterURL = profileNewValues.twitterURL;
+        await profile.save();
+      } catch (err) {
+        throw new Error("Error saving profile");
+      }
+      return profile;
+    }
   },
   //Resolvers for nested queries
   NestedUserReference: {
     async user(parent, args, context, info){
         return await User.findById(parent.user);
-  },
-}
+    },
+  }
 };
