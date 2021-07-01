@@ -56,9 +56,12 @@ module.exports = {
         userProfile = await Profile.findOne({
           user: ObjectId(user.id),
         });
+        if (!userProfile) {
+          throw new Error("Perfil no encontrado");
+        }
         console.log(userProfile);
       } catch (err) {
-        console.log(err);
+        throw new Error("Perfil no encontrado");
       }
       return userProfile;
     },
@@ -143,7 +146,7 @@ module.exports = {
         const newProfile = await createUserProfile(newUser);
         await newProfile.save();
       } catch (err) {
-        throw new Error("Error saving user to DB:", err);
+        throw new Error("Error guardando usuario en BDD:", err);
       }
       return {
         ...response._doc,
@@ -161,7 +164,7 @@ module.exports = {
           user: ObjectId(tokenValidityInfo.id),
         });
         if (!profile) {
-          throw new Error("Error. Unexisting profile");
+          throw new Error("Error. El perfil no existe");
         } 
         profile.bio = profileNewValues.bio;
         profile.carrer = profileNewValues.carrer;
@@ -170,7 +173,7 @@ module.exports = {
         profile.twitterURL = profileNewValues.twitterURL;
         await profile.save();
       } catch (err) {
-        throw new Error("Error saving profile");
+        throw new Error("Error guardando perfil");
       }
       return profile;
     }
