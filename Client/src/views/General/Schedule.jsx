@@ -52,7 +52,7 @@ const Schedule = () => {
     return ( 
       loading ?
         <LinearProgress/>
-      : mySchedule && mySchedule.getMySchedule && appointments.lenght > 0 ? 
+      : mySchedule && mySchedule.getMySchedule && appointments.length > 0 ? 
         <Calendar
           appointments={appointments}
         />    
