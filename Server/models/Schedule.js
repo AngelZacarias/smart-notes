@@ -10,12 +10,12 @@ const scheduleSchema = new Schema({
     startHour: {
         type: String,
         required: true,
-        match: '^([01]?[0-9]|2[0-3]):[0-5][0-9]$',
+        //match: '^([01]?[0-9]|2[0-3]):[0-5][0-9]$',
     },
     endHour: {
         type: String,
         required: true,
-        match: '^([01]?[0-9]|2[0-3]):[0-5][0-9]$',
+        //match: "^([01]?[0-9]|2[0-3]):[0-5][0-9]$",
     },
     createdAt: String,
     subject: {

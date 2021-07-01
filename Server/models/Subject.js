@@ -21,9 +21,9 @@ const subjectSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'users',
     },
-    schedule: [{
+    schedules: [{
         type: Schema.Types.ObjectId,
-        ref: 'schedule'
+        ref: 'schedules'
     }],
 });
 

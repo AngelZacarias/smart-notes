@@ -3,7 +3,10 @@ import { Dashboard, Today, Forum, Info } from "@material-ui/icons/";
 
 // Component Views
 import Subjects from "./views/General/Subjects";
+import Chat from "./views/General/Chat";
+import Schedule from "./views/General/Schedule";
 import About from "./views/General/About";
+import Profile from "./views/General/Profile";
 
 const dashboardRoutes = [
   {
@@ -13,22 +16,25 @@ const dashboardRoutes = [
     icon: Dashboard,
     component: Subjects,
     layout: "/dashboard",
+    menu: true,
   },
   {
     path: "/schedule",
     name: "Horario",
     rtlName: "",
     icon: Today,
-    component: Subjects,
+    component: Schedule,
     layout: "/dashboard",
+    menu: true,
   },
   {
     path: "/chat",
     name: "Chat",
     rtlName: "",
     icon: Forum,
-    component: Subjects,
+    component: Chat,
     layout: "/dashboard",
+    menu: true,
   },
   {
     path: "/about",
@@ -36,7 +42,17 @@ const dashboardRoutes = [
     rtlName: "",
     icon: Info,
     component: About,
-    layout: "/subject",
+    layout: "/dashboard",
+    menu: true,
+  },
+  {
+    path: "/profile",
+    name: "Profile",
+    rtlName: "",
+    icon: Info,
+    component: Profile,
+    layout: "/dashboard",
+    menu: false,
   },
 ];
 

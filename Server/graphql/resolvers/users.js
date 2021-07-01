@@ -182,6 +182,6 @@ module.exports = {
   NestedUserReference: {
     async user(parent, args, context, info){
         return await User.findById(parent.user);
-  },
-}
+    },
+  }
 };
