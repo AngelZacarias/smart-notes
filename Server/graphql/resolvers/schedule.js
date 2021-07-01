@@ -4,6 +4,29 @@ const checkAuth = require("../../utils/check-auth");
 
 module.exports = {
     Query: {
+        async getCompleteScheduleForSubject(parent, args, context, info){
+            //Validate User
+            const user = checkAuth(context);
+            try {
+                if(!(args.subjectId === "")){
+                    throw new Error("The subjectId must be provided");
+                }
+                const subjectSchedule = await Schedule.find({subject: args.subjectId});
+                return subjectSchedule;
+            } catch (err) {
+                throw new Error(err);
+            }
+        },
+        async getMySchedule(parent, args, context, info){
+            //Validate User
+            const user = checkAuth(context);
+            try {
+                const mySchedule = await Schedule.find({user: user.id});
+                return mySchedule;
+            } catch (err) {
+                throw new Error(err);
+            }
+        },
     },
     Mutation:{
         async  createSchedule(parent, args, context, info){
@@ -11,7 +34,7 @@ module.exports = {
             const user = checkAuth(context);
 
             //Validate data
-            if(!(args.dayOfWeek>0 && args.dayOfWeek <8)){
+            if(!(args.dayOfWeek>-1 && args.dayOfWeek <7)){
                 throw new Error("The day of week must be a number between 1 and 7");
             }
             let startHr = args.startHour.split(":");
@@ -77,4 +100,17 @@ module.exports = {
             }
         },
     },
+    Subject:{
+        async schedule(parent, args, context, info){
+            try {
+                if(parent.id === ""){
+                    throw new Error("The subjectId must be provided");
+                }
+                const subjectSchedule = await Schedule.find({subject: parent.id});
+                return subjectSchedule;
+            } catch (err) {
+                throw new Error(err);
+            }
+        },
+    }
 }

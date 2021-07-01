@@ -24,6 +24,7 @@ module.exports = gql`
         user: User
         numberOfPendingTasks: Int
         notes: [Note]
+        schedule: [Schedule]
     }
     type Task{
         id: ID!
@@ -69,8 +70,13 @@ module.exports = gql`
         getSubjects: [Subject]
         getMyCurrentSubjects: [Subject]
         getSubject(subjectId: ID!): Subject
+
+        getCompleteScheduleForSubject(subjectId: ID!): [Schedule]
+        getMySchedule: [Schedule]
+
         getTasks: [Task]
         getTask(id: ID!): Task
+
         normalLogin(email: String!, password: String!): Token
         getUser(email: String!): User
         getUserProfile: Profile

@@ -47,20 +47,56 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const SubjectForm = ({showForm, handleClose}) => {
+const SubjectForm = ({ showForm, handleClose, subject, setSubject }) => {
     const classes = useStyles();
-    //State for mutations
+
+    //:::::::::: MUTATIONS ::::::::::::
+    //CREATE SUBJECT
     const [createSubject, { data: subjectDataCreated }] = useMutation(CREATE_SUBJECT, {
         context: {
             headers: {
-              "Authorization": "Bearer " + localStorage.getItem("JWT_TOKEN"), // "| GOOGLE_TOKEN"
+              "Authorization": "Bearer " + localStorage.getItem("JWT_TOKEN"),
             }
         },
-        refetchQueries: [{
+        refetchQueries:[{
             query: GET_SUBJECTS,
-            context: {
+            context:{
                 headers: {
-                  "Authorization": "Bearer " + localStorage.getItem("JWT_TOKEN"), // "| GOOGLE_TOKEN"
+                    "Authorization": "Bearer " + localStorage.getItem("JWT_TOKEN"),
+                }
+            }
+        }],
+        awaitRefetchQueries: true,
+    });
+    //UPDATE SUBJECT
+    const [updateSubject, { data: subjectDataUpdated }] = useMutation(UPDATE_SUBJECT, {
+        context: {
+            headers: {
+              "Authorization": "Bearer " + localStorage.getItem("JWT_TOKEN"),
+            }
+        },
+        refetchQueries:[{
+            query: GET_SUBJECTS,
+            context:{
+                headers: {
+                    "Authorization": "Bearer " + localStorage.getItem("JWT_TOKEN"),
+                }
+            }
+        }],
+        awaitRefetchQueries: true,
+    });
+    //DELETE SUBJECT
+    const [deleteSubject, { data: subjectDataDeleted }] = useMutation(DELETE_SUBJECT, {
+        context: {
+            headers: {
+              "Authorization": "Bearer " + localStorage.getItem("JWT_TOKEN"),
+            }
+        },
+        refetchQueries:[{
+            query: GET_SUBJECTS,
+            context:{
+                headers: {
+                    "Authorization": "Bearer " + localStorage.getItem("JWT_TOKEN"),
                 }
             }
         }],
@@ -68,24 +104,25 @@ const SubjectForm = ({showForm, handleClose}) => {
     });
 
     //State for inputs values
-    const[subject, setSubject] = useState({
-        id: "",
-        name: "",
-        days: [],
-        startHour: "",
-        endHour: "",
-        color: "",
-    });
-    const[daysOfWeek, setDaysOfWeek] = useState([
+    const [daysOfWeek, setDaysOfWeek] = useState([
         { day: "Lu", value: false, dayOfWeek: 1 },
         { day: "Ma", value: false, dayOfWeek: 2 },
         { day: "Mi", value: false, dayOfWeek: 3 },
         { day: "Ju", value: false, dayOfWeek: 4 },
         { day: "Vi", value: false, dayOfWeek: 5 },
         { day: "Sa", value: false, dayOfWeek: 6 },
-        { day: "Do", value: false, dayOfWeek: 7 },
+        { day: "Do", value: false, dayOfWeek: 0 },
     ]);
-    const [selectedColorValue, setselectedColorValue] = useState('rose');
+    const [selectedColorValue, setselectedColorValue] = useState(subject.color);
+
+    //Initialize the component Inputs (color and selected days) when the user is set
+    useEffect(()=>{
+        setselectedColorValue(subject.color);
+        const selectedDaysOfWeek = daysOfWeek.map(day =>
+            ({...day, value: subject.days.includes(day.dayOfWeek)})
+        )
+        setDaysOfWeek(selectedDaysOfWeek);
+    },[subject]);
     
     // Change the state
     const handleChangeSubjectValue = (e) =>{
@@ -96,7 +133,6 @@ const SubjectForm = ({showForm, handleClose}) => {
     }
     const handleSelectDays = (e) =>{
         const numberOfDay = parseInt(e.target.name, 10);
-        setDaysOfWeek([...daysOfWeek])
 
         let newSelectedDays = [...subject.days];
         const index = newSelectedDays.indexOf(numberOfDay);
@@ -108,53 +144,84 @@ const SubjectForm = ({showForm, handleClose}) => {
             //Adds the selected day
             newSelectedDays = [...newSelectedDays, numberOfDay];
         }
-        console.log(newSelectedDays);
-        
+        //Updates the state for the subject
         setSubject({
             ...subject,
             days: newSelectedDays,
         });
-        
     }
 
-    // Execute Mutations
-    const handleSubmitSubject = (e) =>{
-        e.preventDefault();
+    //Updates the state of the subject object
+    useEffect(()=>{
         //Sets the color as final argument
         setSubject({
             ...subject,
             color: selectedColorValue,
         });
-        console.log("1");
+    },[selectedColorValue]);
 
+    // Execute Mutations
+    const handleSubmitSubject = (e) =>{
+        e.preventDefault();
         //Helper functions
         const create = async () =>{
             await createSubject({
-                variables:{
+                variables: {
                     name: subject.name,
                     color: subject.color,
-                    daysOfWeek: subject.daysOfWeek,
+                    daysOfWeek: subject.days,
                     startHour: subject.startHour,
                     endHour: subject.endHour,
                 }
             });
         }
-        // Create the Subject
-        create();
-        console.log("ok");
-        
+        const update = async () =>{
+            await updateSubject({
+                variables: {
+                    subjectId: subject.id,
+                    name: subject.name,
+                    color: subject.color,
+                    daysOfWeek: subject.days,
+                    startHour: subject.startHour,
+                    endHour: subject.endHour,
+                }
+            });
+        }
+        if(subject.id === ""){
+            create();
+        }
+        else{
+            update();
+        }
+        handleClose(!showForm);
     }
-    const handleDeleteSubject = (e) =>{
-        e.preventDefault();
+    const handleDeleteSubject = () =>{
         if(subject.id !== ""){
-            console.log("Delete")
+            const deleteSub = async () =>{
+                await deleteSubject({
+                    variables:{
+                        id: subject.id,
+                    }
+                });
+            }
+            deleteSub();
+            handleClose(!showForm);
         }
     }
 
-    //TODO: DELETE the following useEffect
+    //Uses the data to avoid errors
+    //TODO: Improve this code...
     useEffect(()=>{
         console.log(subjectDataCreated);
     },[subjectDataCreated]);
+
+    useEffect(()=>{
+        console.log(subjectDataDeleted);
+    },[subjectDataDeleted]);
+
+    useEffect(()=>{
+        console.log(subjectDataUpdated);
+    },[subjectDataUpdated]);
 
     return (
         <Modal
@@ -169,8 +236,8 @@ const SubjectForm = ({showForm, handleClose}) => {
                 }}
             >
                 <form 
+                    onSubmit={e=>handleSubmitSubject(e)}
                     className={classes.rootContainer}
-                    onSubmit={handleSubmitSubject}
                 >
                     <FormControl fullWidth className={classes.title}>
                         <Typography variant="h5">
@@ -232,6 +299,7 @@ const SubjectForm = ({showForm, handleClose}) => {
                                         key={day.dayOfWeek}
                                         label={day.day}
                                         name={day.dayOfWeek}
+                                        checked={day.value}
                                         control={<Checkbox color="primary" />}
                                         labelPlacement="bottom"
                                         onChange={handleSelectDays}
@@ -254,23 +322,22 @@ const SubjectForm = ({showForm, handleClose}) => {
                         size="large"
                         fullWidth
                         className={classes.button}
+                        
                     >
                         Guardar Información de la Materia
                     </Button>
                 </form>
-
-                    <Button
-                        type="submit"
-                        disabled={subject.id===""}
-                        color="secondary"
-                        size="large"
-                        fullWidth
-                        className={classes.button}
-                        onClick={handleDeleteSubject}
-                    >
-                        Eliminar Materia
-                    </Button>
-
+                <Button
+                    type="submit"
+                    disabled={subject.id===""}
+                    color="secondary"
+                    size="large"
+                    fullWidth
+                    className={classes.button}
+                    onClick={handleDeleteSubject}
+                >
+                    Eliminar Materia
+                </Button>
             </Paper>
         </Modal>
     );
@@ -296,10 +363,41 @@ mutation(
 }
 `;
 
+const DELETE_SUBJECT = gql`
+mutation($id: ID!){
+  deleteSubject(id: $id){
+    id,
+  }
+}
+`;
+
+const UPDATE_SUBJECT = gql`
+mutation updateSubjectSchedule(
+  $subjectId: ID!
+  $name: String!,
+  $color: String!,
+  $daysOfWeek: [Int]!,
+  $startHour: String!,
+  $endHour: String!,
+){
+  updateSubjectAndSchedule(
+    subjectId: $subjectId,
+    name: $name,
+    color: $color,
+    daysOfWeek: $daysOfWeek,
+    startHour: $startHour,
+    endHour: $endHour,
+  ){
+    id,
+  }
+}
+`;
 
 export default SubjectForm;
 
 SubjectForm.propTypes = {
     showForm: PropTypes.bool,
     handleClose: PropTypes.func,
+    subject: PropTypes.object, 
+    setSubject: PropTypes.func,
 };

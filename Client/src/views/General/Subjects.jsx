@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 //Graphql
-import { useQuery, gql } from '@apollo/client';
+import { useQuery, useLazyQuery, gql } from '@apollo/client';
 // material-ui components
 import { makeStyles, Grid, Fab, Button, LinearProgress } from "@material-ui/core";
 import { Add, School } from "@material-ui/icons";
@@ -36,8 +36,16 @@ const Subjects = () => {
     
     //State
     const[subjectFormShow, setSubjectFormShow] = useState(false);
+    const[subject, setSubject] = useState({
+        id: "",
+        name: "",
+        days: [],
+        startHour: "",
+        endHour: "",
+        color: "rose",
+    });
 
-    //State for Query
+    //Gets all the active subjects for this user
     const{data:subjects, loading} = useQuery(GET_SUBJECTS, {
       context: {
         headers: {
@@ -45,20 +53,61 @@ const Subjects = () => {
         }
       }
     });
-
-    useEffect(()=>{
-        console.log(subjects)
-    },[subjects]);
-
-    const handleEditSubject = (id) =>{
-        console.log("Selected for edit: ",id);
-    }
+    //Gets all the information for the selected subject
+    const[getSelectedSubject, {data:selectedSubject, loadingSubject}] = useLazyQuery(GET_SELECTED_SUBJECT, {
+        context: {
+          headers: {
+            "Authorization": "Bearer " + localStorage.getItem("JWT_TOKEN"), // "| GOOGLE_TOKEN"
+          }
+        }
+      });
 
     const handleOpenSubject = (id) =>{
         console.log("Selected to open: ",id);
     }
 
+    //Open the subject form to edit or delete the current subject
+    const handleEditSubject = (id) => {
+        const getSubject = async() => {
+            getSelectedSubject({
+                variables:{
+                    subjectId: id,
+                },
+            });
+        }
+        getSubject();
+        //Shows the form modal
+        setSubjectFormShow(!subjectFormShow);
+    }
+    //Fill the subject object when the response is back
+    useEffect(()=>{
+        if(!loadingSubject && selectedSubject && selectedSubject.getSubject){
+            //Gets an array of selected Days
+            const selectedDays = selectedSubject.getSubject.schedule.map(sch => sch.dayOfWeek);
+            //Sets the info
+            setSubject({
+                id: selectedSubject.getSubject.id,
+                name: selectedSubject.getSubject.name,
+                days: selectedDays,
+                startHour: selectedSubject.getSubject.schedule[0].startHour,
+                endHour: selectedSubject.getSubject.schedule[0].endHour,
+                color: selectedSubject.getSubject.color,
+            });
+        }
+    },[selectedSubject]);
+
+    //Open the Subject Form to create a new one
     const handleClickSubjectForm = () =>{
+        //Clears the State for the Subject
+        setSubject({
+            id: "",
+            name: "",
+            days: [],
+            startHour: "",
+            endHour: "",
+            color: "rose",
+        });
+        //Shows the form modal
         setSubjectFormShow(!subjectFormShow);
     }
 
@@ -124,6 +173,8 @@ const Subjects = () => {
             <SubjectForm
                 showForm={subjectFormShow}
                 handleClose={setSubjectFormShow}
+                subject={subject}
+                setSubject={setSubject}
             />
         </div>
      );
@@ -136,6 +187,21 @@ query{
     name
     color
     numberOfPendingTasks
+  }
+}
+`;
+
+export const GET_SELECTED_SUBJECT = gql`
+query getSelectedSubject($subjectId: ID!){
+  getSubject(subjectId: $subjectId){
+    id,
+    name,
+    color,
+    schedule{
+      dayOfWeek,
+      startHour,
+      endHour,
+    }
   }
 }
 `;

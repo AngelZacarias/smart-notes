@@ -50,7 +50,7 @@ const ProfileForm = ({showForm, handleClose}) => {
   }
 
 	const [saveProfile, setSaveProfile] = useState(false);
-  const [showMessage, setShowMessage] = useState(false);
+	const [showMessage, setShowMessage] = useState(false);
 	const [message, setMessage] = useState("");
 	const[sendMutationSaveProfile, { data: savedProfileResponse }] = useMutation(EDIT_PROFILE, {
 		context: {

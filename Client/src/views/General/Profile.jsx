@@ -1,7 +1,7 @@
-import Typography from '@material-ui/core/Typography';
+//import Typography from '@material-ui/core/Typography';
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import Grid from '@material-ui/core/Grid';
+//import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import MiddleDivider from 'views/Profile/MiddleDivider';
@@ -30,11 +30,6 @@ const Profile = () => {
     <Container component="main" maxWidth="lg">
       <CssBaseline />
       <div className={classes.paper}>
-        <Grid item xs={12} sm={12} >
-          <Typography gutterBottom variant="h3">
-            Perfil
-          </Typography>
-        </Grid> 
         <MiddleDivider />
       </div>
     </Container>

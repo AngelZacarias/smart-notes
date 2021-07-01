@@ -95,7 +95,11 @@ const MiddleDividers = () => {
         <Grid container alignItems="center">
           <Grid item xs={12} sm={12} >
             <div className={classes.paper}>
-              <Avatar alt="Remy Sharp" src="assets/img/faces/marc.jpg" className={classes.large} />
+              {
+                //TODO: use images for users
+                //<Avatar alt="Remy Sharp" src="assets/img/faces/marc.jpg" className={classes.large} />
+              }
+              <Avatar alt="Remy Sharp" src="https://source.unsplash.com/random" className={classes.large} />
             </div>
           </Grid>
           <div className={classes.root}>

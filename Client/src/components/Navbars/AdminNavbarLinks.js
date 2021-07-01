@@ -61,7 +61,7 @@ export default function AdminNavbarLinks() {
   }, [logOut]);
   useEffect(() => {
     if (openUserProfile) {
-      window.location.href = "/profile"
+      window.location.href = "/dashboard/profile"
       console.log("listo")
     }
     setOpenUserProfile(false);
