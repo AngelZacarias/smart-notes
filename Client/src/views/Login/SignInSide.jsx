@@ -81,17 +81,17 @@ const SignInSide = () => {
         });
         auth2.signIn().then(googleUser => {
           console.log(googleUser);
-          console.log("Nombre completo:", googleUser.dt.uU)
-          console.log("Correo:", googleUser.dt.qS)
-          console.log("Url imagen perfil:", googleUser.dt.Nt)
-          console.log("token:", googleUser.mc.id_token)
+          console.log("Nombre completo:", googleUser.Ts.Ne)
+          console.log("Correo:", googleUser.Ts.Et)
+          console.log("Url imagen perfil:", googleUser.Ts.hJ)
+          console.log("token:", googleUser.Zb.id_token)
           
           sendMutation({
             variables: {
-              name: googleUser.dt.uU,
-              lastName: googleUser.dt.qS,
-              email: googleUser.dt.Nt,
-              token: googleUser.mc.id_token
+              name: googleUser.Ts.Ne,
+              lastName: googleUser.Ts.Et,
+              email: googleUser.Ts.hJ,
+              token: googleUser.Zb.id_token
             }
           }).catch(err => {
             console.log(JSON.stringify(err, null, 2));
