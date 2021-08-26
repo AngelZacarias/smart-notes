@@ -128,17 +128,33 @@ const ProfileForm = ({showForm, handleClose}) => {
 			}}
 			onSubmit={ (values, { setSubmitting }) => {
 				console.log("Editando", values);
-				
 				setSubmitting(false);
 			}}
-
 			validationSchema = { Yup.object().shape({
 				bio: Yup.string(),
 				carrer: Yup.string()
 					.required("Requerido"),
-				facebookURL: Yup.string(),
-				linkedinURL: Yup.string(),
-				twitterURL: Yup.string(),
+				facebookURL: Yup
+          .string()
+          .matches(
+            /((https?):\/\/)?(www.)?[a-z0-9]+(\.[a-z]{2,}){1,3}(#?\/?[a-zA-Z0-9#]+)*\/?(\?[a-zA-Z0-9-_]+=[a-zA-Z0-9-%]+&?)?$/,
+            'URL incorrecto'
+          )
+          .required("Requerido"),
+				linkedinURL: Yup
+          .string()
+          .matches(
+            /((https?):\/\/)?(www.)?[a-z0-9]+(\.[a-z]{2,}){1,3}(#?\/?[a-zA-Z0-9#]+)*\/?(\?[a-zA-Z0-9-_]+=[a-zA-Z0-9-%]+&?)?$/,
+            'URL incorrecto'
+          )
+          .required("Requerido"),
+				twitterURL: Yup
+          .string()
+          .matches(
+            /((https?):\/\/)?(www.)?[a-z0-9]+(\.[a-z]{2,}){1,3}(#?\/?[a-zA-Z0-9#]+)*\/?(\?[a-zA-Z0-9-_]+=[a-zA-Z0-9-%]+&?)?$/,
+            'URL incorrecto'
+          )
+          .required("Requerido"),
 			}) }
 		>
 		{ props => {
@@ -236,6 +252,7 @@ const ProfileForm = ({showForm, handleClose}) => {
                 )}	
 								<br />
 								<Button
+                  type="submit"
 									variant="contained"
 									color="primary"
 									size="large"
@@ -243,16 +260,16 @@ const ProfileForm = ({showForm, handleClose}) => {
 									startIcon={<SaveIcon />}
 									disabled={isSubmitting}
 									onClick={() => {
-										setProfile({
-											bio: values.bio,
-											carrer: values.carrer,
-											facebookURL: values.facebookURL,
-											linkedinURL: values.linkedinURL,
-											twitterURL: values.twitterURL
-										});
 										setSaveProfile(true)
 										handleClickSaveProfile
 										handleClose(!showForm)
+                    setProfile({
+                      bio: values.bio,
+                      carrer: values.carrer,
+                      facebookURL: values.facebookURL,
+                      linkedinURL: values.linkedinURL,
+                      twitterURL: values.twitterURL
+                    });
 									}}
 								>
 									Guardar información
