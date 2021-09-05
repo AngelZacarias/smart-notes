@@ -11,11 +11,21 @@ const SubjectProvider = (props) => {
         schedule: [],
     });
 
+    const clearSubjectInformation = () =>{
+        setSubjectInformation({
+            id: '0',
+            name: '',
+            color: 'primary',
+            schedule: [],
+        });
+    }
+
     return ( 
         <SubjectContext.Provider
             value={{
                 subjectInformation,
-                setSubjectInformation
+                setSubjectInformation,
+                clearSubjectInformation
             }}
         >
             {props.children}

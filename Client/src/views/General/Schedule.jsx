@@ -25,7 +25,8 @@ const Schedule = () => {
           headers: {
             "Authorization": "Bearer " + localStorage.getItem("JWT_TOKEN"),
           }
-        }
+        },
+        fetchPolicy: "cache-and-network",
       });
 
     //Execute and transform the schedule into something readeable for our component

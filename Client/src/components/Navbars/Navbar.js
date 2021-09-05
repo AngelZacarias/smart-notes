@@ -11,11 +11,10 @@ import Hidden from "@material-ui/core/Hidden";
 import Menu from "@material-ui/icons/Menu";
 // core components
 import AdminNavbarLinks from "./AdminNavbarLinks.js";
-import RTLNavbarLinks from "./RTLNavbarLinks.js";
 import { Button } from "@material-ui/core";
 
 //hooks
-import { useRouteName } from "hooks";
+import { useRouteName, useRouteLayout } from "hooks";
 //Context for this subject
 import { SubjectContext } from './../../hooks/SubjectContext';
 
@@ -26,6 +25,7 @@ const useStyles = makeStyles(styles);
 export default function Header(props) {
   const classes = useStyles();
   const routeName = useRouteName();
+  const routeLayout = useRouteLayout();
   const { color } = props;
   const appBarClasses = classNames({
     [" " + classes[color]]: color,
@@ -37,11 +37,11 @@ export default function Header(props) {
         <div className={classes.flex}>
           {/* Here we create navbar brand, based on route name */}
           <Button color="primary" href="#" className={classes.title}>
-            <h3>{subjectInformation.name !== '' ? (`${subjectInformation.name} - ${routeName}`) : (routeName)}</h3>
+            <h3>{routeLayout === 'subject' ? (`${subjectInformation.name} - ${routeName}`) : (routeName)}</h3>
           </Button>
         </div>
         <Hidden smDown implementation="css">
-          {props.rtlActive ? <RTLNavbarLinks /> : <AdminNavbarLinks />}
+          <AdminNavbarLinks/>
         </Hidden>
         <Hidden mdUp implementation="css">
           <IconButton

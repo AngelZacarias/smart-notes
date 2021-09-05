@@ -10,11 +10,11 @@ import Typography from '@material-ui/core/Typography';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import { Alert, AlertTitle } from '@material-ui/lab';
 // Graphql
-//import { useQuery, useLazyQuery, gql } from '@apollo/client';
+import { useQuery, gql } from '@apollo/client';
 
 const useStyles = makeStyles((theme) => ({
     root: {
-        width: '90%',
+        width: '100%',
         marginLeft: 'auto',
         marginRight: 'auto',
         marginBottom: '10px',
@@ -33,12 +33,30 @@ const Search = () => {
     const classes = useStyles();
     /* TODO: Replace 
         - Replace profilePicture for the path and file of the user picture
-        - Add the query to iterate over profiles
-        - Delete the name of the data variable returned by the query if needed
+        - Delete the name of the data variables returned by the query if needed
     */
 
+    // This function obtains the parameter from the URL
+    const getKeyWordParameter = () =>{
+        const urlString = window.location.href;
+        const url = new URL(urlString);
+        return url.searchParams.get("keyword");
+    }
+
     const profilePicture = '';
-    //Queries Results
+    const{data, loading, error, called} = useQuery(GET_PROFILES, {
+        variables: {
+            keyword: getKeyWordParameter(),
+        },
+        context: {
+          headers: {
+            "Authorization": "Bearer " + localStorage.getItem("JWT_TOKEN"), // "| GOOGLE_TOKEN"
+          }
+        },
+        fetchPolicy: "cache-and-network",
+    });
+
+    /* Harcoded Queries Results
     const data = { getProfiles: [
         {
             user: {
@@ -60,13 +78,15 @@ const Search = () => {
     const loading = false;
     const called = false;
     const error = null;
-
+    */
+    // You can actually use two diferent ways to implement the routing here... by context *as the subjects or by url as this search component
     const handleClick = (id) =>{
         console.log(`You have clicked on the profile ${id}`);
     }
 
     return (
     <Fragment>
+        <h5>Resultados para {getKeyWordParameter()}...</h5>
         {
             // Validations for the query
             loading ?
@@ -81,52 +101,64 @@ const Search = () => {
                     <AlertTitle>Info</AlertTitle>
                    No pudimos encontrar ninguna coincidencia... Invita a tus amigos a unirse!
                 </Alert>
-            :
-                null
-        }
-        <List className={classes.root} component="nav">
-            { data && data.getProfiles ? 
-                <Fragment>
-                    {
-                        data.getProfiles.map(profile =>(
-                            <Fragment 
-                                key={profile.user.id}
-                            >
-                                <ListItem 
-                                    alignItems="flex-start"
-                                    button
-                                    onClick={() => handleClick(profile.user.id)}
+            :        
+            <List className={classes.root} component="nav">
+                { data && data.getProfiles ? 
+                    <Fragment>
+                        {
+                            data.getProfiles.map(profile =>(
+                                <Fragment 
+                                    key={profile.user.id}
                                 >
-                                    <ListItemAvatar>
-                                    <Avatar alt={profile.user.name} src={profilePicture} />
-                                    </ListItemAvatar>
-                                    <ListItemText
-                                    primary={profile.user.name}
-                                    secondary={
-                                        <Fragment>
-                                        <Typography
-                                            component="span"
-                                            variant="body2"
-                                            className={classes.inline}
-                                            color="textPrimary"
-                                        >
-                                            {profile.carrer}
-                                        </Typography>
-                                        {` — ${profile.bio}`}
-                                        </Fragment>
-                                    }
-                                    />
-                                </ListItem>
-                                <Divider variant="middle" component="li" />
-                            </Fragment>
-                        ))
-                    }
-                </Fragment>
-                : null
-            }
-        </List>
+                                    <ListItem 
+                                        alignItems="flex-start"
+                                        button
+                                        onClick={() => handleClick(profile.user.id)}
+                                    >
+                                        <ListItemAvatar>
+                                        <Avatar alt={profile.user.name} src={profilePicture} />
+                                        </ListItemAvatar>
+                                        <ListItemText
+                                        primary={profile.user.name}
+                                        secondary={
+                                            <Fragment>
+                                            <Typography
+                                                component="span"
+                                                variant="body2"
+                                                className={classes.inline}
+                                                color="textPrimary"
+                                            >
+                                                {profile.carrer}
+                                            </Typography>
+                                            {` — ${profile.bio}`}
+                                            </Fragment>
+                                        }
+                                        />
+                                    </ListItem>
+                                    <Divider variant="middle" component="li" />
+                                </Fragment>
+                            ))
+                        }
+                    </Fragment>
+                    : null
+                }
+            </List>
+        }
     </Fragment>
     );
 }
- 
+
+const GET_PROFILES = gql`
+query getProfiles($keyword: String!){
+    getProfiles(keyword:$keyword){
+        user{
+        id,
+        name,
+        }
+        carrer,
+        bio,
+    }
+}
+`;
+
 export default Search;

@@ -7,6 +7,7 @@ import Chat from "./views/General/Chat";
 import Schedule from "./views/General/Schedule";
 import About from "./views/General/About";
 import Profile from "./views/General/Profile";
+import Search from "./views/General/Search";
 import Notes from "./views/Subject/Notes";
 import SmartStudy from "./views/Subject/SmartStudy";
 import Tasks from "./views/Subject/Tasks";
@@ -58,6 +59,16 @@ const dashboardRoutes = [
     rtlName: "",
     icon: Info,
     component: Profile,
+    layout: "/dashboard",
+    menu: false,
+    returnTo: "",
+  },
+  {
+    path: "/search",
+    name: "Search",
+    rtlName: "",
+    icon: Info,
+    component: Search,
     layout: "/dashboard",
     menu: false,
     returnTo: "",

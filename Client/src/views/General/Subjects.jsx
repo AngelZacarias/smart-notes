@@ -55,7 +55,8 @@ const Subjects = () => {
         headers: {
           "Authorization": "Bearer " + localStorage.getItem("JWT_TOKEN"), // "| GOOGLE_TOKEN"
         }
-      }
+      },
+      fetchPolicy: "cache-and-network",
     });
     //Gets all the information for the selected subject
     const[getSelectedSubject, {data:selectedSubject, loadingSubject}] = useLazyQuery(GET_SELECTED_SUBJECT, {
@@ -63,7 +64,8 @@ const Subjects = () => {
           headers: {
             "Authorization": "Bearer " + localStorage.getItem("JWT_TOKEN"), // "| GOOGLE_TOKEN"
           }
-        }
+        },
+        fetchPolicy: "cache-and-network",
       });
 
     const handleOpenSubject = (subject) =>{

@@ -43,10 +43,9 @@ ReactDOM.render(
             <Authentication path="/subject-tasks" component={SubjectDashboard} />
             <Authentication path="/subject-notes" component={SubjectDashboard} />
             <Authentication path="/subject-study" component={SubjectDashboard} />
+            <Authentication path="/search" component={Search} />
             <Route path="/login" component={SignInSide} />
             <Route path="/sign-up" component={SignUp} />
-            {/* Temporal Routes for testing */}
-            <Route path="/search" component={Search} />
             <Redirect from="/" to="/login" />
           </Switch>
         </BrowserRouter>

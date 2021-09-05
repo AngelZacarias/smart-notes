@@ -9,3 +9,13 @@ export const useRouteName = () => {
   });
   return name;
 };
+
+export const useRouteLayout = () => {
+  let layout = "";
+  routes.forEach((route) => {
+    if (window.location.href.indexOf(route.layout + route.path) !== -1) {
+      layout = route.layout;
+    }
+  });
+  return layout.replace('/','');
+}

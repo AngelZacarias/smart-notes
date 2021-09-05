@@ -1,9 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { 
     makeStyles, 
-    Modal, 
-    Paper, 
-    Typography,
     TextField,
     FormControl,
     FormLabel,
@@ -12,39 +9,23 @@ import {
     FormGroup,
     Button,
 } from "@material-ui/core";
+import Dialog from '@material-ui/core/Dialog';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
 import { gql, useMutation } from '@apollo/client';
 import ColorSelector from '../../components/Colors/ColorSelector';
 import PropTypes from "prop-types";
 import { GET_SUBJECTS } from './Subjects';
 
 const useStyles = makeStyles((theme) => ({
-    poperContainer:{
-        height: '600px',
-        width: '550px',
-        backgroundColor: theme.palette.background.paper,
-        alignItems: 'center',
-        margin: theme.spacing(1),
-    },
-    rootContainer: {
-        display: 'flex',
-        flexWrap: 'wrap',
-    },
-    title:{
-        margin: theme.spacing(1),
-        alignItems: 'center',
-    },
     margin: {
         marginTop: theme.spacing(1),
         marginBottom: theme.spacing(1),
-        marginLeft: theme.spacing(2),
-        marginRight: theme.spacing(2),
     },
-    button: {
-        marginTop: theme.spacing(1),
-        marginBottom: theme.spacing(1),
-        marginLeft: theme.spacing(2),
-        marginRight: theme.spacing(2),
-    },
+    actions: {
+        spacing: theme.spacing(3),
+    }
 }));
 
 const SubjectForm = ({ showForm, handleClose, subject, setSubject }) => {
@@ -224,122 +205,107 @@ const SubjectForm = ({ showForm, handleClose, subject, setSubject }) => {
     },[subjectDataUpdated]);
 
     return (
-        <Modal
+        <Dialog
             open={showForm}
             onClose={()=>handleClose(!showForm)}
+            scroll="body"
+            fullWidth={true}
+            maxWidth={'sm'}
         >
-            <Paper className={classes.poperContainer}
-                style={{
-                    position: 'fixed',
-                    bottom: '8%',
-                    right: '2%',
-                }}
+            <DialogTitle>
+                REGISTRAR MATERIA
+            </DialogTitle>
+            <DialogContent
             >
-                <form 
-                    onSubmit={e=>handleSubmitSubject(e)}
-                    className={classes.rootContainer}
-                >
-                    <FormControl fullWidth className={classes.title}>
-                        <Typography variant="h5">
-                            REGISTRAR MATERIA
-                        </Typography>
-                    </FormControl >
-                    <FormControl fullWidth className={classes.margin} variant="outlined">
-                        <TextField
-                            variant="outlined" 
-                            label="Nombre de la Materia"
-                            id="subjectName"
-                            name="name" 
-                            value={subject.name}
-                            onChange={handleChangeSubjectValue}
-                        />
-                    </FormControl> 
-                    <FormControl fullWidth className={classes.margin} variant="outlined">
-                        <TextField
-                            id="startHour"
-                            variant="outlined"
-                            label="Hora de Inicio"
-                            name="startHour"
-                            value={subject.startHour}
-                            onChange={handleChangeSubjectValue}
-                            type="time"
-                            defaultValue="07:00"
-                            InputLabelProps={{
-                            shrink: true,
-                            }}
-                            inputProps={{
-                            step: 300, // 5 min
-                            }}
-                        />
-                    </FormControl>    
-                    <FormControl fullWidth className={classes.margin} variant="outlined">
-                        <TextField
-                            id="endHour"
-                            variant="outlined"
-                            label="Hora de Fin"
-                            name="endHour"
-                            value={subject.endHour}
-                            onChange={handleChangeSubjectValue}
-                            type="time"
-                            defaultValue="07:00"
-                            InputLabelProps={{
-                            shrink: true,
-                            }}
-                            inputProps={{
-                            step: 300, // 5 min
-                            }}
-                        />
-                    </FormControl> 
-                    <FormControl fullWidth className={classes.margin} variant="outlined" component="fieldset" justify="center">
-                        <FormLabel component="legend" style={{textAlign:'center'}}>Días de Clases</FormLabel>
-                        <FormGroup row justify="center">
-                            {
-                                daysOfWeek.map(day =>(
-                                    <FormControlLabel
-                                        key={day.dayOfWeek}
-                                        label={day.day}
-                                        name={day.dayOfWeek}
-                                        checked={day.value}
-                                        control={<Checkbox color="primary" />}
-                                        labelPlacement="bottom"
-                                        onChange={handleSelectDays}
-                                    />
-                                ))
-                            }
-                        </FormGroup>
-                    </FormControl> 
-                    <FormControl fullWidth className={classes.margin} variant="outlined">
-                        <FormLabel component="legend" style={{textAlign:'center'}}>Selecciona un color</FormLabel>
-                        <ColorSelector
-                            selectedColorValue={selectedColorValue}
-                            setselectedColorValue={setselectedColorValue}
-                        />
-                    </FormControl>
+                <FormControl fullWidth className={classes.margin} variant="outlined">
+                    <TextField
+                        variant="outlined" 
+                        label="Nombre de la Materia"
+                        id="subjectName"
+                        name="name" 
+                        value={subject.name}
+                        onChange={handleChangeSubjectValue}
+                    />
+                </FormControl> 
+                <FormControl fullWidth className={classes.margin} variant="outlined">
+                    <TextField
+                        id="startHour"
+                        variant="outlined"
+                        label="Hora de Inicio"
+                        name="startHour"
+                        value={subject.startHour}
+                        onChange={handleChangeSubjectValue}
+                        type="time"
+                        defaultValue="07:00"
+                        InputLabelProps={{
+                        shrink: true,
+                        }}
+                        inputProps={{
+                        step: 300, // 5 min
+                        }}
+                    />
+                </FormControl>    
+                <FormControl fullWidth className={classes.margin} variant="outlined">
+                    <TextField
+                        id="endHour"
+                        variant="outlined"
+                        label="Hora de Fin"
+                        name="endHour"
+                        value={subject.endHour}
+                        onChange={handleChangeSubjectValue}
+                        type="time"
+                        defaultValue="07:00"
+                        InputLabelProps={{
+                        shrink: true,
+                        }}
+                        inputProps={{
+                        step: 300, // 5 min
+                        }}
+                    />
+                </FormControl> 
+                <FormControl fullWidth className={classes.margin} variant="outlined" component="fieldset" justify="center">
+                    <FormLabel component="legend" style={{textAlign:'center'}}>Días de Clases</FormLabel>
+                    <FormGroup row justify="center">
+                        {
+                            daysOfWeek.map(day =>(
+                                <FormControlLabel
+                                    key={day.dayOfWeek}
+                                    label={day.day}
+                                    name={day.dayOfWeek}
+                                    checked={day.value}
+                                    control={<Checkbox color="primary" />}
+                                    labelPlacement="bottom"
+                                    onChange={handleSelectDays}
+                                />
+                            ))
+                        }
+                    </FormGroup>
+                </FormControl> 
+                <FormControl fullWidth className={classes.margin} variant="outlined">
+                    <FormLabel component="legend" style={{textAlign:'center'}}>Selecciona un color</FormLabel>
+                    <ColorSelector
+                        selectedColorValue={selectedColorValue}
+                        setselectedColorValue={setselectedColorValue}
+                    />
+                </FormControl>
+            </DialogContent>
+                <DialogActions className={classes.actions}>
                     <Button
-                        type="submit"
                         variant="contained"
                         color="primary"
-                        size="large"
-                        fullWidth
-                        className={classes.button}
-                        
+                        onClick={e=>handleSubmitSubject(e)}
                     >
-                        Guardar Información de la Materia
+                        Guardar Materia
                     </Button>
-                </form>
-                <Button
-                    type="submit"
-                    disabled={subject.id===""}
-                    color="secondary"
-                    size="large"
-                    fullWidth
-                    className={classes.button}
-                    onClick={handleDeleteSubject}
-                >
-                    Eliminar Materia
-                </Button>
-            </Paper>
-        </Modal>
+                    <Button
+                        disabled={subject.id===""}
+                        color="secondary"
+                        onClick={handleDeleteSubject}
+                    >
+                        Eliminar Materia
+                    </Button>
+                </DialogActions>
+        </Dialog>
     );
 }
 
