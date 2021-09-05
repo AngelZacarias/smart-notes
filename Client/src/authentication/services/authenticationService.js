@@ -1,6 +1,6 @@
 
 import jwt from 'jsonwebtoken';
-
+import dotenv from 'dotenv';
 
 class AuthenticationService {
     user = null;
@@ -15,14 +15,12 @@ class AuthenticationService {
         const token = localStorage.getItem("JWT_TOKEN");
         if (token) {
             try {
-                this.getClaimsuser = jwt.verify(token, process.env.JWT_KEY);
+                dotenv.config();
+                this.user = jwt.verify(token, process.env.REACT_APP_JWT_KEY);
             } catch (err) {
-                throw new AuthenticationError("Invalid/Expired token");
+                console.log(`Invalid/Expired token due to ${err}`);
             }
         }
-        throw new Error(
-            "Authentication failed. Make sure you have provided an Authentication token in correct format"
-        );
     }
 
     /**

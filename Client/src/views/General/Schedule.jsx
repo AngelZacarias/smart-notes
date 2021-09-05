@@ -2,11 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { LinearProgress  } from '@material-ui/core';
 import Calendar from '../../components/Calendar/Calendar';
 import { useQuery, gql } from '@apollo/client';
-import MuiAlert from '@material-ui/lab/Alert';
-
-function Alert(props) {
-  return <MuiAlert elevation={6} variant="filled" {...props} />;
-}
+import { Alert, AlertTitle } from '@material-ui/lab';
 
 const Schedule = () => {
     const DayOfWeekToDate = (dayOfWeek, hours) => {
@@ -24,7 +20,7 @@ const Schedule = () => {
     
 
     //QUERIES
-    const{data:mySchedule, loading} = useQuery(GET_MY_SCHEDULE, {
+    const{data:mySchedule, loading, error} = useQuery(GET_MY_SCHEDULE, {
         context: {
           headers: {
             "Authorization": "Bearer " + localStorage.getItem("JWT_TOKEN"),
@@ -56,8 +52,16 @@ const Schedule = () => {
         <Calendar
           appointments={appointments}
         />    
-      : 
-        <Alert severity="info">Crea Materias para mostrarte tu horario en esta sección</Alert>
+      : error && error.message ?
+        <Alert severity="error">
+          <AlertTitle>Error</AlertTitle>
+          <strong>Ocurrio un error al obtener el horario</strong> - {error.message}
+        </Alert>
+      :
+      <Alert severity="info">
+        <AlertTitle>Info</AlertTitle>
+        <strong>No existe un horario</strong> - crea materias para generar un horario.
+      </Alert>
     );
 }
  

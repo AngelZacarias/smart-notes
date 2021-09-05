@@ -31,6 +31,7 @@ export default function Sidebar(props) {
     <List className={classes.list}>
       {routes.map((prop, key) => {
         if(prop.menu){
+          const urlLinkTo = prop.returnTo !== "" ? (prop.returnTo + prop.path) : (prop.layout + prop.path)
           var activePro = " ";
           var listItemClasses;
           if (prop.path === "/upgrade-to-pro") {
@@ -48,7 +49,7 @@ export default function Sidebar(props) {
           });
           return (
             <NavLink
-              to={prop.layout + prop.path}
+              to={urlLinkTo}
               className={activePro + classes.item}
               activeClassName="active"
               key={key}

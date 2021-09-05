@@ -5,6 +5,7 @@ import {
   defaultFont,
   primaryColor,
   primaryBoxShadow,
+  roseColor,
   infoColor,
   successColor,
   warningColor,
@@ -126,7 +127,7 @@ const sidebarStyle = (theme) => ({
       content: '""',
       display: "block",
       background: blackColor,
-      opacity: ".8",
+      opacity: ".7",
     },
   },
   list: {
@@ -185,6 +186,28 @@ const sidebarStyle = (theme) => ({
   },
   whiteFont: {
     color: whiteColor,
+  },
+  rose: {
+    backgroundColor: roseColor[0],
+    boxShadow:
+      "0 2px 2px 0 rgba(" +
+      hexToRgb(roseColor[0]) +
+      ", 0.14), 0 3px 1px -2px rgba(" +
+      hexToRgb(roseColor[0]) +
+      ", 0.2), 0 1px 5px 0 rgba(" +
+      hexToRgb(roseColor[0]) +
+      ", 0.12)",
+    "&:hover,&:focus": {
+      backgroundColor: roseColor[0],
+      boxShadow:
+        "0 14px 26px -12px rgba(" +
+        hexToRgb(roseColor[0]) +
+        ", 0.42), 0 4px 23px 0px rgba(" +
+        hexToRgb(blackColor) +
+        ", 0.12), 0 8px 10px -5px rgba(" +
+        hexToRgb(roseColor[0]) +
+        ", 0.2)",
+    },
   },
   primary: {
     backgroundColor: primaryColor[0],

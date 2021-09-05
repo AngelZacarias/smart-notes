@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import classNames from "classnames";
 import PropTypes from "prop-types";
 // @material-ui/core components
@@ -16,6 +16,8 @@ import { Button } from "@material-ui/core";
 
 //hooks
 import { useRouteName } from "hooks";
+//Context for this subject
+import { SubjectContext } from './../../hooks/SubjectContext';
 
 import styles from "assets/jss/material-dashboard-react/components/headerStyle.js";
 
@@ -28,13 +30,14 @@ export default function Header(props) {
   const appBarClasses = classNames({
     [" " + classes[color]]: color,
   });
+  const { subjectInformation } = useContext(SubjectContext);
   return (
     <AppBar className={classes.appBar + appBarClasses}>
       <Toolbar className={classes.container}>
         <div className={classes.flex}>
           {/* Here we create navbar brand, based on route name */}
           <Button color="primary" href="#" className={classes.title}>
-            <h3>{routeName}</h3>
+            <h3>{subjectInformation.name !== '' ? (`${subjectInformation.name} - ${routeName}`) : (routeName)}</h3>
           </Button>
         </div>
         <Hidden smDown implementation="css">
