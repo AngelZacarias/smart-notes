@@ -51,6 +51,13 @@ const useStyles = makeStyles((theme) => ({
 const MiddleDividers = () => {
   const [profileFormShow, setProfileFormShow] = useState(false);
 
+  const getIdParameter = () => {
+    const userId = location.pathname.split("/")[3]
+    console.log("Esto es el userId:", userId);
+    if (userId) return userId
+    else return 0;
+  }
+
   //Get user's profile
   const { data: profile, error } = useQuery(GET_PROFILE, {
     context: {
@@ -93,7 +100,7 @@ const MiddleDividers = () => {
   const classes = useStyles();
 
   return (
-    <div className={classes.root}>
+    <div className={classes.root}>{getIdParameter()}
       <div className={classes.section1}>
         <Grid container alignItems="center">
           <Grid item xs={12} sm={12} >

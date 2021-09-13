@@ -38,7 +38,7 @@ ReactDOM.render(
           <Switch>
             <Authentication path="/dashboard" component={GeneralDashboard} />
             <Authentication path="/profile" component={Profile} />
-            {/* <Route path="/profile/:id" component={Profile} /> */}
+            <Authentication path="/profile/:id" component={Profile} />
             <Authentication path="/subject" component={SubjectDashboard} />
             <Authentication path="/subject-tasks" component={SubjectDashboard} />
             <Authentication path="/subject-notes" component={SubjectDashboard} />

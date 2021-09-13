@@ -11,6 +11,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import { Alert, AlertTitle } from '@material-ui/lab';
 import React, { Fragment } from 'react';
+import { Link } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -40,6 +41,7 @@ const Search = () => {
     const getKeyWordParameter = () =>{
         const urlString = window.location.href;
         const url = new URL(urlString);
+        console.log("Esto es el url:", url);
         console.log(url.searchParams.get("keyword"));
         return url.searchParams.get("keyword");
     }
@@ -51,7 +53,7 @@ const Search = () => {
         },
         context: {
           headers: {
-            "Authorization": "Bearer " + localStorage.getItem("JWT_TOKEN"), // "| GOOGLE_TOKEN"
+            "Authorization": "Bearer " + localStorage.getItem("JWT_TOKEN"),
           }
         },
         fetchPolicy: "cache-and-network",
@@ -114,7 +116,11 @@ const Search = () => {
                                     <ListItem 
                                         alignItems="flex-start"
                                         button
-                                        onClick={() => handleClick(user.id)}
+                                        component={Link}
+                                        value={user.id}
+                                        to={`/dashboard/profile/${user.id}`}
+                                        onClick={handleClick(user.id)}
+                                        color="secondary"   
                                     >
                                         <ListItemAvatar>
                                         <Avatar alt={user.name} src={profilePicture} />
