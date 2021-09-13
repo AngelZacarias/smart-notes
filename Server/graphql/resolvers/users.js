@@ -65,6 +65,24 @@ module.exports = {
       }
       return userProfile;
     },
+    
+    async getProfiles(parent, args, context, info) {
+      console.log(args);
+      checkAuth(context);
+      const keyword = args.keyword;
+      let profiles;
+      const query2 = { "bio": "Qué tal. Soy un estudiante del Centro Universitario de Ciencias Exactas e Ingenierías. Me gusta codificar y escuchar música Rock y Pop." }
+      // const query = { $or: [ { "user.name": {'$regex': keyword} }, { "user.lastName": {'$regex': keyword} } ] };
+      // const query3 = { "user.name": /.*J.*/ };
+      // const query4 = { "user.name": {'$regex': "Ju"} };
+      // const query5 = { "user.name": "Julio" };
+      try {
+        profiles = await Profile.find(query2);
+      } catch (err) {
+        throw new Error("Ocurrió algo inesperado");
+      }
+      return profiles;
+    }
   },
   Mutation: {
     async createUserFromGoogleAuth(parent, args, context, info) {
