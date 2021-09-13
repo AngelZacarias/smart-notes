@@ -1,16 +1,16 @@
-import React, { Fragment } from 'react'
-import { makeStyles } from '@material-ui/core/styles';
+// Graphql
+import { gql, useQuery } from '@apollo/client';
+import Avatar from '@material-ui/core/Avatar';
+import Divider from '@material-ui/core/Divider';
+import LinearProgress from '@material-ui/core/LinearProgress';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
-import Divider from '@material-ui/core/Divider';
-import ListItemText from '@material-ui/core/ListItemText';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
-import Avatar from '@material-ui/core/Avatar';
+import ListItemText from '@material-ui/core/ListItemText';
+import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
-import LinearProgress from '@material-ui/core/LinearProgress';
 import { Alert, AlertTitle } from '@material-ui/lab';
-// Graphql
-import { useQuery, gql } from '@apollo/client';
+import React, { Fragment } from 'react';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -107,20 +107,20 @@ const Search = () => {
                 { data && data.getProfiles ? 
                     <Fragment>
                         {
-                            data.getProfiles.map(profile =>(
+                            data.getProfiles.map(user =>(
                                 <Fragment 
-                                    key={profile.user.id}
+                                    key={user.id}
                                 >
                                     <ListItem 
                                         alignItems="flex-start"
                                         button
-                                        onClick={() => handleClick(profile.user.id)}
+                                        onClick={() => handleClick(user.id)}
                                     >
                                         <ListItemAvatar>
-                                        <Avatar alt={profile.user.name} src={profilePicture} />
+                                        <Avatar alt={user.name} src={profilePicture} />
                                         </ListItemAvatar>
                                         <ListItemText
-                                        primary={profile.user.name}
+                                        primary={user.name + ' ' + user.lastName}
                                         secondary={
                                             <Fragment>
                                             <Typography
@@ -129,9 +129,9 @@ const Search = () => {
                                                 className={classes.inline}
                                                 color="textPrimary"
                                             >
-                                                {profile.carrer}
+                                                {user.profile.carrer}
                                             </Typography>
-                                            {` — ${profile.bio}`}
+                                            {` — ${user.profile.bio}`}
                                             </Fragment>
                                         }
                                         />
@@ -151,15 +151,15 @@ const Search = () => {
 
 const GET_PROFILES = gql`
 query getProfiles($keyword: String!){
-    getProfiles(keyword:$keyword){
-        user{
-            id,
-            name,
-            lastName
-        }
-        carrer,
-        bio,
+  getProfiles(keyword:$keyword){
+    id,
+    name,
+    lastName,
+    profile {
+      carrer,
+      bio,
     }
+  }
 }
 `;
 

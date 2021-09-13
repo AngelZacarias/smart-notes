@@ -1,5 +1,5 @@
 const User = require("../../models/User");
-const Profile = require("../../models/Profile")
+const Profile = require("../../models/Profile");
 var _ = require("lodash");
 const bcrypt = require("bcrypt");
 const { formatName } = require("../../utils/format-names");
@@ -10,7 +10,6 @@ const {
 const jwt = require("jsonwebtoken");
 const checkAuth = require("../../utils/check-auth");
 var ObjectId = require("mongodb").ObjectId;
-const { pick } = require("lodash");
 
 module.exports = {
   Query: {
@@ -65,24 +64,21 @@ module.exports = {
       }
       return userProfile;
     },
-    
+
     async getProfiles(parent, args, context, info) {
-      console.log(args);
       checkAuth(context);
       const keyword = args.keyword;
       let profiles;
-      const query2 = { "bio": "Qué tal. Soy un estudiante del Centro Universitario de Ciencias Exactas e Ingenierías. Me gusta codificar y escuchar música Rock y Pop." }
-      // const query = { $or: [ { "user.name": {'$regex': keyword} }, { "user.lastName": {'$regex': keyword} } ] };
-      // const query3 = { "user.name": /.*J.*/ };
-      // const query4 = { "user.name": {'$regex': "Ju"} };
-      // const query5 = { "user.name": "Julio" };
+      const query = {
+        $or: [{ name: { $regex: keyword } }, { lastName: { $regex: keyword } }],
+      };
       try {
-        profiles = await Profile.find(query2);
+        profiles = await User.find(query);
       } catch (err) {
         throw new Error("Ocurrió algo inesperado");
       }
       return profiles;
-    }
+    },
   },
   Mutation: {
     async createUserFromGoogleAuth(parent, args, context, info) {
@@ -120,7 +116,7 @@ module.exports = {
         const newProfile = await createUserProfile(newUser);
         await newProfile.save();
         newUser.profile = newProfile;
-        newUser.save();
+        await newUser.save();
       } catch (err) {
         throw new Error("Error saving user to DB:", err);
       }
@@ -166,7 +162,7 @@ module.exports = {
         const newProfile = await createUserProfile(newUser);
         await newProfile.save();
         newUser.profile = newProfile;
-        newUser.save();
+        await newUser.save();
       } catch (err) {
         throw new Error("Error guardando usuario en BDD:", err);
       }
@@ -179,7 +175,7 @@ module.exports = {
     async editProfile(parent, args, context, info) {
       console.log(args);
       let profile;
-      const profileNewValues = {...args};
+      const profileNewValues = { ...args };
       const tokenValidityInfo = checkAuth(context);
       try {
         profile = await Profile.findOne({
@@ -187,7 +183,7 @@ module.exports = {
         });
         if (!profile) {
           throw new Error("Error. El perfil no existe");
-        } 
+        }
         profile.bio = profileNewValues.bio;
         profile.carrer = profileNewValues.carrer;
         profile.facebookURL = profileNewValues.facebookURL;
@@ -198,12 +194,18 @@ module.exports = {
         throw new Error("Error guardando perfil");
       }
       return profile;
-    }
+    },
   },
   //Resolvers for nested queries
   NestedUserReference: {
-    async user(parent, args, context, info){
-        return await User.findById(parent.user);
+    async user(parent, args, context, info) {
+      return await User.findById(parent.user);
     },
-  }
+  },
+
+  NestedProfileReference: {
+    async profile(parent, args, context, info) {
+      return await Profile.findById(parent.profile);
+    },
+  },
 };

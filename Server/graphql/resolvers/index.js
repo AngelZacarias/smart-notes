@@ -1,7 +1,7 @@
-import subjectsResolvers from './subjects';
-import userResolvers from './users';
 import scheduleResolvers from './schedule';
+import subjectsResolvers from './subjects';
 import tasksResolvers from './tasks';
+import userResolvers from './users';
 
 module.exports = {
     //Nested Queries
@@ -22,6 +22,9 @@ module.exports = {
     },
     Profile: {
         user: userResolvers.NestedUserReference.user,
+    },
+    User: {
+      profile: userResolvers.NestedProfileReference.profile,
     },
     // Default Queries
     Query:{
