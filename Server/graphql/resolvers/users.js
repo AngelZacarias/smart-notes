@@ -119,6 +119,8 @@ module.exports = {
         response = await newUser.save();
         const newProfile = await createUserProfile(newUser);
         await newProfile.save();
+        newUser.profile = newProfile;
+        newUser.save();
       } catch (err) {
         throw new Error("Error saving user to DB:", err);
       }
@@ -163,6 +165,8 @@ module.exports = {
         response = await newUser.save();
         const newProfile = await createUserProfile(newUser);
         await newProfile.save();
+        newUser.profile = newProfile;
+        newUser.save();
       } catch (err) {
         throw new Error("Error guardando usuario en BDD:", err);
       }
