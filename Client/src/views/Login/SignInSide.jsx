@@ -84,7 +84,7 @@ const SignInSide = () => {
           console.log("Nombre completo:", googleUser.Ws.Qe)
           console.log("Correo:", googleUser.Ws.Ht)
           console.log("Url imagen perfil:", googleUser.Ws.wJ)
-          // console.log("token:", googleUser.Zb.id_token)
+          console.log("token:", googleUser.Zb.id_token)
           
           sendMutation({
             variables: {
