@@ -1,4 +1,5 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
+import { Link } from 'react-router-dom';
 import classNames from "classnames";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
@@ -15,7 +16,6 @@ import Person from "@material-ui/icons/Person";
 import Notifications from "@material-ui/icons/Notifications";
 import Dashboard from "@material-ui/icons/Dashboard";
 import Search from "@material-ui/icons/Search";
-import { useState } from 'react';
 
 
 // core components
@@ -26,6 +26,7 @@ import styles from "assets/jss/material-dashboard-react/components/headerLinksSt
 const useStyles = makeStyles(styles);
 
 export default function AdminNavbarLinks() {
+  const [keyword, setKeyword] = useState('');
   const [logOut, setLogOut] = useState(false);
   const [openUserProfile, setOpenUserProfile] = useState(false);
   const classes = useStyles();
@@ -67,16 +68,23 @@ export default function AdminNavbarLinks() {
     setOpenUserProfile(false);
   }, [openUserProfile]);
 
+  const handleChangeSearchKeyword = (e) =>{
+    setKeyword(e.target.value);
+  }
+
   return (
     <div>
       <div className={classes.searchWrapper}>
-        <TextField 
-          variant="filled"
-          label="Buscar personas"
-        />
-        <Button color="secondary" aria-label="edit" >
-          <Search />
-        </Button>
+          <TextField 
+            size="small"
+            label="Buscar personas"
+            name='keyword'
+            value={keyword}
+            onChange={handleChangeSearchKeyword}
+          />
+          <Button component={Link} to={`/dashboard/search?keyword=${keyword}`} color="secondary" aria-label="edit" >
+            <Search />
+          </Button>
       </div>
       <Button
         color="secondary"
@@ -204,20 +212,20 @@ export default function AdminNavbarLinks() {
                       onClick={() => setOpenUserProfile(true)}
                       className={classes.dropdownItem}
                     >
-                      Profile
+                      Perfil
                     </MenuItem>
                     <MenuItem
                       onClick={handleCloseProfile}
                       className={classes.dropdownItem}
                     >
-                      Settings
+                      Configuración
                     </MenuItem>
                     <Divider light />
                     <MenuItem
                       onClick={() => setLogOut(true)}
                       className={classes.dropdownItem}
                     >
-                      Logout
+                      Cerrar sesión
                     </MenuItem>
                   </MenuList>
                 </ClickAwayListener>

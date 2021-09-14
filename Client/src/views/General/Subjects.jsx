@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
+import { Link } from 'react-router-dom';
 //Graphql
 import { useQuery, useLazyQuery, gql } from '@apollo/client';
 // material-ui components
@@ -10,9 +11,11 @@ import CardBody from "components/Card/CardBody.js";
 import CardHeader from "components/Card/CardHeader.js";
 import CardFooter from "components/Card/CardFooter.js";
 import dashboardStyle from "assets/jss/material-dashboard-react/views/dashboardStyle.js";
-
-//Our components
+import { Alert, AlertTitle } from '@material-ui/lab';
+// Our components
 import SubjectForm from './SubjectForm';
+// Context
+import { SubjectContext } from './../../hooks/SubjectContext';
 
 const useStyles = makeStyles(() => ({
     ...dashboardStyle,
@@ -33,6 +36,7 @@ const useStyles = makeStyles(() => ({
 
 const Subjects = () => {
     const classes = useStyles();
+    const { setSubjectInformation } = useContext(SubjectContext);
     
     //State
     const[subjectFormShow, setSubjectFormShow] = useState(false);
@@ -46,12 +50,13 @@ const Subjects = () => {
     });
 
     //Gets all the active subjects for this user
-    const{data:subjects, loading} = useQuery(GET_SUBJECTS, {
+    const{data:subjects, loading, error, called} = useQuery(GET_SUBJECTS, {
       context: {
         headers: {
           "Authorization": "Bearer " + localStorage.getItem("JWT_TOKEN"), // "| GOOGLE_TOKEN"
         }
-      }
+      },
+      fetchPolicy: "cache-and-network",
     });
     //Gets all the information for the selected subject
     const[getSelectedSubject, {data:selectedSubject, loadingSubject}] = useLazyQuery(GET_SELECTED_SUBJECT, {
@@ -59,11 +64,20 @@ const Subjects = () => {
           headers: {
             "Authorization": "Bearer " + localStorage.getItem("JWT_TOKEN"), // "| GOOGLE_TOKEN"
           }
-        }
+        },
+        fetchPolicy: "cache-and-network",
       });
 
-    const handleOpenSubject = (id) =>{
-        console.log("Selected to open: ",id);
+    const handleOpenSubject = (subject) =>{
+        console.log("Selected to open: ",subject.id);
+        // Sets the content of our context
+        setSubjectInformation({
+            id: subject.id,
+            name: subject.name,
+            color: subject.color,
+            schedule: subject.schedule,
+        });
+        //window.location.href = "/subject";
     }
 
     //Open the subject form to edit or delete the current subject
@@ -116,7 +130,17 @@ const Subjects = () => {
             {
                 loading ?
                     <LinearProgress />
-                : 
+                : error && error.message ?
+                    <Alert severity="error">
+                        <AlertTitle>Error</AlertTitle>
+                        <strong>Ocurrio un error al obtener las materias</strong> - {error.message}
+                    </Alert>
+                : !loading && called && subjects.length < 1 ?
+                    <Alert severity="info">
+                        <AlertTitle>Info</AlertTitle>
+                        Aun no tienes materias, crea materias para listarlas en esta sección...
+                    </Alert>
+                :
                     null
             }
             <Grid container spacing={5}>
@@ -146,8 +170,10 @@ const Subjects = () => {
                                             </Grid>
                                             <Grid item>
                                                 <Button 
+                                                    component={Link}
+                                                    to="/subject/subject-notes"
                                                     color="secondary"
-                                                    onClick={()=>handleOpenSubject(subject.id)}
+                                                    onClick={()=>handleOpenSubject(subject)}
                                                 >
                                                     Abrir Materia
                                                 </Button>

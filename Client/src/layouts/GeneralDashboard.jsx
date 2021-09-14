@@ -15,7 +15,7 @@ import routes from "routes.js";
 
 import styles from "assets/jss/material-dashboard-react/layouts/adminStyle.js";
 
-import bgImage from "assets/img/sidebar-2.jpg";
+import bgImage from "assets/img/sidebar-4.jpg";
 import logo from "assets/img/logo.svg";
 
 let ps;
@@ -48,7 +48,7 @@ export default function GeneralDashboard({ ...rest }) {
   // states and functions
   const [image, setImage] = React.useState(bgImage);
   const [color, setColor] = React.useState("primary");
-  const [fixedClasses, setFixedClasses] = React.useState("dropdown show");
+  const [fixedClasses, setFixedClasses] = React.useState("dropdown");
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const handleImageClick = (image) => {
     setImage(image);
@@ -95,7 +95,7 @@ export default function GeneralDashboard({ ...rest }) {
   return (
     <div className={classes.wrapper}>
       <Sidebar
-        routes={routes}
+        routes={routes.filter(route => route.layout === '/dashboard')}
         logo={logo}
         image={image}
         handleDrawerToggle={handleDrawerToggle}
@@ -105,7 +105,7 @@ export default function GeneralDashboard({ ...rest }) {
       />
       <div className={classes.mainPanel} ref={mainPanel}>
         <Navbar
-          routes={routes}
+          routes={routes.filter(route => route.layout === '/dashboard')}
           handleDrawerToggle={handleDrawerToggle}
           {...rest}
         />
