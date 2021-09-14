@@ -212,20 +212,20 @@ export default function AdminNavbarLinks() {
                       onClick={() => setOpenUserProfile(true)}
                       className={classes.dropdownItem}
                     >
-                      Profile
+                      Perfil
                     </MenuItem>
                     <MenuItem
                       onClick={handleCloseProfile}
                       className={classes.dropdownItem}
                     >
-                      Settings
+                      Configuración
                     </MenuItem>
                     <Divider light />
                     <MenuItem
                       onClick={() => setLogOut(true)}
                       className={classes.dropdownItem}
                     >
-                      Logout
+                      Cerrar sesión
                     </MenuItem>
                   </MenuList>
                 </ClickAwayListener>

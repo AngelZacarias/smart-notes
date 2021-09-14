@@ -12,7 +12,8 @@ import { Formik } from 'formik';
 import PropTypes from "prop-types";
 import React, { useEffect, useState } from 'react';
 import * as Yup from "yup";
-import { GET_PROFILE } from "./MiddleDivider";
+import { GET_PROFILE_BY_ID, getIdParameter } from "./MiddleDivider";
+
 
 const useStyles = makeStyles((theme) => ({
 		poperContainer:{
@@ -59,7 +60,8 @@ const ProfileForm = ({showForm, handleClose}) => {
 			}
 		},
 		refetchQueries: [{ 
-			query: GET_PROFILE, 
+			query: GET_PROFILE_BY_ID, 
+      variables: { userId: getIdParameter() },
 			context: {
 				headers: {
 					"Authorization": "Bearer " + localStorage.getItem("JWT_TOKEN"),

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Divider from '@material-ui/core/Divider';
@@ -12,6 +12,9 @@ import Button from '@material-ui/core/Button';
 import ProfileForm from './ProfileForm';
 import IconButton from '@material-ui/core/IconButton';
 import PhotoCamera from '@material-ui/icons/PhotoCamera';
+import { Snackbar } from '@material-ui/core';
+import Slide from "@material-ui/core/Slide";
+import CloseIcon from "@material-ui/icons/Close";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -48,11 +51,20 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+export const getIdParameter = () => {
+  const userId = location.pathname.split("/")[3]
+  if (userId) return userId;
+  else return 0;
+}
+
 const MiddleDividers = () => {
   const [profileFormShow, setProfileFormShow] = useState(false);
+  const [showMessage, setShowMessage] = useState(false);
+  const [message, setMessage] = useState("");
+  const [showEditableActions, setEditable] = useState(false);
 
-  //Get user's profile
-  const { data: profile, error } = useQuery(GET_PROFILE, {
+  const { data: profile, error } = useQuery(GET_PROFILE_BY_ID, {
+    variables: { userId: getIdParameter() },
     context: {
       headers: {
         "Authorization": "Bearer " + localStorage.getItem("JWT_TOKEN"),
@@ -71,23 +83,33 @@ const MiddleDividers = () => {
     if (profile) {
       console.log(profile);
       setProfileInfo({
-        name: profile.getUserProfile.user.name,
-        lastName: profile.getUserProfile.user.lastName,
-        email: profile.getUserProfile.user.email,
-        bio: profile.getUserProfile.bio,
-        carrer: profile.getUserProfile.carrer,
-        facebookURL: profile.getUserProfile.facebookURL,
-        linkedinURL: profile.getUserProfile.linkedinURL,
-        twitterURL: profile.getUserProfile.twitterURL,
+        name: profile.getProfileById.user.name,
+        lastName: profile.getProfileById.user.lastName,
+        email: profile.getProfileById.user.email,
+        bio: profile.getProfileById.bio,
+        carrer: profile.getProfileById.carrer,
+        facebookURL: profile.getProfileById.facebookURL,
+        linkedinURL: profile.getProfileById.linkedinURL,
+        twitterURL: profile.getProfileById.twitterURL,
       });
+      getIdParameter() == "0" ? setEditable(true) : null;
     }
     if (error) {
       console.log(error);
+      setMessage(error.graphQLErrors[0].message)
+      setShowMessage(true)
     }
   }, [profile, error]);
 
   const handleClickProfileForm = () => {
     setProfileFormShow(!profileFormShow);
+  }
+
+  const handleCloseMessage = (event, reason) => {
+    if (reason === "clickaway") {
+      return
+    }
+    setShowMessage(false);
   }
 
   const classes = useStyles();
@@ -113,17 +135,25 @@ const MiddleDividers = () => {
               multiple
               type="file"
             />
-            <label htmlFor="contained-button-file">
-              <Button variant="contained" color="primary" component="span">
-                Subir imagen
-              </Button>
-            </label>
-            <input accept="image/*" className={classes.input} id="icon-button-file" type="file" />
-            <label htmlFor="icon-button-file">
-              <IconButton color="primary" aria-label="upload picture" component="span">
-                <PhotoCamera />
-              </IconButton>
-            </label>
+            {
+              showEditableActions ?
+              <Fragment> 
+                <label htmlFor="contained-button-file">         
+                  <Button variant="contained" color="primary" component="span">
+                    Subir imagen
+                  </Button>
+                </label>
+                <input accept="image/*" className={classes.input} id="icon-button-file" type="file" />
+                <label htmlFor="icon-button-file">
+                  <IconButton color="primary" aria-label="upload picture" component="span">
+                    <PhotoCamera />
+                  </IconButton>
+                </label>
+              </Fragment>
+              :
+              null
+            }
+
           </div>
           <Grid item xs>
             <Typography gutterBottom variant="h4">
@@ -169,31 +199,55 @@ const MiddleDividers = () => {
           </Typography>
         </Grid>
         <br />
-        <Button 
+        {
+          showEditableActions ?
+          <Button 
           variant="contained" 
           color="primary"
           onClick={handleClickProfileForm}
-        >
-          Editar perfil
-        </Button>
+          >
+            Editar perfil
+          </Button>
+          :
+          null
+        }
         <ProfileForm
           showForm={profileFormShow}
           handleClose={setProfileFormShow}
         />
       </div>
+      <Snackbar
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "right"
+        }}
+        TransitionComponent={Slide}
+        open={showMessage}
+        autoHideDuration={4000}
+        onClose={handleCloseMessage}
+        message={message}
+        action={
+          <React.Fragment>
+            <IconButton onClick={handleCloseMessage}>
+              <CloseIcon />
+            </IconButton>
+          </React.Fragment>
+        } 
+        />
     </div>
   );
 }
 
-export const GET_PROFILE = gql`
-  query {
-    getUserProfile {
+export const GET_PROFILE_BY_ID = gql`
+  query getProfileById($userId: ID!){
+    getProfileById(userId: $userId) {
       bio,
       carrer,
       facebookURL,
       linkedinURL,
       twitterURL,
       user {
+        id,
         name,
         lastName,
         email
