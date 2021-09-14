@@ -62,7 +62,6 @@ const ProfileForm = ({showForm, handleClose}) => {
 		refetchQueries: [{ 
 			query: GET_PROFILE_BY_ID, 
       variables: { userId: getIdParameter() },
-      //aqui me falto llamar a la funcion para obtener las "variables" userId
 			context: {
 				headers: {
 					"Authorization": "Bearer " + localStorage.getItem("JWT_TOKEN"),
