@@ -247,6 +247,7 @@ export const GET_PROFILE_BY_ID = gql`
       linkedinURL,
       twitterURL,
       user {
+        id,
         name,
         lastName,
         email
