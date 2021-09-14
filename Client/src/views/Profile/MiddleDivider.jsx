@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Divider from '@material-ui/core/Divider';
@@ -61,6 +61,7 @@ const MiddleDividers = () => {
   const [profileFormShow, setProfileFormShow] = useState(false);
   const [showMessage, setShowMessage] = useState(false);
   const [message, setMessage] = useState("");
+  const [showEditableActions, setEditable] = useState(false);
 
   const { data: profile, error } = useQuery(GET_PROFILE_BY_ID, {
     variables: { userId: getIdParameter() },
@@ -80,7 +81,7 @@ const MiddleDividers = () => {
 
   useEffect(() => {
     if (profile) {
-      // console.log(profile);
+      console.log(profile);
       setProfileInfo({
         name: profile.getProfileById.user.name,
         lastName: profile.getProfileById.user.lastName,
@@ -91,6 +92,7 @@ const MiddleDividers = () => {
         linkedinURL: profile.getProfileById.linkedinURL,
         twitterURL: profile.getProfileById.twitterURL,
       });
+      getIdParameter() == "0" ? setEditable(true) : null;
     }
     if (error) {
       console.log(error);
@@ -133,17 +135,25 @@ const MiddleDividers = () => {
               multiple
               type="file"
             />
-            <label htmlFor="contained-button-file">
-              <Button variant="contained" color="primary" component="span">
-                Subir imagen
-              </Button>
-            </label>
-            <input accept="image/*" className={classes.input} id="icon-button-file" type="file" />
-            <label htmlFor="icon-button-file">
-              <IconButton color="primary" aria-label="upload picture" component="span">
-                <PhotoCamera />
-              </IconButton>
-            </label>
+            {
+              showEditableActions ?
+              <Fragment> 
+                <label htmlFor="contained-button-file">         
+                  <Button variant="contained" color="primary" component="span">
+                    Subir imagen
+                  </Button>
+                </label>
+                <input accept="image/*" className={classes.input} id="icon-button-file" type="file" />
+                <label htmlFor="icon-button-file">
+                  <IconButton color="primary" aria-label="upload picture" component="span">
+                    <PhotoCamera />
+                  </IconButton>
+                </label>
+              </Fragment>
+              :
+              null
+            }
+
           </div>
           <Grid item xs>
             <Typography gutterBottom variant="h4">
@@ -189,13 +199,18 @@ const MiddleDividers = () => {
           </Typography>
         </Grid>
         <br />
-        <Button 
+        {
+          showEditableActions ?
+          <Button 
           variant="contained" 
           color="primary"
           onClick={handleClickProfileForm}
-        >
-          Editar perfil
-        </Button>
+          >
+            Editar perfil
+          </Button>
+          :
+          null
+        }
         <ProfileForm
           showForm={profileFormShow}
           handleClose={setProfileFormShow}
