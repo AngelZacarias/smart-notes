@@ -79,8 +79,8 @@ module.exports = gql`
 
         normalLogin(email: String!, password: String!): Token
         getUser(email: String!): User
-        getUserProfile: Profile
         getProfiles(keyword: String!): [User]
+        getProfileById(userId: ID!): Profile
     },
     type Mutation{
         createSubject(name: String!, color: String!) : Subject!

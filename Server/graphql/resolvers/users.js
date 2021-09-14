@@ -48,12 +48,15 @@ module.exports = {
       return user;
     },
 
-    async getUserProfile(parent, args, context, info) {
+    async getProfileById(parent, args, context, info) {
       const user = checkAuth(context);
+      let userId;
+      if (args.userId != "0") userId = args.userId;
+      else userId = user.id;
       let userProfile;
       try {
         userProfile = await Profile.findOne({
-          user: ObjectId(user.id),
+          user: ObjectId(userId),
         });
         if (!userProfile) {
           throw new Error("Perfil no encontrado");

@@ -83,9 +83,6 @@ const Search = () => {
     // const error = null;
     
     // You can actually use two diferent ways to implement the routing here... by context *as the subjects or by url as this search component
-    const handleClick = (id) =>{
-        console.log(`You have clicked on the profile ${id}`);
-    }
 
     return (
     <Fragment>
@@ -119,7 +116,6 @@ const Search = () => {
                                         component={Link}
                                         value={user.id}
                                         to={`/dashboard/profile/${user.id}`}
-                                        onClick={handleClick(user.id)}
                                         color="secondary"   
                                     >
                                         <ListItemAvatar>
