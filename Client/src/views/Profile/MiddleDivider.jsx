@@ -1,20 +1,23 @@
-import React, { Fragment, useEffect, useState } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import Grid from '@material-ui/core/Grid';
-import Divider from '@material-ui/core/Divider';
-import Typography from '@material-ui/core/Typography';
-import FacebookIcon from '@material-ui/icons/Facebook';
-import TwitterIcon from '@material-ui/icons/Twitter';
-import LinkedInIcon from '@material-ui/icons/LinkedIn';
-import Avatar from '@material-ui/core/Avatar';
-import { gql, useQuery } from '@apollo/client';
-import Button from '@material-ui/core/Button';
-import ProfileForm from './ProfileForm';
-import IconButton from '@material-ui/core/IconButton';
-import PhotoCamera from '@material-ui/icons/PhotoCamera';
+import { gql, useQuery, useMutation } from '@apollo/client';
+// import PhotoCamera from '@material-ui/icons/PhotoCamera';
 import { Snackbar } from '@material-ui/core';
+import Avatar from '@material-ui/core/Avatar';
+import Button from '@material-ui/core/Button';
+import Divider from '@material-ui/core/Divider';
+import Grid from '@material-ui/core/Grid';
+import IconButton from '@material-ui/core/IconButton';
 import Slide from "@material-ui/core/Slide";
+import { makeStyles } from '@material-ui/core/styles';
+import Typography from '@material-ui/core/Typography';
+// import Icon from '@material-ui/core/Icon';
+import AddAPhotoIcon from '@material-ui/icons/AddAPhoto';
 import CloseIcon from "@material-ui/icons/Close";
+import FacebookIcon from '@material-ui/icons/Facebook';
+import LinkedInIcon from '@material-ui/icons/LinkedIn';
+import PersonAddIcon from '@material-ui/icons/PersonAdd';
+import TwitterIcon from '@material-ui/icons/Twitter';
+import React, { Fragment, useEffect, useState } from 'react';
+import ProfileForm from './ProfileForm';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -62,6 +65,8 @@ const MiddleDividers = () => {
   const [showMessage, setShowMessage] = useState(false);
   const [message, setMessage] = useState("");
   const [showEditableActions, setEditable] = useState(false);
+  const [follow, setFollow] = useState(false);
+  const [sendMutationFollow, { data: followResponse }] = useMutation(FOLLOW_USER);
 
   const { data: profile, error } = useQuery(GET_PROFILE_BY_ID, {
     variables: { userId: getIdParameter() },
@@ -79,6 +84,7 @@ const MiddleDividers = () => {
     bio: "",
   });
 
+  //Get profile
   useEffect(() => {
     if (profile) {
       console.log(profile);
@@ -96,10 +102,65 @@ const MiddleDividers = () => {
     }
     if (error) {
       console.log(error);
-      setMessage(error.graphQLErrors[0].message)
-      setShowMessage(true)
+      setMessage(error.graphQLErrors[0].message);
+      setShowMessage(true);
     }
-  }, [profile, error]);
+
+    //follow unfollow
+    if (follow) {
+      sendMutationFollow({
+        variables: {
+          // followed: profile.getProfileById.user.id
+          followed: "1231312312"
+        },
+        context: {
+          headers: {
+            "Authorization": "Bearer " + localStorage.getItem("JWT_TOKEN"),
+          }
+        }
+      }).catch(err => {
+        console.log(JSON.stringify(err, null, 2));
+        setMessage(error.graphQLErrors[0].message);
+        setShowMessage(true);
+      });
+      setFollow(false);
+    }
+    if (followResponse){
+      console.log(followResponse);
+    }
+  }, [profile, error, follow, followResponse]);
+
+  //Follow / unfollow user
+  // useEffect(() => {
+  //   if (follow) {
+  //     sendMutationFollow({
+  //       variables: {
+  //         // follower: profile.getProfileById.user.id
+  //         follower: "1231312312"
+  //       },
+  //       context: {
+  //         headers: {
+  //           "Authorization": "Bearer " + localStorage.getItem("JWT_TOKEN"),
+  //         }
+  //       }
+  //     }).catch(err => {
+  //       console.log(JSON.stringify(err, null, 2));
+  //       setMessage(error.graphQLErrors[0].message);
+  //       setShowMessage(true);
+  //     });
+  //     setFollow(false);
+  //   }
+  //   if (followResponse){
+  //     console.log(followResponse);
+  //   }
+  // }, [follow, followResponse]);
+
+  //See follow response
+  // useEffect(() => {
+  //   if (followResponse){
+  //     console.log(followResponse);
+  //   }
+  // }, [followResponse])
 
   const handleClickProfileForm = () => {
     setProfileFormShow(!profileFormShow);
@@ -111,7 +172,6 @@ const MiddleDividers = () => {
     }
     setShowMessage(false);
   }
-
   const classes = useStyles();
 
   return (
@@ -137,21 +197,29 @@ const MiddleDividers = () => {
             />
             {
               showEditableActions ?
-              <Fragment> 
-                <label htmlFor="contained-button-file">         
-                  <Button variant="contained" color="primary" component="span">
-                    Subir imagen
-                  </Button>
-                </label>
-                <input accept="image/*" className={classes.input} id="icon-button-file" type="file" />
-                <label htmlFor="icon-button-file">
-                  <IconButton color="primary" aria-label="upload picture" component="span">
-                    <PhotoCamera />
-                  </IconButton>
-                </label>
-              </Fragment>
+                <Fragment> 
+                  <label htmlFor="contained-button-file">         
+                    <Button 
+                      variant="contained" 
+                      color="primary" 
+                      component="span"
+                      endIcon={<AddAPhotoIcon>upload</AddAPhotoIcon>}
+                      >
+                      Subir imagen
+                    </Button>
+                  </label>
+                  {/* <input accept="image/*" className={classes.input} id="icon-button-file" type="file" /> */}
+                </Fragment>
               :
-              null
+                <Button
+                  variant="contained"
+                  color="primary"
+                  className={classes.button}
+                  endIcon={<PersonAddIcon>follow</PersonAddIcon>}
+                  onClick={setFollow(true)}
+                >
+                  Seguir
+                </Button>
             }
 
           </div>
@@ -252,6 +320,17 @@ export const GET_PROFILE_BY_ID = gql`
         lastName,
         email
       }
+    }
+  }
+`;
+
+const FOLLOW_USER = gql`
+  mutation followUser($followed: String!) {
+    followUser(followed: $followed) {
+      follower,
+      followed,
+      followerAble,
+      followedAble,
     }
   }
 `;

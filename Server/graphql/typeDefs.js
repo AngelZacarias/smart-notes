@@ -66,6 +66,12 @@ module.exports = gql`
     type Token {
       token: String!
     }
+    type Follow {
+      follower: User!
+      followed: User!
+      followerAble: Boolean
+      followedAble: Boolean
+    }
     type Query{
         getSubjects: [Subject]
         getMyCurrentSubjects: [Subject]
@@ -98,5 +104,7 @@ module.exports = gql`
         createUserFromGoogleAuth(name: String!, lastName: String!, email: String!, token: String!) : User
         createUserFromNormalSignUp(name: String!, lastName: String!, email: String!, password: String!, confirmPassword: String!) : User!
         editProfile(bio: String, carrer: String, facebookURL: String, linkedinURL: String, twitterURL: String) : Profile
+
+        followUser(followed: String!) : Follow
     },
 `;
