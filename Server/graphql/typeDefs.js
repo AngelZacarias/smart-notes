@@ -67,8 +67,8 @@ module.exports = gql`
       token: String!
     }
     type Follow {
-      follower: User!
-      followed: User!
+      follower: User
+      followed: User
       followerAble: Boolean
       followedAble: Boolean
     }
