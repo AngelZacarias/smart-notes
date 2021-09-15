@@ -110,8 +110,7 @@ const MiddleDividers = () => {
     if (follow) {
       sendMutationFollow({
         variables: {
-          // followed: profile.getProfileById.user.id
-          followed: "1231312312"
+          followed: profile.getProfileById.user.id
         },
         context: {
           headers: {
@@ -216,7 +215,7 @@ const MiddleDividers = () => {
                   color="primary"
                   className={classes.button}
                   endIcon={<PersonAddIcon>follow</PersonAddIcon>}
-                  onClick={setFollow(true)}
+                  onClick={() => {setFollow(true)}}
                 >
                   Seguir
                 </Button>
@@ -327,8 +326,12 @@ export const GET_PROFILE_BY_ID = gql`
 const FOLLOW_USER = gql`
   mutation followUser($followed: String!) {
     followUser(followed: $followed) {
-      follower,
-      followed,
+      follower {
+      	id
+      },
+      followed {
+      	id
+      },
       followerAble,
       followedAble,
     }
