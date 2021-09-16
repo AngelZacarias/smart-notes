@@ -1,5 +1,5 @@
-import { isValidObjectId } from "mongoose";
 import Follow from "../../models/Follow";
+import User from "../../models/User";
 const checkAuth = require("../../utils/check-auth");
 import { createFollow } from "../../services/follow/follow-service";
 var ObjectId = require("mongodb").ObjectId;
@@ -18,12 +18,8 @@ module.exports = {
         if (follow) 
           await Follow.deleteOne(follow);
         else {
-          userFollower = await User.findOne({
-            "_id": ObjectId(user.id)
-          });
-          userFollowed = await User.findOne({
-            "_id": ObjectId(followed)
-          });
+          userFollower = await User.findById(user.id);
+          userFollowed = await User.findById(followed);
           newFollow = createFollow(userFollower, userFollowed);
           await newFollow.save();
           return newFollow;
@@ -33,5 +29,18 @@ module.exports = {
       }
       return null;
     }
-  }
+  },
+
+  //Resolvers for nested queries
+  NestedFollowerReference: {
+    async follower(parent, args, context, info) {
+      return await User.findById(parent.follower);
+    },
+  },
+
+  NestedFollowedReference: {
+    async followed(parent, args, context, info) {
+      return await User.findById(parent.followed);
+    },
+  },
 }

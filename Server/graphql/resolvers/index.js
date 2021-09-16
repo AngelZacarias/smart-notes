@@ -28,8 +28,8 @@ module.exports = {
       profile: userResolvers.NestedProfileReference.profile,
     },
     Follow: {
-      follower: userResolvers.NestedUserReference.user,
-      followed: userResolvers.NestedUserReference.user,
+      follower: followResolvers.NestedFollowerReference.follower,
+      followed: followResolvers.NestedFollowedReference.followed,
     },
     // Default Queries
     Query:{
