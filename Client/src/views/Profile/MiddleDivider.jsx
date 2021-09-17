@@ -118,13 +118,6 @@ const MiddleDividers = () => {
     }
   }, [profile, error]);
 
-  // useEffect(() => {
-  //   if (error) {
-  //     console.log(error);
-  //     setMessage(error.graphQLErrors[0].message);
-  //     setShowMessage(true);
-  //   }
-  // }, [error]);
   //Follow / unfollow user
   useEffect(() => {
     if (newFollow) {
