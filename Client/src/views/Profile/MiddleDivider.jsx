@@ -171,13 +171,6 @@ const MiddleDividers = () => {
     }
   }, [followInfo, errorFollowInfo])
 
-  //See follow response
-  // useEffect(() => {
-  //   if (followResponse){
-  //     console.log(followResponse);
-  //   }
-  // }, [followResponse])
-
   const handleClickProfileForm = () => {
     setProfileFormShow(!profileFormShow);
   }
