@@ -18,14 +18,14 @@ const About = () => {
             </Typography>
             <Typography variant="body" gutterBottom>
                 <p>
-                    Es una aplicación pensada para ayudarte con la administración de tus materias y notas y tareas por hacer de manera centralizada.
+                    Es una aplicación pensada para ayudarte con la administración de tus materias, notas y tareas por hacer de manera centralizada.
                 </p>
                 <p>
-                    Crea tus materias de tu ciclo escolar, identificalas con un color y selecciona los dias y horas en los que estas tomandolas 
+                    Crea tus materias de tu ciclo escolar, identifícalas con un color, selecciona los dias y horas en los que estás tomándolas 
                     (actualmente no tenemos una opción para seleccionar diferentes horarios en diferentes días a la semana).
                 </p>
                 <p>
-                    Crea tus mejores apuntes para tus materias, con ellos podremos ayudarte a generar un set rapido de <strong>las notas mas importantes</strong> de forma <strong>inteligente</strong>.
+                    Crea tus mejores apuntes para tus materias, con ellos podremos ayudarte a generar un set rápido de <strong>las notas más importantes</strong> de forma <strong>inteligente</strong>.
                 </p>
                 <p>
                     También podrás mandarle mensajes a tus amigos, buscar a tus compañeros y comenzar a hacer networking para cualquier tipo de proyectos que tengas.
