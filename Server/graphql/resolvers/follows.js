@@ -27,6 +27,7 @@ module.exports = {
       const followed = args.followed;
       let newFollow, userFollower, userFollowed;
       if (user.id == followed) throw new Error("No puedes seguirte a ti mismo");
+      if (followed == "-1") throw new Error("Perfil inexistente")
       try {
         const follow = await Follow.findOne({ follower: user.id, followed });
         if (follow) await Follow.deleteOne(follow);

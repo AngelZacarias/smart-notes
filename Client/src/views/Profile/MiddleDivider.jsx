@@ -98,7 +98,7 @@ const MiddleDividers = () => {
   //Get profile
   useEffect(() => {
     if (profile) {
-      console.log(profile);
+      // console.log(profile);
       setProfileInfo({
         name: profile.getProfileById.user.name,
         lastName: profile.getProfileById.user.lastName,
@@ -112,7 +112,7 @@ const MiddleDividers = () => {
       getIdParameter() == "0" ? setEditable(true) : null;
     }
     if (error) {
-      console.log(error);
+      // console.log(error);
       setMessage(error.graphQLErrors[0].message);
       setShowMessage(true);
     }
@@ -121,9 +121,14 @@ const MiddleDividers = () => {
   //Follow / unfollow user
   useEffect(() => {
     if (newFollow) {
+      let followed = profile;
+      if (followed == undefined) 
+        followed = "-1";
+      else 
+        followed = profile.getProfileById.user.id
       sendMutationFollow({
         variables: {
-          followed: profile.getProfileById.user.id
+          followed
         },
         context: {
           headers: {
@@ -131,7 +136,7 @@ const MiddleDividers = () => {
           }
         }
       }).catch(err => {
-        console.log(JSON.stringify(err, null, 2));
+        // console.log(JSON.stringify(err, null, 2));
         setMessage(err.graphQLErrors[0].message);
         setShowMessage(true);
       });
@@ -141,7 +146,7 @@ const MiddleDividers = () => {
 
   useEffect(() => {
     if (followResponse){
-      console.log(followResponse);
+      // console.log(followResponse);
       if (!followResponse.followUser) {
         setFollowButton(true);
         setMessage("Ya no sigues a esta persona");
@@ -165,7 +170,7 @@ const MiddleDividers = () => {
     }
 
     if (errorFollowInfo) {
-      console.log(errorFollowInfo);
+      // console.log(errorFollowInfo);
       setMessage(errorFollowInfo.graphQLErrors[0].message);
       setShowMessage(true);
     }
