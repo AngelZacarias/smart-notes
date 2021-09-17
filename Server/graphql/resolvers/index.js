@@ -36,7 +36,8 @@ module.exports = {
         ...subjectsResolvers.Query,
         ...scheduleResolvers.Query,
         ...tasksResolvers.Query,
-        ...userResolvers.Query
+        ...userResolvers.Query,
+        ...followResolvers.Query
     },
     Mutation:{
         ...subjectsResolvers.Mutation,

@@ -16,8 +16,9 @@ import FacebookIcon from '@material-ui/icons/Facebook';
 import LinkedInIcon from '@material-ui/icons/LinkedIn';
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import TwitterIcon from '@material-ui/icons/Twitter';
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import ProfileForm from './ProfileForm';
+import HighlightOffIcon from '@material-ui/icons/HighlightOff';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -65,8 +66,9 @@ const MiddleDividers = () => {
   const [showMessage, setShowMessage] = useState(false);
   const [message, setMessage] = useState("");
   const [showEditableActions, setEditable] = useState(false);
-  const [follow, setFollow] = useState(false);
+  const [newFollow, setFollow] = useState(false);
   const [sendMutationFollow, { data: followResponse }] = useMutation(FOLLOW_USER);
+  const [followButtonAble, setFollowButton] = useState(true);
 
   const { data: profile, error } = useQuery(GET_PROFILE_BY_ID, {
     variables: { userId: getIdParameter() },
@@ -76,6 +78,15 @@ const MiddleDividers = () => {
       }
     }
   });
+
+  const { data: followInfo, errorFollowInfo } = useQuery(GET_FOLLOW, {
+    variables: { followedId: getIdParameter() },
+    context: {
+      headers: {
+        "Authorization": "Bearer " + localStorage.getItem("JWT_TOKEN"),
+      }
+    }
+  })
 
   const [profileInfo, setProfileInfo] = useState({
     name: "",
@@ -105,9 +116,18 @@ const MiddleDividers = () => {
       setMessage(error.graphQLErrors[0].message);
       setShowMessage(true);
     }
+  }, [profile, error]);
 
-    //follow unfollow
-    if (follow) {
+  // useEffect(() => {
+  //   if (error) {
+  //     console.log(error);
+  //     setMessage(error.graphQLErrors[0].message);
+  //     setShowMessage(true);
+  //   }
+  // }, [error]);
+  //Follow / unfollow user
+  useEffect(() => {
+    if (newFollow) {
       sendMutationFollow({
         variables: {
           followed: profile.getProfileById.user.id
@@ -119,40 +139,44 @@ const MiddleDividers = () => {
         }
       }).catch(err => {
         console.log(JSON.stringify(err, null, 2));
-        setMessage(error.graphQLErrors[0].message);
+        setMessage(err.graphQLErrors[0].message);
         setShowMessage(true);
       });
       setFollow(false);
     }
+  }, [newFollow]);
+
+  useEffect(() => {
     if (followResponse){
       console.log(followResponse);
+      if (!followResponse.followUser) {
+        setFollowButton(true);
+        setMessage("Ya no sigues a esta persona");
+        setShowMessage(true);
+      } else {
+        setFollowButton(false);
+        setMessage("Ahora sigues a esta persona");
+        setShowMessage(true);
+      }
     }
-  }, [profile, error, follow, followResponse]);
+  }, [followResponse])
 
-  //Follow / unfollow user
-  // useEffect(() => {
-  //   if (follow) {
-  //     sendMutationFollow({
-  //       variables: {
-  //         // follower: profile.getProfileById.user.id
-  //         follower: "1231312312"
-  //       },
-  //       context: {
-  //         headers: {
-  //           "Authorization": "Bearer " + localStorage.getItem("JWT_TOKEN"),
-  //         }
-  //       }
-  //     }).catch(err => {
-  //       console.log(JSON.stringify(err, null, 2));
-  //       setMessage(error.graphQLErrors[0].message);
-  //       setShowMessage(true);
-  //     });
-  //     setFollow(false);
-  //   }
-  //   if (followResponse){
-  //     console.log(followResponse);
-  //   }
-  // }, [follow, followResponse]);
+  useEffect(() => {
+    if (followInfo) {
+      if (!followInfo.getFollow) {
+        setFollowButton(true);
+      }
+      if (followInfo.getFollow) {
+        setFollowButton(false);
+      }
+    }
+
+    if (errorFollowInfo) {
+      console.log(errorFollowInfo);
+      setMessage(errorFollowInfo.graphQLErrors[0].message);
+      setShowMessage(true);
+    }
+  }, [followInfo, errorFollowInfo])
 
   //See follow response
   // useEffect(() => {
@@ -196,29 +220,42 @@ const MiddleDividers = () => {
             />
             {
               showEditableActions ?
-                <Fragment> 
-                  <label htmlFor="contained-button-file">         
-                    <Button 
-                      variant="contained" 
-                      color="primary" 
-                      component="span"
-                      endIcon={<AddAPhotoIcon>upload</AddAPhotoIcon>}
-                      >
-                      Subir imagen
-                    </Button>
-                  </label>
-                  {/* <input accept="image/*" className={classes.input} id="icon-button-file" type="file" /> */}
-                </Fragment>
-              :
+                <label htmlFor="contained-button-file">         
+                  <Button 
+                    variant="contained" 
+                    color="primary" 
+                    component="span"
+                    endIcon={<AddAPhotoIcon>upload</AddAPhotoIcon>}
+                    >
+                    Subir imagen
+                  </Button>
+                </label>
+              : followButtonAble ?
                 <Button
                   variant="contained"
                   color="primary"
                   className={classes.button}
                   endIcon={<PersonAddIcon>follow</PersonAddIcon>}
-                  onClick={() => {setFollow(true)}}
+                  onClick={() => {
+                    setFollow(true);
+                    setFollowButton(true);
+                  }}
                 >
                   Seguir
                 </Button>
+                :
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    className={classes.button}
+                    endIcon={<HighlightOffIcon>unfollow</HighlightOffIcon>}
+                    onClick={() => {
+                      setFollow(true);
+                      setFollowButton(false);
+                    }}
+                  >
+                    Dejar de seguir
+                  </Button>
             }
 
           </div>
@@ -290,7 +327,7 @@ const MiddleDividers = () => {
         }}
         TransitionComponent={Slide}
         open={showMessage}
-        autoHideDuration={4000}
+        autoHideDuration={3000}
         onClose={handleCloseMessage}
         message={message}
         action={
@@ -335,6 +372,21 @@ const FOLLOW_USER = gql`
       followerAble,
       followedAble,
     }
+  }
+`;
+
+const GET_FOLLOW = gql`
+  query getFollow($followedId: String!) {
+    getFollow(followedId: $followedId) {
+      follower {
+        id
+      },
+      followed {
+        id
+      },
+      followerAble,
+      followedAble,
+    }  
   }
 `;
 

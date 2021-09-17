@@ -1,22 +1,35 @@
 import Follow from "../../models/Follow";
 import User from "../../models/User";
-const checkAuth = require("../../utils/check-auth");
 import { createFollow } from "../../services/follow/follow-service";
-var ObjectId = require("mongodb").ObjectId;
+const checkAuth = require("../../utils/check-auth");
 
 module.exports = {
-  // Query: {},
+  Query: {
+    async getFollow(parent, args, context, info) {
+      const user = checkAuth(context);
+      const followedId = args.followedId;
+      let follow;
+      try {
+        follow = await Follow.findOne({
+          follower: user.id,
+          followed: followedId,
+        });
+        if (!follow) return null;
+      } catch (error) {
+        throw new Error("Error al obtener el follow");
+      }
+      return follow;
+    },
+  },
   Mutation: {
     async followUser(parent, args, context, info) {
       const user = checkAuth(context);
       const followed = args.followed;
       let newFollow, userFollower, userFollowed;
-      if (user.id == followed) 
-        throw new Error("No puedes seguirte a ti mismo")
+      if (user.id == followed) throw new Error("No puedes seguirte a ti mismo");
       try {
-        const follow = await Follow.findOne({ followed });
-        if (follow) 
-          await Follow.deleteOne(follow);
+        const follow = await Follow.findOne({ follower: user.id, followed });
+        if (follow) await Follow.deleteOne(follow);
         else {
           userFollower = await User.findById(user.id);
           userFollowed = await User.findById(followed);
@@ -25,10 +38,10 @@ module.exports = {
           return newFollow;
         }
       } catch (error) {
-        throw new Error("Error al intentar seguir usuario")
+        throw new Error("Error al intentar seguir usuario");
       }
       return null;
-    }
+    },
   },
 
   //Resolvers for nested queries
@@ -43,4 +56,4 @@ module.exports = {
       return await User.findById(parent.followed);
     },
   },
-}
+};

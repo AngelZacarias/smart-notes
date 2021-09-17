@@ -87,6 +87,8 @@ module.exports = gql`
         getUser(email: String!): User
         getProfiles(keyword: String!): [User]
         getProfileById(userId: ID!): Profile
+
+        getFollow(followedId: String!): Follow
     },
     type Mutation{
         createSubject(name: String!, color: String!) : Subject!
