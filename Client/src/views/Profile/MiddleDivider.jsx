@@ -67,7 +67,17 @@ const MiddleDividers = () => {
   const [message, setMessage] = useState("");
   const [showEditableActions, setEditable] = useState(false);
   const [newFollow, setFollow] = useState(false);
-  const [sendMutationFollow, { data: followResponse }] = useMutation(FOLLOW_USER);
+  const [sendMutationFollow, { data: followResponse }] = useMutation(FOLLOW_USER, {
+    refetchQueries: [{
+      query: GET_FOLLOW,
+      variables: { followedId: getIdParameter() },
+      context: {
+        headers: {
+          "Authorization": "Bearer " + localStorage.getItem("JWT_TOKEN"),
+        }
+      }
+    }]
+  });
   const [followButtonAble, setFollowButton] = useState(true);
 
   const { data: profile, error } = useQuery(GET_PROFILE_BY_ID, {
@@ -161,6 +171,7 @@ const MiddleDividers = () => {
 
   useEffect(() => {
     if (followInfo) {
+      // console.log(followInfo);
       if (!followInfo.getFollow) {
         setFollowButton(true);
       }
