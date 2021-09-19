@@ -82,6 +82,8 @@ module.exports = gql`
 
         getNotes(subjectId: ID!): [Note]
         getNote(id: ID!): Note
+        getProfiles(keyword: String!): [User]
+        getProfileById(userId: ID!): Profile
     },
     type Mutation{
         createSubject(name: String!, color: String!) : Subject!

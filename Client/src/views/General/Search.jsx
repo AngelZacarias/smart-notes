@@ -1,16 +1,17 @@
-import React, { Fragment } from 'react'
-import { makeStyles } from '@material-ui/core/styles';
+// Graphql
+import { gql, useQuery } from '@apollo/client';
+import Avatar from '@material-ui/core/Avatar';
+import Divider from '@material-ui/core/Divider';
+import LinearProgress from '@material-ui/core/LinearProgress';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
-import Divider from '@material-ui/core/Divider';
-import ListItemText from '@material-ui/core/ListItemText';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
-import Avatar from '@material-ui/core/Avatar';
+import ListItemText from '@material-ui/core/ListItemText';
+import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
-import LinearProgress from '@material-ui/core/LinearProgress';
 import { Alert, AlertTitle } from '@material-ui/lab';
-// Graphql
-import { useQuery, gql } from '@apollo/client';
+import React, { Fragment } from 'react';
+import { Link } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -40,6 +41,8 @@ const Search = () => {
     const getKeyWordParameter = () =>{
         const urlString = window.location.href;
         const url = new URL(urlString);
+        console.log("Esto es el url:", url);
+        console.log(url.searchParams.get("keyword"));
         return url.searchParams.get("keyword");
     }
 
@@ -50,39 +53,36 @@ const Search = () => {
         },
         context: {
           headers: {
-            "Authorization": "Bearer " + localStorage.getItem("JWT_TOKEN"), // "| GOOGLE_TOKEN"
+            "Authorization": "Bearer " + localStorage.getItem("JWT_TOKEN"),
           }
         },
         fetchPolicy: "cache-and-network",
     });
 
-    /* Harcoded Queries Results
-    const data = { getProfiles: [
-        {
-            user: {
-                id: 1,
-                name: 'Angel Zacarias',
-              },
-              carrer: 'Ingeniería en Computación',
-              bio: 'Hello there!',
-        },
-        {
-            user: {
-                id: 2,
-                name: 'Julio Antonio Gonzalez',
-              },
-              carrer: 'Ingeniería en Computación',
-              bio: 'Mi mejor amigo es Zacarias!',
-        },
-    ]};
-    const loading = false;
-    const called = false;
-    const error = null;
-    */
+    // Harcoded Queries Results
+    // const data = { getProfiles: [
+    //     {
+    //         user: {
+    //             id: 1,
+    //             name: 'Angel Zacarias',
+    //           },
+    //           carrer: 'Ingeniería en Computación',
+    //           bio: 'Hello there!',
+    //     },
+    //     {
+    //         user: {
+    //             id: 2,
+    //             name: 'Julio Antonio Gonzalez',
+    //           },
+    //           carrer: 'Ingeniería en Computación',
+    //           bio: 'Mi mejor amigo es Zacarias!',
+    //     },
+    // ]};
+    // const loading = false;
+    // const called = false;
+    // const error = null;
+    
     // You can actually use two diferent ways to implement the routing here... by context *as the subjects or by url as this search component
-    const handleClick = (id) =>{
-        console.log(`You have clicked on the profile ${id}`);
-    }
 
     return (
     <Fragment>
@@ -106,20 +106,23 @@ const Search = () => {
                 { data && data.getProfiles ? 
                     <Fragment>
                         {
-                            data.getProfiles.map(profile =>(
+                            data.getProfiles.map(user =>(
                                 <Fragment 
-                                    key={profile.user.id}
+                                    key={user.id}
                                 >
                                     <ListItem 
                                         alignItems="flex-start"
                                         button
-                                        onClick={() => handleClick(profile.user.id)}
+                                        component={Link}
+                                        value={user.id}
+                                        to={`/dashboard/profile/${user.id}`}
+                                        color="secondary"   
                                     >
                                         <ListItemAvatar>
-                                        <Avatar alt={profile.user.name} src={profilePicture} />
+                                        <Avatar alt={user.name} src={profilePicture} />
                                         </ListItemAvatar>
                                         <ListItemText
-                                        primary={profile.user.name}
+                                        primary={user.name + ' ' + user.lastName}
                                         secondary={
                                             <Fragment>
                                             <Typography
@@ -128,9 +131,9 @@ const Search = () => {
                                                 className={classes.inline}
                                                 color="textPrimary"
                                             >
-                                                {profile.carrer}
+                                                {user.profile.carrer}
                                             </Typography>
-                                            {` — ${profile.bio}`}
+                                            {` — ${user.profile.bio}`}
                                             </Fragment>
                                         }
                                         />
@@ -150,14 +153,15 @@ const Search = () => {
 
 const GET_PROFILES = gql`
 query getProfiles($keyword: String!){
-    getProfiles(keyword:$keyword){
-        user{
-        id,
-        name,
-        }
-        carrer,
-        bio,
+  getProfiles(keyword:$keyword){
+    id,
+    name,
+    lastName,
+    profile {
+      carrer,
+      bio,
     }
+  }
 }
 `;
 
