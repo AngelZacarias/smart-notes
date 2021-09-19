@@ -1,20 +1,24 @@
-import React, { Fragment, useEffect, useState } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import Grid from '@material-ui/core/Grid';
-import Divider from '@material-ui/core/Divider';
-import Typography from '@material-ui/core/Typography';
-import FacebookIcon from '@material-ui/icons/Facebook';
-import TwitterIcon from '@material-ui/icons/Twitter';
-import LinkedInIcon from '@material-ui/icons/LinkedIn';
-import Avatar from '@material-ui/core/Avatar';
-import { gql, useQuery } from '@apollo/client';
-import Button from '@material-ui/core/Button';
-import ProfileForm from './ProfileForm';
-import IconButton from '@material-ui/core/IconButton';
-import PhotoCamera from '@material-ui/icons/PhotoCamera';
+import { gql, useQuery, useMutation } from '@apollo/client';
+// import PhotoCamera from '@material-ui/icons/PhotoCamera';
 import { Snackbar } from '@material-ui/core';
+import Avatar from '@material-ui/core/Avatar';
+import Button from '@material-ui/core/Button';
+import Divider from '@material-ui/core/Divider';
+import Grid from '@material-ui/core/Grid';
+import IconButton from '@material-ui/core/IconButton';
 import Slide from "@material-ui/core/Slide";
+import { makeStyles } from '@material-ui/core/styles';
+import Typography from '@material-ui/core/Typography';
+// import Icon from '@material-ui/core/Icon';
+import AddAPhotoIcon from '@material-ui/icons/AddAPhoto';
 import CloseIcon from "@material-ui/icons/Close";
+import FacebookIcon from '@material-ui/icons/Facebook';
+import LinkedInIcon from '@material-ui/icons/LinkedIn';
+import PersonAddIcon from '@material-ui/icons/PersonAdd';
+import TwitterIcon from '@material-ui/icons/Twitter';
+import React, { useEffect, useState } from 'react';
+import ProfileForm from './ProfileForm';
+import HighlightOffIcon from '@material-ui/icons/HighlightOff';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -62,6 +66,9 @@ const MiddleDividers = () => {
   const [showMessage, setShowMessage] = useState(false);
   const [message, setMessage] = useState("");
   const [showEditableActions, setEditable] = useState(false);
+  const [newFollow, setFollow] = useState(false);
+  const [sendMutationFollow, { data: followResponse }] = useMutation(FOLLOW_USER);
+  const [followButtonAble, setFollowButton] = useState(true);
 
   const { data: profile, error } = useQuery(GET_PROFILE_BY_ID, {
     variables: { userId: getIdParameter() },
@@ -72,6 +79,15 @@ const MiddleDividers = () => {
     }
   });
 
+  const { data: followInfo, errorFollowInfo } = useQuery(GET_FOLLOW, {
+    variables: { followedId: getIdParameter() },
+    context: {
+      headers: {
+        "Authorization": "Bearer " + localStorage.getItem("JWT_TOKEN"),
+      }
+    }
+  })
+
   const [profileInfo, setProfileInfo] = useState({
     name: "",
     lastName: "",
@@ -79,9 +95,10 @@ const MiddleDividers = () => {
     bio: "",
   });
 
+  //Get profile
   useEffect(() => {
     if (profile) {
-      console.log(profile);
+      // console.log(profile);
       setProfileInfo({
         name: profile.getProfileById.user.name,
         lastName: profile.getProfileById.user.lastName,
@@ -95,11 +112,69 @@ const MiddleDividers = () => {
       getIdParameter() == "0" ? setEditable(true) : null;
     }
     if (error) {
-      console.log(error);
-      setMessage(error.graphQLErrors[0].message)
-      setShowMessage(true)
+      // console.log(error);
+      setMessage(error.graphQLErrors[0].message);
+      setShowMessage(true);
     }
   }, [profile, error]);
+
+  //Follow / unfollow user
+  useEffect(() => {
+    if (newFollow) {
+      let followed = profile;
+      if (followed == undefined) 
+        followed = "-1";
+      else 
+        followed = profile.getProfileById.user.id
+      sendMutationFollow({
+        variables: {
+          followed
+        },
+        context: {
+          headers: {
+            "Authorization": "Bearer " + localStorage.getItem("JWT_TOKEN"),
+          }
+        }
+      }).catch(err => {
+        // console.log(JSON.stringify(err, null, 2));
+        setMessage(err.graphQLErrors[0].message);
+        setShowMessage(true);
+      });
+      setFollow(false);
+    }
+  }, [newFollow]);
+
+  useEffect(() => {
+    if (followResponse){
+      // console.log(followResponse);
+      if (!followResponse.followUser) {
+        setFollowButton(true);
+        setMessage("Ya no sigues a esta persona");
+        setShowMessage(true);
+      } else {
+        setFollowButton(false);
+        setMessage("Ahora sigues a esta persona");
+        setShowMessage(true);
+      }
+    }
+  }, [followResponse])
+
+  useEffect(() => {
+    if (followInfo) {
+      if (!followInfo.getFollow) {
+        setFollowButton(true);
+      }
+      if (followInfo.getFollow) {
+        setFollowButton(false);
+      }
+    }
+
+    if (errorFollowInfo) {
+      // console.log(errorFollowInfo);
+      setMessage(errorFollowInfo.graphQLErrors[0].message);
+      setShowMessage(true);
+    }
+  }, [followInfo, errorFollowInfo])
 
   const handleClickProfileForm = () => {
     setProfileFormShow(!profileFormShow);
@@ -111,7 +186,6 @@ const MiddleDividers = () => {
     }
     setShowMessage(false);
   }
-
   const classes = useStyles();
 
   return (
@@ -137,21 +211,42 @@ const MiddleDividers = () => {
             />
             {
               showEditableActions ?
-              <Fragment> 
                 <label htmlFor="contained-button-file">         
-                  <Button variant="contained" color="primary" component="span">
+                  <Button 
+                    variant="contained" 
+                    color="primary" 
+                    component="span"
+                    endIcon={<AddAPhotoIcon>upload</AddAPhotoIcon>}
+                    >
                     Subir imagen
                   </Button>
                 </label>
-                <input accept="image/*" className={classes.input} id="icon-button-file" type="file" />
-                <label htmlFor="icon-button-file">
-                  <IconButton color="primary" aria-label="upload picture" component="span">
-                    <PhotoCamera />
-                  </IconButton>
-                </label>
-              </Fragment>
-              :
-              null
+              : followButtonAble ?
+                <Button
+                  variant="contained"
+                  color="primary"
+                  className={classes.button}
+                  endIcon={<PersonAddIcon>follow</PersonAddIcon>}
+                  onClick={() => {
+                    setFollow(true);
+                    setFollowButton(true);
+                  }}
+                >
+                  Seguir
+                </Button>
+                :
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    className={classes.button}
+                    endIcon={<HighlightOffIcon>unfollow</HighlightOffIcon>}
+                    onClick={() => {
+                      setFollow(true);
+                      setFollowButton(false);
+                    }}
+                  >
+                    Dejar de seguir
+                  </Button>
             }
 
           </div>
@@ -223,7 +318,7 @@ const MiddleDividers = () => {
         }}
         TransitionComponent={Slide}
         open={showMessage}
-        autoHideDuration={4000}
+        autoHideDuration={3000}
         onClose={handleCloseMessage}
         message={message}
         action={
@@ -253,6 +348,36 @@ export const GET_PROFILE_BY_ID = gql`
         email
       }
     }
+  }
+`;
+
+const FOLLOW_USER = gql`
+  mutation followUser($followed: String!) {
+    followUser(followed: $followed) {
+      follower {
+      	id
+      },
+      followed {
+      	id
+      },
+      followerAble,
+      followedAble,
+    }
+  }
+`;
+
+const GET_FOLLOW = gql`
+  query getFollow($followedId: String!) {
+    getFollow(followedId: $followedId) {
+      follower {
+        id
+      },
+      followed {
+        id
+      },
+      followerAble,
+      followedAble,
+    }  
   }
 `;
 
