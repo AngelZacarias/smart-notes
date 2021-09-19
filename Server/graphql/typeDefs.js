@@ -37,11 +37,10 @@ module.exports = gql`
     }
     type Note{
         id: ID!
-        title: String
-        description: String
+        richTextNote: String
+        plainTextNote: String     
         user: User
         subject: Subject
-        tags: [String]
         createdAt: String
     }
     type Profile{
@@ -80,6 +79,9 @@ module.exports = gql`
         normalLogin(email: String!, password: String!): Token
         getUser(email: String!): User
         getUserProfile: Profile
+
+        getNotes(subjectId: ID!): [Note]
+        getNote(id: ID!): Note
     },
     type Mutation{
         createSubject(name: String!, color: String!) : Subject!
@@ -97,5 +99,8 @@ module.exports = gql`
         createUserFromGoogleAuth(name: String!, lastName: String!, email: String!, token: String!) : User
         createUserFromNormalSignUp(name: String!, lastName: String!, email: String!, password: String!, confirmPassword: String!) : User!
         editProfile(bio: String, carrer: String, facebookURL: String, linkedinURL: String, twitterURL: String) : Profile
+
+        createOrUpdateNote(id: ID, subjectId: ID!, plainTextNote: String!, richTextNote: String!): Note
+        deleteNote(id: ID!): Note
     },
 `;

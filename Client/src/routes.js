@@ -106,7 +106,7 @@ const dashboardRoutes = [
   },
   {
     path: "/subjects",
-    name: "Return to Dashboard",
+    name: "Regresar al Dashboard",
     rtlName: "",
     icon: Dashboard,
     component: Subjects,

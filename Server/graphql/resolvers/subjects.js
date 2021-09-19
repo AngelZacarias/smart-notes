@@ -235,5 +235,10 @@ module.exports = {
         async subject(parent, args, context, info){
             return await Subject.findById(parent.subject);
         }
+    },
+    NestedSubjectReference: {
+        async subject(parent, args, context, info){
+            return await Subject.findById(parent.subject);
+        }
     }
 }

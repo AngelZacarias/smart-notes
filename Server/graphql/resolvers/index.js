@@ -2,6 +2,7 @@ import subjectsResolvers from './subjects';
 import userResolvers from './users';
 import scheduleResolvers from './schedule';
 import tasksResolvers from './tasks';
+import noteResolvers from './notes';
 
 module.exports = {
     //Nested Queries
@@ -23,16 +24,22 @@ module.exports = {
     Profile: {
         user: userResolvers.NestedUserReference.user,
     },
+    Note: {
+        subject: subjectsResolvers.NestedSubjectReference.subject,
+        user: userResolvers.NestedUserReference.user,
+    },
     // Default Queries
     Query:{
         ...subjectsResolvers.Query,
         ...scheduleResolvers.Query,
         ...tasksResolvers.Query,
-        ...userResolvers.Query
+        ...userResolvers.Query,
+        ...noteResolvers.Query
     },
     Mutation:{
         ...subjectsResolvers.Mutation,
         ...tasksResolvers.Mutation,
-        ...userResolvers.Mutation
+        ...userResolvers.Mutation,
+        ...noteResolvers.Mutation
     }
 }

@@ -20,12 +20,35 @@ const SubjectProvider = (props) => {
         });
     }
 
+    // Translate the color name for the card into the colors for the dashboard sidebar
+    const getColor = () =>{
+        if(subjectInformation.color === 'success'){
+            return 'green';
+        }
+        else if(subjectInformation.color === 'info'){
+            return 'blue';
+        }
+        else if(subjectInformation.color === 'warning'){
+            return 'orange';
+        }
+        else if(subjectInformation.color === 'error'){
+            return 'red';
+        }
+        else if(subjectInformation.color === 'rose'){
+            return 'rose';
+        }
+        else{
+            return 'primary';
+        }
+    }
+
     return ( 
         <SubjectContext.Provider
             value={{
                 subjectInformation,
                 setSubjectInformation,
-                clearSubjectInformation
+                clearSubjectInformation,
+                getColor
             }}
         >
             {props.children}

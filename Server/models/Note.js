@@ -1,17 +1,14 @@
 const { model, Schema } = require('mongoose');
 
 const noteSchema = new Schema({
-    title: {
+    richTextNote: {
         type: String,
-        required: true,
+        default: "",
     },
-    description: {
+    plainTextNote: {
         type: String,
-        required: true,
+        default: "",
     },
-    tags: [{
-        type: String,
-    }],
     createdAt: String,
     user: {
         type: Schema.Types.ObjectId,
