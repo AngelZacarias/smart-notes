@@ -1,11 +1,8 @@
 import scheduleResolvers from './schedule';
 import subjectsResolvers from './subjects';
 import tasksResolvers from './tasks';
-<<<<<<< HEAD
 import noteResolvers from './notes';
-=======
 import userResolvers from './users';
->>>>>>> master
 
 module.exports = {
     //Nested Queries
@@ -30,6 +27,7 @@ module.exports = {
     Note: {
         subject: subjectsResolvers.NestedSubjectReference.subject,
         user: userResolvers.NestedUserReference.user,
+    },
     User: {
       profile: userResolvers.NestedProfileReference.profile,
     },
