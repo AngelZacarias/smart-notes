@@ -41,8 +41,7 @@ const Search = () => {
     const getKeyWordParameter = () =>{
         const urlString = window.location.href;
         const url = new URL(urlString);
-        console.log("Esto es el url:", url);
-        console.log(url.searchParams.get("keyword"));
+        // console.log(url.searchParams.get("keyword"));
         return url.searchParams.get("keyword");
     }
 

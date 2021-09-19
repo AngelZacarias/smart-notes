@@ -65,6 +65,12 @@ module.exports = gql`
     type Token {
       token: String!
     }
+    type Follow {
+      follower: User
+      followed: User
+      followerAble: Boolean
+      followedAble: Boolean
+    }
     type Query{
         getSubjects: [Subject]
         getMyCurrentSubjects: [Subject]
@@ -84,6 +90,8 @@ module.exports = gql`
         getNote(id: ID!): Note
         getProfiles(keyword: String!): [User]
         getProfileById(userId: ID!): Profile
+
+        getFollow(followedId: String!): Follow
     },
     type Mutation{
         createSubject(name: String!, color: String!) : Subject!
@@ -104,5 +112,7 @@ module.exports = gql`
 
         createOrUpdateNote(id: ID, subjectId: ID!, plainTextNote: String!, richTextNote: String!): Note
         deleteNote(id: ID!): Note
+        
+        followUser(followed: String!) : Follow
     },
 `;
