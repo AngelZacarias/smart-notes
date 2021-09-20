@@ -1,11 +1,10 @@
 const { ApolloServer } = require('apollo-server');
 const mongoose = require('mongoose');
-
 const { MONGODB } = require('./config');
 const typeDefs = require('./graphql/typeDefs');
 const resolvers = require('./graphql/resolvers');
-
 require("dotenv").config();
+import { taskReminder } from "./utils/jobs/scheduler";
 
 const server = new ApolloServer({
     typeDefs: typeDefs,
@@ -24,3 +23,6 @@ mongoose.connect(MONGODB, { useNewUrlParser: true, useUnifiedTopology: true })
     .catch((e) => {
         console.error('Connection error', e.message);
     })
+
+taskReminder();
+  
