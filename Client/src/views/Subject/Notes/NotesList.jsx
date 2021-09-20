@@ -110,7 +110,7 @@ const NotesList = ({ subjectId, setRichTextNote, setPlainTextNote, setNoteId}) =
       : !loading && called && data.getNotes.length < 1 ?
         <Alert severity="info">
           <AlertTitle>Info</AlertTitle>
-          No existen notas... Crea tu primer nota!
+          No existen notas... ¡Crea tu primer nota!
         </Alert>
       : 
       <List className={classes.root} component="nav">
@@ -140,7 +140,7 @@ const NotesList = ({ subjectId, setRichTextNote, setPlainTextNote, setNoteId}) =
                         className={classes.inline}
                         color="textPrimary"
                       >
-                        {note.createdAt}
+                        {new Date(note.createdAt).toDateString()}
                       </Typography>
                     }
                   />

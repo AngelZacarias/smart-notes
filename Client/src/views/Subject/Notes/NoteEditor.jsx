@@ -163,24 +163,6 @@ function getBlockStyle(block) {
   }
 }
 
-class StyleButton extends React.Component {
-  constructor() {
-    super();
-    this.onToggle = (e) => {
-      e.preventDefault();
-      this.props.onToggle(this.props.style);
-    };
-  }
-
-  render() {
-    return (
-      <span onMouseDown={this.onToggle}>
-        {this.props.label}
-      </span>
-    );
-  }
-}
-
 const BLOCK_TYPES = [
   {label: 'Title 1', style: 'header-one', icon: FormatSize},
   {label: 'Title 2', style: 'header-two', icon: FormatSize},
@@ -198,6 +180,9 @@ const BlockStyleControls = (props) => {
     .getCurrentContent()
     .getBlockForKey(selection.getStartKey())
     .getType();
+  const onToggle = (style) => {
+    props.onToggle(style);
+  }
 
   return (
     <ButtonGroup disableElevation size="small">
@@ -208,14 +193,9 @@ const BlockStyleControls = (props) => {
           size="sm"
           startIcon={<type.icon/>}
           color={type.style === blockType? color : 'white'}
+          onClick={()=>onToggle(type.style)}
         >
-          <StyleButton
-            key={type.label}
-            active={type.style === blockType}
-            label={type.label}
-            onToggle={props.onToggle}
-            style={type.style}
-          />
+          {type.label} 
         </RegularButton>
       )}
     </ButtonGroup>
@@ -232,6 +212,9 @@ var INLINE_STYLES = [
 const InlineStyleControls = (props) => {
   const currentStyle = props.editorState.getCurrentInlineStyle();
   const { color } = props;
+  const onToggle = (style) => {
+    props.onToggle(style);
+  }
   
   return (
     <ButtonGroup disableElevation size="small">
@@ -242,14 +225,9 @@ const InlineStyleControls = (props) => {
           size="sm"
           variant={currentStyle.has(type.style)? 'contained' : 'outlined'}
           startIcon={<type.icon/>}
+          onClick={()=>onToggle(type.style)}
         >
-          <StyleButton
-            key={type.label}
-            active={currentStyle.has(type.style)}
-            label={type.label}
-            onToggle={props.onToggle}
-            style={type.style}
-          />
+          {type.label}
         </RegularButton>
       )}
     </ButtonGroup>

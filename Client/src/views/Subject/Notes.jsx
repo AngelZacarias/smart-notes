@@ -1,5 +1,5 @@
-import React, { useState, useContext, useEffect } from 'react';
-import Paper from '@material-ui/core/Paper';
+import React, { useState, useContext, useEffect, Fragment } from 'react';
+//import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { makeStyles } from '@material-ui/core/styles';
@@ -16,13 +16,20 @@ import { SubjectContext } from './../../hooks/SubjectContext';
 
 const useStyles = makeStyles((theme) => ({
     paper: {
-        padding: theme.spacing(2)
+        padding: theme.spacing(2),
+        backgroundColor: theme.palette.background.paper,
     },
     button: {
         width: '100%',
+        marginBottom: theme.spacing(2),
+    },
+    buttonTwo: {
+        width: '100%',
+        marginTop: theme.spacing(2),
     },
     leftList: {
-        height: '450px',
+        maxHeight: '100%',
+        height: '80vh',
         overflowY: 'auto',
         overflowX: 'hidden',
     },
@@ -88,7 +95,7 @@ const Notes = () => {
     }
 
     return (
-        <Paper className={classes.paper}>
+        <Fragment>
             {
                 errorSave && errorSave.message ? 
                 <Alert severity="error">
@@ -98,38 +105,38 @@ const Notes = () => {
                 : null
             }
             <Grid 
-                container 
-                component="main" 
+                container
                 direction="row"
-                justify="space-around"
+                justifyContent="space-around"
                 alignItems="stretch"
                 spacing={1}
+                className={classes.paper}
             >
                 <CssBaseline />
-                <Grid item xs={6} sm={3}>
-                    <RegularButton
-                        variant="contained"
-                        color={subjectInformation.color}
-                        size="large"
-                        className={classes.button}
-                        startIcon={<AddCircleOutline/>}
-                        onClick={()=>handleClickNewNote()}
-                    >
-                        Nueva Nota
-                    </RegularButton>
-                    <div className={classes.leftList}>
+                <Grid xs={6} sm={3}>
+                    <Grid item>
+                        <RegularButton
+                            variant="contained"
+                            color={subjectInformation.color}
+                            className={classes.button}
+                            startIcon={<AddCircleOutline/>}
+                            onClick={()=>handleClickNewNote()}
+                        >
+                            Nueva Nota
+                        </RegularButton>
+                    </Grid>
+                    <Grid item className={classes.leftList}>
                         <NotesList
                             subjectId={subjectInformation.id}
                             setRichTextNote={setRichTextNote}
                             setPlainTextNote={setPlainTextNote}
                             setNoteId={setNoteId}
                         />
-                    </div>
+                    </Grid>
                 </Grid>
-                <Grid item xs={18} sm={9}>
-                    <Grid item>
+                <Grid item xs={12} sm={9}>
+                    <Grid item >
                         <NoteEditor
-                            className={classes.paper}
                             richTextNote={richTextNote}
                             setRichTextNote={setRichTextNote}
                             setPlainTextNote={setPlainTextNote}
@@ -141,7 +148,7 @@ const Notes = () => {
                     <Grid item>
                         <RegularButton
                             color={subjectInformation.color}
-                            className={classes.button}
+                            className={classes.buttonTwo}
                             startIcon={<Save/>}
                             onClick={()=>handleSaveNote()}
                         >
@@ -150,7 +157,7 @@ const Notes = () => {
                     </Grid>
                 </Grid>
             </Grid>
-        </Paper>
+        </Fragment>
     );
 }
  
