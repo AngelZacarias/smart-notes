@@ -1,6 +1,7 @@
 import scheduleResolvers from './schedule';
 import subjectsResolvers from './subjects';
 import tasksResolvers from './tasks';
+import noteResolvers from './notes';
 import userResolvers from './users';
 import followResolvers from './follows';
 
@@ -24,6 +25,10 @@ module.exports = {
     Profile: {
         user: userResolvers.NestedUserReference.user,
     },
+    Note: {
+        subject: subjectsResolvers.NestedSubjectReference.subject,
+        user: userResolvers.NestedUserReference.user,
+    },
     User: {
       profile: userResolvers.NestedProfileReference.profile,
     },
@@ -37,12 +42,14 @@ module.exports = {
         ...scheduleResolvers.Query,
         ...tasksResolvers.Query,
         ...userResolvers.Query,
+        ...noteResolvers.Query,
         ...followResolvers.Query
     },
     Mutation:{
         ...subjectsResolvers.Mutation,
         ...tasksResolvers.Mutation,
         ...userResolvers.Mutation,
+        ...noteResolvers.Mutation,
         ...followResolvers.Mutation
     }
 }

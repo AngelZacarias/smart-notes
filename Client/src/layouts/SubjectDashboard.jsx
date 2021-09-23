@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-//import { Switch, Route, Redirect } from "react-router-dom";
+import { Switch, Route, Redirect } from "react-router-dom";
 // creates a beautiful scrollbar
 import PerfectScrollbar from "perfect-scrollbar";
 import "perfect-scrollbar/css/perfect-scrollbar.css";
@@ -7,7 +7,6 @@ import "perfect-scrollbar/css/perfect-scrollbar.css";
 import { makeStyles } from "@material-ui/core/styles";
 // core components
 import Navbar from "components/Navbars/Navbar.js";
-import Footer from "components/Footer/Footer.js";
 import Sidebar from "components/Sidebar/Sidebar.js";
 
 import routes from "routes.js";
@@ -21,7 +20,7 @@ import logo from "assets/img/logo.svg";
 import { SubjectContext } from './../hooks/SubjectContext';
 
 let ps;
-/*
+
 const switchRoutes = (
   <Switch>
     {routes.map((prop, key) => {
@@ -39,7 +38,7 @@ const switchRoutes = (
     <Redirect from="/subject" to="/subject/subject-tasks" />
   </Switch>
 );
-*/
+
 const useStyles = makeStyles(styles);
 
 export default function SubjectDashboard({ ...rest }) {
@@ -48,29 +47,9 @@ export default function SubjectDashboard({ ...rest }) {
   // ref to help us initialize PerfectScrollbar on windows devices
   const mainPanel = React.createRef();
   // Context
-  const { subjectInformation } = useContext(SubjectContext);
+  const { getColor } = useContext(SubjectContext);
 
-  // Translate the color name for the card into the colors for the dashboard sidebar
-  const getColor = () =>{
-    if(subjectInformation.color === 'success'){
-      return 'green';
-    }
-    else if(subjectInformation.color === 'info'){
-      return 'blue';
-    }
-    else if(subjectInformation.color === 'warning'){
-      return 'orange';
-    }
-    else if(subjectInformation.color === 'error'){
-      return 'red';
-    }
-    else if(subjectInformation.color === 'rose'){
-      return 'rose';
-    }
-    else{
-      return 'primary';
-    }
-  }
+  
 
   // states and functions
   const image = bgImage;
@@ -125,9 +104,8 @@ export default function SubjectDashboard({ ...rest }) {
         />
         {/* On the /maps route we want the map to be on full screen - this is not possible if the content and conatiner classes are present because they have some paddings which would make the map smaller */}
           <div className={classes.content}>
-            <div className={classes.container}>{}</div>
+            <div className={classes.container}>{switchRoutes}</div>
           </div>
-        <Footer />
       </div>
     </div>
   );

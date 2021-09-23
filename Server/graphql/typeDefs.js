@@ -37,11 +37,10 @@ module.exports = gql`
     }
     type Note{
         id: ID!
-        title: String
-        description: String
+        richTextNote: String
+        plainTextNote: String     
         user: User
         subject: Subject
-        tags: [String]
         createdAt: String
     }
     type Profile{
@@ -85,6 +84,10 @@ module.exports = gql`
 
         normalLogin(email: String!, password: String!): Token
         getUser(email: String!): User
+        getUserProfile: Profile
+
+        getNotes(subjectId: ID!): [Note]
+        getNote(id: ID!): Note
         getProfiles(keyword: String!): [User]
         getProfileById(userId: ID!): Profile
 
@@ -107,6 +110,9 @@ module.exports = gql`
         createUserFromNormalSignUp(name: String!, lastName: String!, email: String!, password: String!, confirmPassword: String!) : User!
         editProfile(bio: String, carrer: String, facebookURL: String, linkedinURL: String, twitterURL: String) : Profile
 
+        createOrUpdateNote(id: ID, subjectId: ID!, plainTextNote: String!, richTextNote: String!): Note
+        deleteNote(id: ID!): Note
+        
         followUser(followed: String!) : Follow
     },
 `;

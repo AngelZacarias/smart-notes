@@ -3,10 +3,10 @@ import { unstable_createMuiStrictModeTheme as createMuiTheme } from '@material-u
 export const getColorHexValue = (colorName) =>{
     if(colorName==="primary") {return '#0D47A1';} 
     if(colorName==="secondary") {return '#282f36';}
-    if(colorName==="info") {return '#00bcd4';}
-    if(colorName==="warning") {return '#ff9800';}
-    if(colorName==="success") {return '#4caf50';}
-    if(colorName==="danger") {return '#f44336';}
+    if(colorName==="info" || colorName==="blue") {return '#00bcd4';}
+    if(colorName==="warning" || colorName==="orange") {return '#ff9800';}
+    if(colorName==="success" || colorName==="green") {return '#4caf50';}
+    if(colorName==="danger" || colorName==="red") {return '#f44336';}
     if(colorName==="rose") {return '#E22E6D';}
     
 }
