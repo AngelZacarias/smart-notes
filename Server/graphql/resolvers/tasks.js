@@ -16,7 +16,10 @@ module.exports = {
     async getMyCurrentTasks(_, args, context) {
       const user = checkAuth(context);
       try {
-        const tasks = await Task.find({ user: user.id });
+        const tasks = await Task.find({
+          user: user.id,
+          subject: args.subjectId,
+        });
         return tasks;
       } catch (err) {
         throw new Error(err);
