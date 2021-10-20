@@ -26,8 +26,9 @@ import GridContainer from "components/Grid/GridContainer.js";
 import GridItem from "components/Grid/GridItem.js";
 import PropTypes from 'prop-types';
 import React from 'react';
-import { gql } from '@apollo/client';
-
+import { gql, useQuery } from '@apollo/client';
+import { useContext, useEffect } from "react";
+import { SubjectContext } from './../../hooks/SubjectContext';
 
 function createData(name, calories, fat, carbs, protein) {
   return { name, calories, fat, carbs, protein };
@@ -219,6 +220,29 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function Tasks() {
+	const { subjectInformation } = useContext(SubjectContext);
+
+	const { data: tasksInfo, error } = useQuery(GET_CURRENT_TASKS, {
+    variables: { subjectId: subjectInformation.id },
+    context: {
+      headers: {
+        "Authorization": "Bearer " + localStorage.getItem("JWT_TOKEN"),
+      }
+    }
+  });
+
+	useEffect(() => {
+		if (tasksInfo) {
+			console.log(tasksInfo);
+			// setTasksInfo({ //Aquí ver la forma de hacer un for índice en el arreglo que devuelve, llenar los datos de la tabla
+			// 	assignment: 
+			// })
+		}
+		if (error) {
+			console.log(error);
+		}
+	}, [tasksInfo, error])
+
   const classes = useStyles();
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('calories');
@@ -382,7 +406,7 @@ export default function Tasks() {
   );
 }
 
-export const GET_TASKS = gql`
+export const GET_CURRENT_TASKS = gql`
 query getMyCurrentTasks($subjectId: ID!) {
 	getMyCurrentTasks(subjectId: $subjectId) {
 		id,
