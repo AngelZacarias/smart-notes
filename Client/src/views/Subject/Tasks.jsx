@@ -26,6 +26,8 @@ import GridContainer from "components/Grid/GridContainer.js";
 import GridItem from "components/Grid/GridItem.js";
 import PropTypes from 'prop-types';
 import React from 'react';
+import { gql } from '@apollo/client';
+
 
 function createData(name, calories, fat, carbs, protein) {
   return { name, calories, fat, carbs, protein };
@@ -381,9 +383,24 @@ export default function Tasks() {
 }
 
 export const GET_TASKS = gql`
-query getTasks($subjectId: ID!) {
-	getTasks(subjectId: $subjectId) {
-		
+query getMyCurrentTasks($subjectId: ID!) {
+	getMyCurrentTasks(subjectId: $subjectId) {
+		id,
+		assignment,
+		description,
+		deadline,
+		active,
+		user {
+			id,
+			name,
+			lastName,
+			email
+		},
+		subject {
+			id,
+			name,
+			color,
+		},
 	}
 }
 `

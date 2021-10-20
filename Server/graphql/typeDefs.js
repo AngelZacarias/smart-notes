@@ -92,6 +92,8 @@ module.exports = gql`
         getProfileById(userId: ID!): Profile
 
         getFollow(followedId: String!): Follow
+
+        getMyCurrentTasks(subjectId: ID!): [Task]
     },
     type Mutation{
         createSubject(name: String!, color: String!) : Subject!
