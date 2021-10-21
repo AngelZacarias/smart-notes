@@ -1,5 +1,10 @@
+const { each } = require("lodash");
 const Task = require("../../models/Task");
 const checkAuth = require("../../utils/check-auth");
+// import dateFormat from "dateformat";
+var format = require("date-format");
+import { setDaysMonthsNameToSpanish } from "../../utils/dates/dateFormat-names";
+
 
 module.exports = {
   Query: {
@@ -20,7 +25,23 @@ module.exports = {
           user: user.id,
           subject: args.subjectId,
         });
-        return tasks;
+        let tasksAux = tasks;
+        let tasksAux2 = tasks.ToJSON();
+        tasksAux2.map((task) => {
+          console.log(format("hh:mm:ss.SSS", task.deadline));
+          task.deadline = "gfofjsedijosen" 
+          return task;
+        });
+        // each(tasksAux, function(task) {
+        //   console.log(format("hh:mm:ss.SSS", task.deadline));
+        //   task = {
+        //     ...task,
+        //   }
+        //   task.deadline = format("hh:mm:ss.SSS", task.deadline) 
+        //   return task;
+        // });
+        tasksAux2[0].deadline = "fsenuiofs";
+        return tasksAux;
       } catch (err) {
         throw new Error(err);
       }
