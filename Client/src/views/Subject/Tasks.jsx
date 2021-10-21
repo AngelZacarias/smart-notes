@@ -18,6 +18,7 @@ import GridContainer from "components/Grid/GridContainer.js";
 import GridItem from "components/Grid/GridItem.js";
 import React, { Fragment, useContext, useEffect, useState } from 'react';
 import { SubjectContext } from './../../hooks/SubjectContext';
+import Checkbox from '@material-ui/core/Checkbox';
 
 const useStyles = makeStyles({
   table: {
@@ -58,6 +59,7 @@ export default function Tasks() {
 	useEffect(() => {
 		if (tasksInfo) {
 			console.log(tasksInfo);
+      tasksInfo.getMyCurrentTasks[0].deadline.toString();
       setTableRows([...tasksInfo.getMyCurrentTasks])
 		}
 		if (error) {
@@ -97,10 +99,9 @@ export default function Tasks() {
                   <TableHead>
                     <TableRow>
                       <TableCell key="name">Nombre</TableCell>
-                      <TableCell key="description" align="right">Descripción</TableCell>
-                      <TableCell key="deadline" align="right">Fecha de entrega&nbsp;(g)</TableCell>
-                      <TableCell key="active" align="right">Activo&nbsp;(g)</TableCell>
-                      <TableCell key="test" align="right">Test&nbsp;(g)</TableCell>
+                      <TableCell key="description" align="left">Descripción</TableCell>
+                      <TableCell key="deadline" align="center">Fecha de entrega</TableCell>
+                      <TableCell key="active" align="left">Activo</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
@@ -109,10 +110,15 @@ export default function Tasks() {
                         <TableCell key={row.assignment} component="th" scope="row">
                           {row.assignment}
                         </TableCell>
-                        <TableCell key={row.description} align="right">{row.description}</TableCell>
-                        <TableCell key={row.deadline} align="right">{row.deadline}</TableCell>
-                        <TableCell key={row.active} align="right">{row.active}</TableCell>
-                        <TableCell key={"hello"} align="right">{"dw"}</TableCell>
+                        <TableCell key={row.description} align="left">{row.description}</TableCell>
+                        <TableCell key={row.deadline} align="center">{row.deadline}</TableCell>
+                        <TableCell align="center">
+                          <Checkbox
+                            checked={row.active}
+                            // onChange={}
+                            inputProps={{ 'aria-label': 'primary checkbox' }}
+                          />
+                        </TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
