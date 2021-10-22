@@ -55,11 +55,9 @@ export default function Tasks() {
     }
   });
 
-
 	useEffect(() => {
 		if (tasksInfo) {
 			console.log(tasksInfo);
-      tasksInfo.getMyCurrentTasks[0].deadline.toString();
       setTableRows([...tasksInfo.getMyCurrentTasks])
 		}
 		if (error) {
