@@ -7,6 +7,9 @@ require("dotenv").config();
 import { taskReminder } from "./utils/jobs/scheduler";
 
 const server = new ApolloServer({
+    subscriptions: {
+        path: '/subscriptions'
+    },
     typeDefs: typeDefs,
     resolvers: resolvers,
     context: ({ req }) => ({ req })
