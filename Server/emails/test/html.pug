@@ -1,0 +1,25 @@
+doctype html
+html(lang="en")
+  head
+    style
+      include ../includes/style.css
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    title Document
+
+  body
+    div#wrapper
+
+      div.one-col
+        h2 ¡Hola!, #{userName}
+        br
+        p Tu tarea #{taskName} con fecha #{deadline} está muy proxima a entregarse.
+        br
+        form(action=urlViewRequest)
+          button(type="submit") Ir a SmartNotes
+
+      div.division
+
+      div.footer
+        h3.domain Mensaje enviado desde 
+          a(href=clientOrigin) #{clientOrigin}
