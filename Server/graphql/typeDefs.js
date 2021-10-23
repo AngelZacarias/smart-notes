@@ -71,6 +71,24 @@ module.exports = gql`
       followerAble: Boolean
       followedAble: Boolean
     }
+    type Chat {
+        id: ID!
+        user1: User
+        user2: User
+        user1Able: Boolean
+        user2Able: Boolean
+        messages: [ChatMessage]
+        createdAt: String
+    }
+    type ChatMessage {
+        id: ID!
+        userEmisor: User!
+        userReceptor: User!
+        message: String!
+        read: Boolean
+        chat: Chat!
+        createdAt: String
+    }
     type Query{
         getSubjects: [Subject]
         getMyCurrentSubjects: [Subject]
@@ -92,6 +110,10 @@ module.exports = gql`
         getProfileById(userId: ID!): Profile
 
         getFollow(followedId: String!): Follow
+
+        getChats: [Chat]
+
+        getChatMessages(chatId: ID!): [ChatMessage]
     },
     type Mutation{
         createSubject(name: String!, color: String!) : Subject!
@@ -114,5 +136,12 @@ module.exports = gql`
         deleteNote(id: ID!): Note
         
         followUser(followed: String!) : Follow
+
+        createChat(userContactedId: ID!): Chat
+        sendMessage(message: String!, chatId: ID!): ChatMessage 
+    },
+    type Subscription {
+        newMessage(chatId: ID!) : ChatMessage
+        newChat(userId: ID!) : Chat
     },
 `;

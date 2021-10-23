@@ -4,6 +4,8 @@ import tasksResolvers from './tasks';
 import noteResolvers from './notes';
 import userResolvers from './users';
 import followResolvers from './follows';
+import chatResolvers from './chats';
+import chatMessageResolvers from './chatMessages';
 
 module.exports = {
     //Nested Queries
@@ -36,20 +38,36 @@ module.exports = {
       follower: followResolvers.NestedFollowerReference.follower,
       followed: followResolvers.NestedFollowedReference.followed,
     },
+    Chat: {
+        user1: userResolvers.NestedUser1Reference.user,
+        user2: userResolvers.NestedUser2Reference.user,
+        messages: chatMessageResolvers.NestedMessagesReference.messages,
+    },
+    ChatMessage: {
+        chat: chatResolvers.NestedChatReference.chat,
+        userEmisor: userResolvers.NestedUserEmisorReference.user,
+        userReceptor: userResolvers.NestedUserReceptorReference.user
+    },
     // Default Queries
-    Query:{
+    Query: {
         ...subjectsResolvers.Query,
         ...scheduleResolvers.Query,
         ...tasksResolvers.Query,
         ...userResolvers.Query,
         ...noteResolvers.Query,
-        ...followResolvers.Query
+        ...followResolvers.Query,
+        ...chatResolvers.Query,
+        ...chatMessageResolvers.Query
     },
-    Mutation:{
+    Mutation: {
         ...subjectsResolvers.Mutation,
         ...tasksResolvers.Mutation,
         ...userResolvers.Mutation,
         ...noteResolvers.Mutation,
-        ...followResolvers.Mutation
-    }
+        ...followResolvers.Mutation,
+        ...chatResolvers.Mutation,
+        ...chatMessageResolvers.Mutation
+    },
+    Subscription: {
+        ...chatMessageResolvers.Subscription    },
 }

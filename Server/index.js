@@ -8,6 +8,9 @@ const resolvers = require('./graphql/resolvers');
 require("dotenv").config();
 
 const server = new ApolloServer({
+    subscriptions: {
+        path: '/subscriptions'
+    },
     typeDefs: typeDefs,
     resolvers: resolvers,
     context: ({ req }) => ({ req })

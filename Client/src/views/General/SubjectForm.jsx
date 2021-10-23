@@ -33,7 +33,7 @@ const SubjectForm = ({ showForm, handleClose, subject, setSubject }) => {
 
     //:::::::::: MUTATIONS ::::::::::::
     //CREATE SUBJECT
-    const [createSubject, { data: subjectDataCreated }] = useMutation(CREATE_SUBJECT, {
+    const [createSubject] = useMutation(CREATE_SUBJECT, {
         context: {
             headers: {
               "Authorization": "Bearer " + localStorage.getItem("JWT_TOKEN"),
@@ -50,7 +50,7 @@ const SubjectForm = ({ showForm, handleClose, subject, setSubject }) => {
         awaitRefetchQueries: true,
     });
     //UPDATE SUBJECT
-    const [updateSubject, { data: subjectDataUpdated }] = useMutation(UPDATE_SUBJECT, {
+    const [updateSubject] = useMutation(UPDATE_SUBJECT, {
         context: {
             headers: {
               "Authorization": "Bearer " + localStorage.getItem("JWT_TOKEN"),
@@ -67,7 +67,7 @@ const SubjectForm = ({ showForm, handleClose, subject, setSubject }) => {
         awaitRefetchQueries: true,
     });
     //DELETE SUBJECT
-    const [deleteSubject, { data: subjectDataDeleted }] = useMutation(DELETE_SUBJECT, {
+    const [deleteSubject] = useMutation(DELETE_SUBJECT, {
         context: {
             headers: {
               "Authorization": "Bearer " + localStorage.getItem("JWT_TOKEN"),
@@ -192,6 +192,7 @@ const SubjectForm = ({ showForm, handleClose, subject, setSubject }) => {
 
     //Uses the data to avoid errors
     //TODO: Improve this code...
+    /*
     useEffect(()=>{
         console.log(subjectDataCreated);
     },[subjectDataCreated]);
@@ -203,7 +204,7 @@ const SubjectForm = ({ showForm, handleClose, subject, setSubject }) => {
     useEffect(()=>{
         console.log(subjectDataUpdated);
     },[subjectDataUpdated]);
-
+*/
     return (
         <Dialog
             open={showForm}
