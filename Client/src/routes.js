@@ -9,7 +9,7 @@ import About from "./views/General/About";
 import Profile from "./views/General/Profile";
 import Search from "./views/General/Search";
 import Notes from "./views/Subject/Notes";
-import SmartStudy from "./views/Subject/SmartStudy";
+import QuestionAnswer from "./views/Subject/AI/QuestionAnswer";
 import Tasks from "./views/Subject/Tasks";
 
 const dashboardRoutes = [
@@ -96,10 +96,10 @@ const dashboardRoutes = [
   },
   {
     path: "/subject-study",
-    name: "Smart Study",
+    name: "Smart Answers",
     rtlName: "",
     icon: ScatterPlot,
-    component: SmartStudy,
+    component: QuestionAnswer,
     layout: "/subject",
     menu: true,
     returnTo: "",
