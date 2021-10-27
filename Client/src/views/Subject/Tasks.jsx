@@ -1,4 +1,4 @@
-import { gql, useQuery } from '@apollo/client';
+import { gql, useQuery, useMutation } from '@apollo/client';
 // import { Fab } from "@material-ui/core";
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Paper from '@material-ui/core/Paper';
@@ -19,37 +19,36 @@ import GridItem from "components/Grid/GridItem.js";
 import React, { Fragment, useContext, useEffect, useState } from 'react';
 import { SubjectContext } from './../../hooks/SubjectContext';
 import Checkbox from '@material-ui/core/Checkbox';
-import TaskForm from "./Tasks/TaskForm"
+import TaskForm from "./Tasks/TaskForm";
+import IconButton from '@material-ui/core/IconButton';
+import DeleteIcon from '@material-ui/icons/Delete';
+import EditIcon from '@material-ui/icons/Edit';
+import Slide from "@material-ui/core/Slide";
+import CloseIcon from "@material-ui/icons/Close";
+import { Snackbar} from "@material-ui/core";
+import Button from '@material-ui/core/Button';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
 
 const useStyles = makeStyles({
   table: {
     minWidth: 650,
   },
+  container: {
+    display: "flex",
+  }
 });
 
-// function createData(name, calories, fat, carbs, protein) {
-//   return { name, calories, fat, carbs, protein };
-// }
-
-// const rows = [
-//   createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-//   createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-//   createData('Eclair', 262, 16.0, 24, 6.0),
-//   createData('Cupcake', 305, 3.7, 67, 4.3),
-//   createData('Gingerbread', 356, 16.0, 49, 3.9),
-// ];
-
-
 export default function Tasks() {
-
-	// const [taskFormShow, setTaskFormShow] = useState(false);
-	// const [task, setTask] = useState({
-	// 	assignment: "",
-	// 	description: "",
-	// 	deadline: "",
-	// 	active: true,
-	// })
   const [rows, setTableRows] = useState([]);
+  const [taskToDeleteId, setTaskToDeleteId] = useState("");
+  const [showMessage, setShowMessage] = useState(false);
+	const [message, setMessage] = useState("");
+  const [openAlertMessage, setOpenAlertMessage] = useState(false);
+  const [deleteTask, setDeleteTask] = useState(false);
 
   const classes = useStyles();
 
@@ -65,25 +64,78 @@ export default function Tasks() {
     fetchPolicy: "cache-and-network",
   });
 
-	// const handleClickTaskForm = () => {
-	// 	setTask({
-	// 		assignment: "",
-	// 		description: "",
-	// 		deadline: "",
-	// 		active: true,
-	// 	});
-	// 	setTaskFormShow(!taskFormShow);
-	// }
+  const [sendMutationDeleteTask, { data: deletedTaskResponse }] = useMutation(DELETE_TASK, {
+    context: {
+			headers: {
+				"Authorization": "Bearer " + localStorage.getItem("JWT_TOKEN"),
+			}
+		},
+    refetchQueries: [{ 
+			query: GET_CURRENT_TASKS, 
+      variables: { subjectId: subjectInformation.id },
+      context: {
+        headers: {
+          "Authorization": "Bearer " + localStorage.getItem("JWT_TOKEN"),
+        }
+      },
+      fetchPolicy: "cache-and-network",
+		}],
+		awaitRefetchQueries: true,
+  });
+
+  const handleCloseMessage = (event, reason) => {
+    if (reason === "clickaway") {
+      return
+    }
+    setShowMessage(false);
+  }
+
+  const handleClickOpenAlertMessage = (task) => 
+  {
+    console.log("Selected to delete: ", task.id);
+    setTaskToDeleteId(task.id);
+    setOpenAlertMessage(true);
+  };
+
+  const handleCloseAlertMessage = () => {
+    setOpenAlertMessage(false);
+  };
+
+  useEffect(() => {
+    console.log("Valor de: deleteTask", deleteTask);
+    if (deleteTask == true) {
+      sendMutationDeleteTask({
+        variables: {
+          taskId: taskToDeleteId
+        }
+      }).catch(error => {
+				console.log("Error aqui", error);
+        setMessage(error);
+				setShowMessage(true);
+      })
+      setTaskToDeleteId("");
+      setDeleteTask(false);
+    }
+
+  }, [deleteTask]);
 
 	useEffect(() => {
 		if (tasksInfo) {
-			console.log(tasksInfo);
+			// console.log(tasksInfo);
       setTableRows([...tasksInfo.getMyCurrentTasks])
 		}
 		if (error) {
 			console.log(error);
 		}
-	}, [tasksInfo, error])
+	}, [tasksInfo, error]);
+
+  useEffect(() => {
+    if (deletedTaskResponse) {
+      console.log(deletedTaskResponse);
+			setMessage("Tarea eliminada")
+			setShowMessage(true)
+    }
+  }, [deletedTaskResponse]);
 
   return (
 	<Fragment>
@@ -119,7 +171,8 @@ export default function Tasks() {
                       <TableCell key="name">Nombre</TableCell>
                       <TableCell key="description" align="left">Descripción</TableCell>
                       <TableCell key="deadline" align="center">Fecha de entrega</TableCell>
-                      <TableCell key="active" align="left">Activo</TableCell>
+                      <TableCell key="active" align="left">Completada</TableCell>
+                      <TableCell key="actions" align="center">Acciones</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
@@ -137,6 +190,21 @@ export default function Tasks() {
                             inputProps={{ 'aria-label': 'primary checkbox' }}
                           />
                         </TableCell>
+                        <TableCell key="actions" align="center">
+                          <div className={classes.container}>
+                            <IconButton aria-label="edit" color="primary">
+                                <EditIcon />
+                            </IconButton>
+                            {/* <IconButton aria-label="delete"
+                              onClick={() => handleDeleteTask(row)}
+                            > */}
+                            <IconButton aria-label="delete"
+                              onClick={() => handleClickOpenAlertMessage(row)}
+                            >
+                              <DeleteIcon />
+                            </IconButton>
+                          </div>
+                        </TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
@@ -151,6 +219,50 @@ export default function Tasks() {
 		<TaskForm
 			
 		/>
+    <Snackbar
+      anchorOrigin={{
+        vertical: "bottom",
+        horizontal: "right"
+      }}
+      TransitionComponent={Slide}
+      open={showMessage}
+      autoHideDuration={4000}
+      onClose={handleCloseMessage}
+      message={message}
+      action={
+        <React.Fragment>
+          <IconButton onClick={handleCloseMessage}>
+            <CloseIcon />
+          </IconButton>
+        </React.Fragment>
+      } 
+    />  
+    <div>
+      <Dialog
+        open={openAlertMessage}
+        onClose={handleCloseAlertMessage}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">{"¿Estás seguro de eliminar la tarea?"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Se eliminará la tarea. Este cambio no se podrá deshacer.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseAlertMessage} color="primary">
+            Cancelar
+          </Button>
+          <Button onClick={() => {
+            setDeleteTask(true)
+            setOpenAlertMessage(false)
+          }} color="primary" autoFocus>
+            Aceptar
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </div>
 	</Fragment>
   );
 }
@@ -176,4 +288,11 @@ query getMyCurrentTasks($subjectId: ID!) {
 		},
 	}
 }
+`
+
+const DELETE_TASK = gql`
+  mutation($taskId: ID!) {
+    deleteTask(taskId: $taskId) 
+  }
+
 `

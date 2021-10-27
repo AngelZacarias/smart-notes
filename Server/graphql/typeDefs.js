@@ -108,6 +108,7 @@ module.exports = gql`
         deleteSchedule(id: ID!) : Schedule!
 
         createTask(subjectId: ID!, assignment: String!, description: String!, deadline: String!) : Task!
+        deleteTask(taskId: ID!): Boolean
 
         createUserFromGoogleAuth(name: String!, lastName: String!, email: String!, token: String!) : User
         createUserFromNormalSignUp(name: String!, lastName: String!, email: String!, password: String!, confirmPassword: String!) : User!

@@ -63,19 +63,42 @@ module.exports = {
         throw new Error("All fields are required");
       }
       //Save
-      const newTask = new Task({
-        assignment: assignment,
-        description: description,
-        deadline: deadline,
-        active: true,
-        subject: subjectId,
-        user: user.id
-      });
-      const response = await newTask.save();
-      return {
-        ...response._doc,
-        id: response._id,
-      };
+      try {
+        const newTask = new Task({
+          assignment: assignment,
+          description: description,
+          deadline: deadline,
+          active: true,
+          subject: subjectId,
+          user: user.id
+        });
+        const response = await newTask.save();
+        return {
+          ...response._doc,
+          id: response._id,
+        };
+      } catch(err) {
+        throw new Error(err);
+      }
     },
+    async deleteTask(parent, { taskId }, context, info) {
+      const user = checkAuth(context);
+      if (taskId == "") {
+        throw new Error("No se seleccionó una tarea");
+      }
+      try {
+        const task = await Task.findById(taskId);
+        if (!task) 
+          throw new Error("Tarea no encontrada");
+        const response = await Task.deleteOne(task);
+        if (response) {
+          return true;
+        }
+        return false;
+        
+      } catch(err) {
+        throw new Error(err);
+      }
+    }
   },
 };

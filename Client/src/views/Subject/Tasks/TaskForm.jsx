@@ -5,7 +5,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import { Fab } from "@material-ui/core";
+import { Fab, Snackbar, IconButton } from "@material-ui/core";
 import { Add } from "@material-ui/icons";
 import { Formik } from 'formik';
 import * as Yup from "yup";
@@ -13,6 +13,10 @@ import { TextField, makeStyles, FormControl } from "@material-ui/core";
 import { SubjectContext } from './../../../hooks/SubjectContext';
 import { gql, useMutation } from '@apollo/client';
 import { GET_CURRENT_TASKS } from "../Tasks";
+import Slide from "@material-ui/core/Slide";
+import CloseIcon from "@material-ui/icons/Close";
+
+
 
 const useStyles = makeStyles((theme) => ({
   poperContainer:{
@@ -53,7 +57,8 @@ export default function AlertDialog() {
 	const [taskFormShow, setTaskFormShow] = useState(false);
   const [saveTask, setSaveTask] = useState(false);
 	const { subjectInformation } = useContext(SubjectContext);
-
+	const [showMessage, setShowMessage] = useState(false);
+	const [message, setMessage] = useState("");
   
   const [sendMutationSaveTask, { data: savedTaskResponse }] = useMutation(CREATE_TASK, {
     context: {
@@ -105,9 +110,20 @@ export default function AlertDialog() {
     });
   }
 
+  const handleClickSaveTask = () => {
+    setShowMessage(true)
+  }
+
+  const handleCloseMessage = (event, reason) => {
+    if (reason === "clickaway") {
+      return
+    }
+    setShowMessage(false);
+  }
+
   useEffect(() => {
     if (saveTask) {
-      console.log("Task Data: ", task);
+      // console.log("Task Data: ", task);
       sendMutationSaveTask({
         variables: {
           assignment: task.assignment,
@@ -118,8 +134,8 @@ export default function AlertDialog() {
         }
       }).catch(error => {
 				console.log("Error aqui", error);
-				// setMessage("Algo salió mal");
-				// setShowMessage(true);
+				setMessage(error);
+				setShowMessage(true);
 			});
       setTask({
         assignment: "",
@@ -134,8 +150,8 @@ export default function AlertDialog() {
   useEffect(() => {
 		if (savedTaskResponse) {
 			console.log(savedTaskResponse);
-			// setMessage("Tarea guardada exitosamente")
-			// setShowMessage(true)
+			setMessage("Tarea guardada exitosamente")
+			setShowMessage(true)
 		}
 	}, [savedTaskResponse]);
 
@@ -227,7 +243,7 @@ export default function AlertDialog() {
                         value={task.deadline}
                         onChange={handleChangeTaskValue}
                         type="datetime-local"
-                        defaultValue="2021-01-01T07:00"
+                        // defaultValue="2021-01-01T07:00"
                         InputLabelProps={{
                           shrink: true,
                         }}
@@ -254,6 +270,7 @@ export default function AlertDialog() {
                     disabled={isSubmitting}
                     onClick={() => {
                       setSaveTask(true)
+                      handleClickSaveTask
                       setTask({
                         assignment: values.assignment,
                         description: values.description,
@@ -268,7 +285,25 @@ export default function AlertDialog() {
                     Crear
                   </Button>
                 </DialogActions>
-              </Dialog>                
+              </Dialog>        
+              <Snackbar
+                anchorOrigin={{
+                  vertical: "bottom",
+                  horizontal: "right"
+                }}
+                TransitionComponent={Slide}
+                open={showMessage}
+                autoHideDuration={4000}
+                onClose={handleCloseMessage}
+                message={message}
+                action={
+                  <React.Fragment>
+                    <IconButton onClick={handleCloseMessage}>
+                      <CloseIcon />
+                    </IconButton>
+                  </React.Fragment>
+                } 
+              />        
             </form>
           );
         }
@@ -288,5 +323,3 @@ const CREATE_TASK = gql`
     }
   }
 `;
-
-//TODO: Que se cierra después
