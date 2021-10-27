@@ -57,6 +57,7 @@ module.exports = {
       context,
       info
     ) {
+      const user = checkAuth(context);
       //Validate data
       if (assignment === "" || description === "") {
         throw new Error("All fields are required");
@@ -68,6 +69,7 @@ module.exports = {
         deadline: deadline,
         active: true,
         subject: subjectId,
+        user: user.id
       });
       const response = await newTask.save();
       return {

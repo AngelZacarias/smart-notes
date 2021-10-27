@@ -81,6 +81,7 @@ module.exports = gql`
 
         getTasks: [Task]
         getTask(id: ID!): Task
+        createTask(assignment: String!, description: String!, deadline: String!, subjectId: ID!): Task
 
         normalLogin(email: String!, password: String!): Token
         getUser(email: String!): User
@@ -116,5 +117,6 @@ module.exports = gql`
         deleteNote(id: ID!): Note
         
         followUser(followed: String!) : Follow
+
     },
 `;

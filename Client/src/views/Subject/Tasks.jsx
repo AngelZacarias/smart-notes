@@ -1,5 +1,5 @@
 import { gql, useQuery } from '@apollo/client';
-import { Fab } from "@material-ui/core";
+// import { Fab } from "@material-ui/core";
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Paper from '@material-ui/core/Paper';
 import { makeStyles } from '@material-ui/core/styles';
@@ -9,7 +9,7 @@ import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-import { Add } from "@material-ui/icons";
+// import { Add } from "@material-ui/icons";
 import { Alert, AlertTitle } from '@material-ui/lab';
 import Card from "components/Card/Card.js";
 import CardBody from "components/Card/CardBody.js";
@@ -19,6 +19,7 @@ import GridItem from "components/Grid/GridItem.js";
 import React, { Fragment, useContext, useEffect, useState } from 'react';
 import { SubjectContext } from './../../hooks/SubjectContext';
 import Checkbox from '@material-ui/core/Checkbox';
+import TaskForm from "./Tasks/TaskForm"
 
 const useStyles = makeStyles({
   table: {
@@ -40,6 +41,14 @@ const useStyles = makeStyles({
 
 
 export default function Tasks() {
+
+	// const [taskFormShow, setTaskFormShow] = useState(false);
+	// const [task, setTask] = useState({
+	// 	assignment: "",
+	// 	description: "",
+	// 	deadline: "",
+	// 	active: true,
+	// })
   const [rows, setTableRows] = useState([]);
 
   const classes = useStyles();
@@ -52,8 +61,19 @@ export default function Tasks() {
       headers: {
         "Authorization": "Bearer " + localStorage.getItem("JWT_TOKEN"),
       }
-    }
+    },
+    fetchPolicy: "cache-and-network",
   });
+
+	// const handleClickTaskForm = () => {
+	// 	setTask({
+	// 		assignment: "",
+	// 		description: "",
+	// 		deadline: "",
+	// 		active: true,
+	// 	});
+	// 	setTaskFormShow(!taskFormShow);
+	// }
 
 	useEffect(() => {
 		if (tasksInfo) {
@@ -128,13 +148,9 @@ export default function Tasks() {
         </GridItem>
       </GridContainer>
     }
-		<Fab color="primary" 
-			aria-label="add" 
-			className={classes.fab}
-			// onClick={handleClickSubjectForm}
-		>
-			<Add/>
-		</Fab>
+		<TaskForm
+			
+		/>
 	</Fragment>
   );
 }
