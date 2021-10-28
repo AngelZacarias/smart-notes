@@ -134,7 +134,7 @@ export default function AlertDialog() {
         }
       }).catch(error => {
 				console.log("Error aqui", error);
-				setMessage(error);
+				setMessage("Campos inválidos");
 				setShowMessage(true);
 			});
       setTask({

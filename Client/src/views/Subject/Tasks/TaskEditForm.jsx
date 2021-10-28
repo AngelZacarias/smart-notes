@@ -102,12 +102,14 @@ const TaskEditForm = ({ showEditForm, handleCloseEditFormShow, task}) => {
   // };
 
   const handleChangeTaskValue = (e) => {
-    console.log("task:", task)
+    // console.log("task:", task)
     console.log(e.target.value);
     setEditedTask({
-      ...task,
+      ...editedTask,
       [e.target.name]: e.target.value,
     });
+    console.log("editedTask:", editedTask)
+
   }
 
   const handleClickSaveTask = () => {
@@ -123,7 +125,7 @@ const TaskEditForm = ({ showEditForm, handleCloseEditFormShow, task}) => {
 
   useEffect(() => {
     if (editTask) {
-      console.log("Edited Task Data: ", editedTask);
+      console.log("editedTask: ", editedTask);
       sendMutationEditTask({
         variables: {
           assignment: editedTask.assignment,
@@ -131,11 +133,11 @@ const TaskEditForm = ({ showEditForm, handleCloseEditFormShow, task}) => {
           deadline: editedTask.deadline,
           active: true,
           subjectId: subjectInformation.id,
-          taskId: editedTask.id
+          taskId: task.id
         }
       }).catch(error => {
 				console.log("Error aqui", error);
-				setMessage(error);
+				setMessage("Campos inválidos");
 				setShowMessage(true);
 			});
       setEditedTask({
@@ -160,13 +162,13 @@ const TaskEditForm = ({ showEditForm, handleCloseEditFormShow, task}) => {
     <div>
       <Formik
         initialValues={{
-          assignment: "",
-          description: "",
-          deadline: "",
-          active: true,
+          assignment: task.assignment,
+          description: task.description,
+          deadline: task.deadline,
+          active: task.active,
         }}
-        onSubmit={ (values, { setSubmitting }) => {
-          console.log("Creando", values);
+        onSubmit={ (editedTask, { setSubmitting }) => {
+          console.log("Creando", editedTask);
           setSubmitting(false);
         }}
         validationSchema = { Yup.object().shape({
@@ -181,7 +183,7 @@ const TaskEditForm = ({ showEditForm, handleCloseEditFormShow, task}) => {
       {
         props => {
           const {
-            values, touched, errors, isSubmitting, handleChange, handleBlur, handleSubmit
+            touched, errors, isSubmitting, handleBlur, handleSubmit
           } = props;
           return (
             <form noValidate onSubmit={handleSubmit}>
@@ -206,8 +208,8 @@ const TaskEditForm = ({ showEditForm, handleCloseEditFormShow, task}) => {
                       label="Tarea"
                       name="assignment"
                       id="assignment" 
-                      value={values.assignment}
-                      onChange={handleChange}
+                      value={editedTask.assignment}
+                      onChange={handleChangeTaskValue}
                       onBlur={handleBlur}
                       className={errors.assignment && touched.assignment && "error"}
                     />
@@ -221,8 +223,8 @@ const TaskEditForm = ({ showEditForm, handleCloseEditFormShow, task}) => {
                       label="Descripción"
                       name="description"
                       id="description" 
-                      value={values.description}
-                      onChange={handleChange}
+                      value={editedTask.description}
+                      onChange={handleChangeTaskValue}
                       onBlur={handleBlur}
                       className={errors.description && touched.description && "error"}
                     />
@@ -264,15 +266,17 @@ const TaskEditForm = ({ showEditForm, handleCloseEditFormShow, task}) => {
                   <Button 
                     disabled={isSubmitting}
                     onClick={() => {
+                      // console.log("values:", values)
+                      console.log("task:", task)
+                      // setEditedTask({
+                      //   assignment: task.assignment,
+                      //   description: task.description,
+                      //   deadline: task.deadline,
+                      //   active: true,
+                      //   id: task.id,
+                      // });
                       setEditTask(true)
                       handleClickSaveTask
-                      setEditedTask({
-                        assignment: values.assignment,
-                        description: values.description,
-                        deadline: editedTask.deadline,
-                        active: true,
-                        id: editedTask.id,
-                      });
                       handleCloseEditFormShow(false)
                     }} 
                     color="primary" 
@@ -318,7 +322,7 @@ TaskEditForm.propTypes = {
 }
 
 const EDIT_TASK = gql`
-  mutation($assignment: String!, $description: String!, $deadline: String!, $subjectId: ID!, $taskId: ID!) {
+  mutation($assignment: String, $description: String, $deadline: String, $subjectId: ID!, $taskId: ID!) {
     editTask(assignment: $assignment, description: $description, deadline: $deadline, subjectId: $subjectId, taskId: $taskId)
   }
 `;
