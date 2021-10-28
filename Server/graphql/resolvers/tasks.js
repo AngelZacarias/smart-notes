@@ -59,7 +59,7 @@ module.exports = {
     ) {
       const user = checkAuth(context);
       //Validate data
-      if (assignment === "" || description === "") {
+      if (assignment === "" || deadline == "") {
         throw new Error("All fields are required");
       }
       //Save
@@ -80,6 +80,28 @@ module.exports = {
       } catch(err) {
         throw new Error(err);
       }
+    },
+    async editTask(
+      parent, 
+      { taskId, subjectId, assignment, description, deadline },
+      context,
+      info
+    ) {
+      const user = checkAuth(context);
+      if (assignment === "" || deadline == "") 
+        throw new Error("All fields are required");
+      try {
+        const task = await Task.findById(taskId);
+        if (task) {
+          task.assignment = assignment;
+          task.description = description;
+          task.deadline = deadline;
+          await task.save();
+        }
+      } catch (err) {
+        throw new Error("Error guardando tarea");
+      }
+      return true;
     },
     async deleteTask(parent, { taskId }, context, info) {
       const user = checkAuth(context);

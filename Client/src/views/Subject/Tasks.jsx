@@ -20,6 +20,7 @@ import React, { Fragment, useContext, useEffect, useState } from 'react';
 import { SubjectContext } from './../../hooks/SubjectContext';
 import Checkbox from '@material-ui/core/Checkbox';
 import TaskForm from "./Tasks/TaskForm";
+import TaskEditForm from "./Tasks/TaskEditForm";
 import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
@@ -49,6 +50,14 @@ export default function Tasks() {
 	const [message, setMessage] = useState("");
   const [openAlertMessage, setOpenAlertMessage] = useState(false);
   const [deleteTask, setDeleteTask] = useState(false);
+  const [taskToEdit, setTaskToEdit] = useState({
+    assignment: "",
+    description: "",
+    deadline: "",
+    active: true,
+  });
+  const [taskEditFormShow, setTaskEditFormShow] = useState(false);
+
 
   const classes = useStyles();
 
@@ -101,6 +110,11 @@ export default function Tasks() {
     setOpenAlertMessage(false);
   };
 
+  const handleClickEditTaskForm = (task) => {
+    setTaskToEdit(task);
+    setTaskEditFormShow(true)
+  }
+
   useEffect(() => {
     console.log("Valor de: deleteTask", deleteTask);
     if (deleteTask == true) {
@@ -136,6 +150,7 @@ export default function Tasks() {
 			setShowMessage(true)
     }
   }, [deletedTaskResponse]);
+
 
   return (
 	<Fragment>
@@ -192,7 +207,14 @@ export default function Tasks() {
                         </TableCell>
                         <TableCell key="actions" align="center">
                           <div className={classes.container}>
-                            <IconButton aria-label="edit" color="primary">
+                            <IconButton 
+                              aria-label="edit" 
+                              color="primary"
+                              onClick={() => {
+                                console.log("esto vale row:", row);
+                                handleClickEditTaskForm(row)
+                              }}
+                            >
                                 <EditIcon />
                             </IconButton>
                             {/* <IconButton aria-label="delete"
@@ -219,6 +241,11 @@ export default function Tasks() {
 		<TaskForm
 			
 		/>
+    <TaskEditForm
+      showEditForm={taskEditFormShow}
+      handleCloseEditFormShow={setTaskEditFormShow}
+      task={taskToEdit}
+    />
     <Snackbar
       anchorOrigin={{
         vertical: "bottom",
