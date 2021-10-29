@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken");
 const Profile = require("../../models/Profile");
+const User = require("../../models/User");
 
 function createUserPayload(user) {
   return {
@@ -19,4 +20,8 @@ function createUserProfile(user) {
   return newProfile;
 }
 
-module.exports = { createUserPayload, getUser, createUserProfile };
+async function getUserTaskOwner(userId) {
+  const user = await User.findById(userId);
+  return user;
+}
+module.exports = { createUserPayload, getUser, createUserProfile, getUserTaskOwner };

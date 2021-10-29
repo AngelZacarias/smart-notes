@@ -78,16 +78,6 @@ const TaskEditForm = ({ showEditForm, handleCloseEditFormShow, task}) => {
 		awaitRefetchQueries: true,
   })
 
-  // const handleClickTaskForm = () => {
-	// 	setEditedTask({
-	// 		assignment: "",
-	// 		description: "",
-	// 		deadline: "",
-	// 		active: true,
-	// 	});
-	// 	setTaskFormShow(!taskFormShow);
-	// }
-
   const [editedTask, setEditedTask] = useState({
 		assignment: task.assignment,
 		description: task.description,
@@ -96,19 +86,14 @@ const TaskEditForm = ({ showEditForm, handleCloseEditFormShow, task}) => {
     id: task.id,
 	})
 
-  // const handleCloseEditFormShow = () => {
-  //   setTaskFormShow(!taskFormShow);
-  //   console.log(task);
-  // };
-
   const handleChangeTaskValue = (e) => {
     // console.log("task:", task)
-    console.log(e.target.value);
+    // console.log(e.target.value);
     setEditedTask({
       ...editedTask,
       [e.target.name]: e.target.value,
     });
-    console.log("editedTask:", editedTask)
+    // console.log("editedTask:", editedTask)
 
   }
 
@@ -125,7 +110,7 @@ const TaskEditForm = ({ showEditForm, handleCloseEditFormShow, task}) => {
 
   useEffect(() => {
     if (editTask) {
-      console.log("editedTask: ", editedTask);
+      // console.log("editedTask: ", editedTask);
       sendMutationEditTask({
         variables: {
           assignment: editedTask.assignment,
@@ -152,7 +137,7 @@ const TaskEditForm = ({ showEditForm, handleCloseEditFormShow, task}) => {
 
   useEffect(() => {
 		if (editedTaskResponse) {
-			console.log(editedTaskResponse);
+			// console.log(editedTaskResponse);
 			setMessage("Tarea guardada exitosamente")
 			setShowMessage(true)
 		}
@@ -168,7 +153,7 @@ const TaskEditForm = ({ showEditForm, handleCloseEditFormShow, task}) => {
           active: task.active,
         }}
         onSubmit={ (editedTask, { setSubmitting }) => {
-          console.log("Creando", editedTask);
+          // console.log("Creando", editedTask);
           setSubmitting(false);
         }}
         validationSchema = { Yup.object().shape({
@@ -267,7 +252,7 @@ const TaskEditForm = ({ showEditForm, handleCloseEditFormShow, task}) => {
                     disabled={isSubmitting}
                     onClick={() => {
                       // console.log("values:", values)
-                      console.log("task:", task)
+                      // console.log("task:", task)
                       // setEditedTask({
                       //   assignment: task.assignment,
                       //   description: task.description,

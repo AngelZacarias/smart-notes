@@ -13,7 +13,11 @@ html(lang="en")
       div.one-col
         h2 ¡Hola!, #{userName}
         br
-        p Tu tarea #{taskName} con fecha #{deadline} está muy proxima a entregarse.
+        p Te recordamos que tu tarea pendiente: 
+        h2 #{taskName} 
+        p con fecha: 
+        h2 #{deadline} 
+        p está muy proxima a entregarse. Por favor, revisa tus pendientes.
         br
         form(action=urlViewRequest)
           button(type="submit") Ir a SmartNotes
