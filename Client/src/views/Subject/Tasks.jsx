@@ -18,7 +18,7 @@ import GridContainer from "components/Grid/GridContainer.js";
 import GridItem from "components/Grid/GridItem.js";
 import React, { Fragment, useContext, useEffect, useState } from 'react';
 import { SubjectContext } from './../../hooks/SubjectContext';
-import Checkbox from '@material-ui/core/Checkbox';
+// import Checkbox from '@material-ui/core/Checkbox';
 import TaskForm from "./Tasks/TaskForm";
 import TaskEditForm from "./Tasks/TaskEditForm";
 import IconButton from '@material-ui/core/IconButton';
@@ -172,7 +172,7 @@ export default function Tasks() {
       <GridContainer>
         <GridItem xs={12} sm={12} md={12}>
           <Card>
-            <CardHeader color="primary">
+            <CardHeader color={subjectInformation.color}>
               <h4 className={classes.cardTitleWhite}>Tareas pendientes</h4>
               <p className={classes.cardCategoryWhite}>
               Aquí se visualizan las tareas pendientes asignadas a tu materia
@@ -186,8 +186,8 @@ export default function Tasks() {
                       <TableCell key="name">Nombre</TableCell>
                       <TableCell key="description" align="left">Descripción</TableCell>
                       <TableCell key="deadline" align="center">Fecha de entrega</TableCell>
-                      <TableCell key="active" align="left">Completada</TableCell>
-                      <TableCell key="actions" align="center">Acciones</TableCell>
+                      {/* <TableCell key="active" align="left">Completada</TableCell> */}
+                      <TableCell key="actions" align="left">Acciones</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
@@ -198,20 +198,20 @@ export default function Tasks() {
                         </TableCell>
                         <TableCell key={row.description} align="left">{row.description}</TableCell>
                         <TableCell key={row.deadline} align="center">{row.deadline}</TableCell>
-                        <TableCell align="center">
+                        {/* <TableCell align="center">
                           <Checkbox
                             checked={row.active}
                             // onChange={}
                             inputProps={{ 'aria-label': 'primary checkbox' }}
                           />
-                        </TableCell>
+                        </TableCell> */}
                         <TableCell key="actions" align="center">
                           <div className={classes.container}>
                             <IconButton 
                               aria-label="edit" 
                               color="primary"
                               onClick={() => {
-                                console.log("esto vale row:", row);
+                                // console.log("esto vale row:", row);
                                 handleClickEditTaskForm(row)
                               }}
                             >

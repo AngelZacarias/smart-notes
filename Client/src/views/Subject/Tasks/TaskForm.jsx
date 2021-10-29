@@ -98,12 +98,12 @@ export default function AlertDialog() {
 
   const handleClose = () => {
     setTaskFormShow(!taskFormShow);
-    console.log(task);
+    // console.log(task);
   };
 
   const handleChangeTaskValue = (e) => {
-    console.log("task:", task)
-    console.log(e.target.value);
+    // console.log("task:", task)
+    // console.log(e.target.value);
     setTask({
       ...task,
       [e.target.name]: e.target.value,
@@ -149,7 +149,7 @@ export default function AlertDialog() {
 
   useEffect(() => {
 		if (savedTaskResponse) {
-			console.log(savedTaskResponse);
+			// console.log(savedTaskResponse);
 			setMessage("Tarea guardada exitosamente")
 			setShowMessage(true)
 		}
@@ -171,7 +171,7 @@ export default function AlertDialog() {
           active: true,
         }}
         onSubmit={ (values, { setSubmitting }) => {
-          console.log("Creando", values);
+          // console.log("Creando", values);
           setSubmitting(false);
         }}
         validationSchema = { Yup.object().shape({
