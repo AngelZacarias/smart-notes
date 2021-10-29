@@ -2,14 +2,14 @@ import { Route, Redirect } from 'react-router-dom';
 import React from 'react';
 import PropTypes from 'prop-types';
 import AuthenticationService from './services/authenticationService';
-//import { UserContext } from './../hooks/UserContext';
+import { UserContext } from './../hooks/UserContext';
 
 // This component routes to another component when its path prop matches the current URL, but before routing, asks for authentication. It must be used to request authentication to the components that you want to protect.
 class Authentication extends Route{
     //Service to validate, generate and manage the Authentication
     static authenticationService = new AuthenticationService();
     //Context to be used to storage the user information trhough all the app
-    //static contextType = UserContext;
+    static contextType = UserContext;
 
     static propTypes = {
         //This prop is used to specify the component that will be in charge of handling the response from w3id. This component's path prop must match with the redirect URI registered previously in the w3id SSO provisioner tool.
@@ -32,26 +32,28 @@ class Authentication extends Route{
 
     //Runs when the component is Loaded
     async componentDidMount(){
-        try{
-            //Finishes the authentication processs
-            console.log('Validating authentication...');
-            //await Authentication.authenticationService.completeAuthentication();
-            
-            //Sends the credentials to the context
-            const userLoged = Authentication.authenticationService.getUser();
-            this.setState({ 
-                isLoggedIn: Authentication.authenticationService.isLoggedIn(),
-                hasFinishedAuthentication: false
-            });
+        
+            try{
+                //Finishes the authentication processs
+                console.log('Validating authentication...');
+                //await Authentication.authenticationService.completeAuthentication();
+                
+                //Sends the credentials to the context
+                const userLoged = Authentication.authenticationService.getUser();
+                this.setState({ 
+                    isLoggedIn: Authentication.authenticationService.isLoggedIn(),
+                    hasFinishedAuthentication: false
+                });
 
-            //We can save the user in context if we needed
-            console.log(userLoged);
-            //const { setUserCredentials } = this.context;
-            //await setUserCredentials(userLoged.access_token, userLoged.id_token, userLoged.expires_at, userLoged.profile.emailAddress, userLoged.profile.name);
-        }
-        catch(err){
-            console.log(err);
-        }
+                //We can save the user in context if we needed
+                console.log("User Logged: ",userLoged);
+                const { setUserId } = this.context;
+                await setUserId(userLoged.id);
+            }
+            catch(err){
+                console.log("Error on Authentication:",err);
+            }
+        
     }
 
     //Render the component in props or redirect to authentication process

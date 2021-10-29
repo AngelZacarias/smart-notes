@@ -1,3 +1,4 @@
+import React, { useEffect, useState, useContext } from 'react';
 import { gql, useQuery, useMutation } from '@apollo/client';
 // import PhotoCamera from '@material-ui/icons/PhotoCamera';
 import { Snackbar } from '@material-ui/core';
@@ -16,9 +17,10 @@ import FacebookIcon from '@material-ui/icons/Facebook';
 import LinkedInIcon from '@material-ui/icons/LinkedIn';
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import TwitterIcon from '@material-ui/icons/Twitter';
-import React, { useEffect, useState } from 'react';
 import ProfileForm from './ProfileForm';
 import HighlightOffIcon from '@material-ui/icons/HighlightOff';
+
+import { UserContext } from '../../hooks/UserContext';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -62,11 +64,28 @@ export const getIdParameter = () => {
 }
 
 const MiddleDividers = () => {
+  // Styles
+  const classes = useStyles();
+
+  // State
   const [profileFormShow, setProfileFormShow] = useState(false);
   const [showMessage, setShowMessage] = useState(false);
   const [message, setMessage] = useState("");
   const [showEditableActions, setEditable] = useState(false);
+  const [showSendMessageAction, setShowSendMessageAction] = useState(false)
   const [newFollow, setFollow] = useState(false);
+  const [followButtonAble, setFollowButton] = useState(true);
+  const [profileInfo, setProfileInfo] = useState({
+    name: "",
+    lastName: "",
+    email: "",
+    bio: "",
+  });
+
+  // Context
+  const { userInformation } = useContext(UserContext);
+
+  // Mutations
   const [sendMutationFollow, { data: followResponse }] = useMutation(FOLLOW_USER, {
     refetchQueries: [{
       query: GET_FOLLOW,
@@ -78,8 +97,15 @@ const MiddleDividers = () => {
       }
     }]
   });
-  const [followButtonAble, setFollowButton] = useState(true);
 
+  const[createOrGetChat, { data: dataCreateOrGetChat, loading: loadingCreateOrGetChat, called: calledCreateOrGetChat, error: errorCreateOrGetChat }] = useMutation(CREATE_NEW_CHAT, {
+		context: {
+			headers: {
+				"Authorization": "Bearer " + localStorage.getItem("JWT_TOKEN"),
+			}
+		},
+	});
+  
   const { data: profile, error } = useQuery(GET_PROFILE_BY_ID, {
     variables: { userId: getIdParameter() },
     context: {
@@ -98,13 +124,6 @@ const MiddleDividers = () => {
     }
   })
 
-  const [profileInfo, setProfileInfo] = useState({
-    name: "",
-    lastName: "",
-    email: "",
-    bio: "",
-  });
-
   //Get profile
   useEffect(() => {
     if (profile) {
@@ -119,7 +138,8 @@ const MiddleDividers = () => {
         linkedinURL: profile.getProfileById.linkedinURL,
         twitterURL: profile.getProfileById.twitterURL,
       });
-      getIdParameter() == "0" ? setEditable(true) : null;
+      (getIdParameter() === "0" || userInformation.id === getIdParameter()) ? setEditable(true) : null;
+      (getIdParameter() !== "0" && userInformation.id !== getIdParameter()) ? setShowSendMessageAction(true) : null;
     }
     if (error) {
       // console.log(error);
@@ -197,7 +217,27 @@ const MiddleDividers = () => {
     }
     setShowMessage(false);
   }
-  const classes = useStyles();
+
+  const handleClickMessage = async (userId) => {
+    console.log("Clicked")
+    // Execute Mutation and waits
+    await createOrGetChat({
+      variables:{
+        userContactedId: userId,
+      }
+    });
+  }
+  useEffect(()=>{
+    // Check the response
+    if(!errorCreateOrGetChat && !loadingCreateOrGetChat && calledCreateOrGetChat){
+      console.log(dataCreateOrGetChat);
+      // Redirects to the chat page
+      window.location.href = '/dashboard/chat'
+    }
+    else{
+      (errorCreateOrGetChat) ? console.log(errorCreateOrGetChat.message) : null
+    }
+  },[errorCreateOrGetChat, loadingCreateOrGetChat, calledCreateOrGetChat, dataCreateOrGetChat]);
 
   return (
     <div className={classes.root}>
@@ -220,6 +260,20 @@ const MiddleDividers = () => {
               multiple
               type="file"
             />
+            {
+              //PROFILE ACTIONS
+              showSendMessageAction ?
+                <Button
+                    variant="contained"
+                    color="primary"
+                    className={classes.button}
+                    endIcon={<PersonAddIcon>follow</PersonAddIcon>}
+                    onClick={() => handleClickMessage(getIdParameter())}
+                  >
+                    Mensaje...
+                </Button>
+              :  null
+            }
             {
               showEditableActions ?
                 <label htmlFor="contained-button-file">         
@@ -259,7 +313,6 @@ const MiddleDividers = () => {
                     Dejar de seguir
                   </Button>
             }
-
           </div>
           <Grid item xs>
             <Typography gutterBottom variant="h4">
@@ -390,6 +443,14 @@ const GET_FOLLOW = gql`
       followedAble,
     }  
   }
+`;
+
+const CREATE_NEW_CHAT = gql`
+mutation ($userContactedId: ID!) {
+  createChat(userContactedId: $userContactedId){
+    id
+  }
+}
 `;
 
 export default MiddleDividers;

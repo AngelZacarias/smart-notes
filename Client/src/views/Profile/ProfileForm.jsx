@@ -53,6 +53,7 @@ const ProfileForm = ({showForm, handleClose}) => {
 	const [saveProfile, setSaveProfile] = useState(false);
 	const [showMessage, setShowMessage] = useState(false);
 	const [message, setMessage] = useState("");
+
 	const[sendMutationSaveProfile, { data: savedProfileResponse }] = useMutation(EDIT_PROFILE, {
 		context: {
 			headers: {
@@ -306,13 +307,6 @@ const ProfileForm = ({showForm, handleClose}) => {
 	);
 }
 
-export default ProfileForm;
-
-ProfileForm.propTypes = {
-	showForm: PropTypes.bool,
-	handleClose: PropTypes.func,
-};
-
 const EDIT_PROFILE = gql`
 	mutation($bio: String, $carrer: String, $facebookURL: String, $linkedinURL: String, $twitterURL: String) {
 		editProfile(bio: $bio, carrer: $carrer, facebookURL: $facebookURL, linkedinURL: $linkedinURL, twitterURL: $twitterURL) {
@@ -324,3 +318,10 @@ const EDIT_PROFILE = gql`
 		}
 	}
 `;
+
+export default ProfileForm;
+
+ProfileForm.propTypes = {
+	showForm: PropTypes.bool,
+	handleClose: PropTypes.func,
+};

@@ -205,7 +205,26 @@ module.exports = {
       return await User.findById(parent.user);
     },
   },
-
+  NestedUser1Reference: {
+    async user(parent, args, context, info) {
+      return await User.findById(parent.user1);
+    },
+  },
+  NestedUser2Reference: {
+    async user(parent, args, context, info) {
+      return await User.findById(parent.user2);
+    },
+  },
+  NestedUserEmisorReference: {
+    async user(parent, args, context, info) {
+      return await User.findById(parent.userEmisor);
+    },
+  },
+  NestedUserReceptorReference: {
+    async user(parent, args, context, info) {
+      return await User.findById(parent.userReceptor);
+    },
+  },
   NestedProfileReference: {
     async profile(parent, args, context, info) {
       return await Profile.findById(parent.profile);

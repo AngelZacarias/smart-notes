@@ -41,7 +41,6 @@ const Search = () => {
     const getKeyWordParameter = () =>{
         const urlString = window.location.href;
         const url = new URL(urlString);
-        // console.log(url.searchParams.get("keyword"));
         return url.searchParams.get("keyword");
     }
 
@@ -57,31 +56,6 @@ const Search = () => {
         },
         fetchPolicy: "cache-and-network",
     });
-
-    // Harcoded Queries Results
-    // const data = { getProfiles: [
-    //     {
-    //         user: {
-    //             id: 1,
-    //             name: 'Angel Zacarias',
-    //           },
-    //           carrer: 'Ingeniería en Computación',
-    //           bio: 'Hello there!',
-    //     },
-    //     {
-    //         user: {
-    //             id: 2,
-    //             name: 'Julio Antonio Gonzalez',
-    //           },
-    //           carrer: 'Ingeniería en Computación',
-    //           bio: 'Mi mejor amigo es Zacarias!',
-    //     },
-    // ]};
-    // const loading = false;
-    // const called = false;
-    // const error = null;
-    
-    // You can actually use two diferent ways to implement the routing here... by context *as the subjects or by url as this search component
 
     return (
     <Fragment>
