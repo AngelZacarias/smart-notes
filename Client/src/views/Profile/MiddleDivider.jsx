@@ -293,13 +293,13 @@ const MiddleDividers = () => {
           </Typography>
         </Grid>
         <Grid item>
-          <TwitterIcon fontSize="large"/>
+          <LinkedInIcon fontSize="large"/>
           <Typography color="textSecondary" variant="body1" align="justify">
             {profileInfo.linkedinURL}
           </Typography>
         </Grid>
         <Grid item>
-          <LinkedInIcon fontSize="large"/>
+          <TwitterIcon fontSize="large"/>
           <Typography color="textSecondary" variant="body1" align="justify">
             {profileInfo.twitterURL}
           </Typography>
