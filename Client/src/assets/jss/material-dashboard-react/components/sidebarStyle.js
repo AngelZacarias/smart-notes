@@ -84,7 +84,7 @@ const sidebarStyle = (theme) => ({
     fontSize: "18px",
     textAlign: "left",
     fontWeight: "400",
-    lineHeight: "30px",
+    lineHeight: "50px",
     textDecoration: "none",
     backgroundColor: "transparent",
     "&,&:hover": {
@@ -102,12 +102,12 @@ const sidebarStyle = (theme) => ({
     marginRight: "15px",
   },
   img: {
-    width: "80%",
-    paddingBottom: "10px",
+    maxHeight: "50px",
     top: "22px",
     position: "absolute",
     verticalAlign: "middle",
     border: "0",
+    borderRadius:'35px',
   },
   background: {
     position: "absolute",

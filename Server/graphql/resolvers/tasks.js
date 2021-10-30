@@ -35,7 +35,6 @@ module.exports = {
         throw new Error(err);
       }
     },
-
     async getTask(parent, { id }, context, info) {
       const user = checkAuth(context);
       try {
@@ -123,4 +122,16 @@ module.exports = {
       }
     }
   },
+  NestedTaskReference:{
+    async task(parent, args, context, info){
+        try {
+            if(parent.id === ""){
+                throw new Error("The subjectId must be provided");
+            }
+            return await Task.find({subject: parent.id});
+        } catch (err) {
+            throw new Error(err);
+        }
+    },
+}
 };

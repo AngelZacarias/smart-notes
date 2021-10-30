@@ -9,7 +9,6 @@ import { makeStyles } from "@material-ui/core/styles";
 import Navbar from "components/Navbars/Navbar.js";
 //import Footer from "components/Footer/Footer.js";
 import Sidebar from "components/Sidebar/Sidebar.js";
-import FixedPlugin from "components/FixedPlugin/FixedPlugin.js";
 
 import routes from "routes.js";
 
@@ -46,23 +45,14 @@ export default function GeneralDashboard({ ...rest }) {
   // ref to help us initialize PerfectScrollbar on windows devices
   const mainPanel = React.createRef();
   // states and functions
+  //eslint-disable-next-line
   const [image, setImage] = React.useState(bgImage);
+  //eslint-disable-next-line
   const [color, setColor] = React.useState("primary");
+  //eslint-disable-next-line
   const [fixedClasses, setFixedClasses] = React.useState("dropdown");
   const [mobileOpen, setMobileOpen] = React.useState(false);
-  const handleImageClick = (image) => {
-    setImage(image);
-  };
-  const handleColorClick = (color) => {
-    setColor(color);
-  };
-  const handleFixedClick = () => {
-    if (fixedClasses === "dropdown") {
-      setFixedClasses("dropdown show");
-    } else {
-      setFixedClasses("dropdown");
-    }
-  };
+  
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
@@ -118,14 +108,6 @@ export default function GeneralDashboard({ ...rest }) {
           <div className={classes.map}>{switchRoutes}</div>
         )}
         {getRoute() ? null : null}
-        <FixedPlugin
-          handleImageClick={handleImageClick}
-          handleColorClick={handleColorClick}
-          bgColor={color}
-          bgImage={image}
-          handleFixedClick={handleFixedClick}
-          fixedClasses={fixedClasses}
-        />
       </div>
     </div>
   );

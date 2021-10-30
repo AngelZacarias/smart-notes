@@ -14,7 +14,6 @@ import Divider from "@material-ui/core/Divider";
 // @material-ui/icons
 import Person from "@material-ui/icons/Person";
 import Notifications from "@material-ui/icons/Notifications";
-import Dashboard from "@material-ui/icons/Dashboard";
 import Search from "@material-ui/icons/Search";
 
 
@@ -85,16 +84,7 @@ export default function AdminNavbarLinks() {
             <Search />
           </Button>
       </div>
-      <Button
-        color="secondary"
-        aria-label="Dashboard"
-        className={classes.buttonLink}
-      >
-        <Dashboard className={classes.icons} />
-        <Hidden mdUp implementation="css">
-          <p className={classes.linkText}>Dashboard</p>
-        </Hidden>
-      </Button>
+      
       <div className={classes.manager}>
         <Button
           color="secondary"
@@ -104,7 +94,7 @@ export default function AdminNavbarLinks() {
           className={classes.buttonLink}
         >
           <Notifications className={classes.icons} />
-          <span className={classes.notifications}>5</span>
+          <span className={classes.notifications}>0</span>
           <Hidden mdUp implementation="css">
             <p onClick={handleCloseNotification} className={classes.linkText}>
               Notification
@@ -138,31 +128,7 @@ export default function AdminNavbarLinks() {
                       onClick={handleCloseNotification}
                       className={classes.dropdownItem}
                     >
-                      Mike John responded to your email
-                    </MenuItem>
-                    <MenuItem
-                      onClick={handleCloseNotification}
-                      className={classes.dropdownItem}
-                    >
-                      You have 5 new tasks
-                    </MenuItem>
-                    <MenuItem
-                      onClick={handleCloseNotification}
-                      className={classes.dropdownItem}
-                    >
-                      You{"'"}re now friend with Andrew
-                    </MenuItem>
-                    <MenuItem
-                      onClick={handleCloseNotification}
-                      className={classes.dropdownItem}
-                    >
-                      Another Notification
-                    </MenuItem>
-                    <MenuItem
-                      onClick={handleCloseNotification}
-                      className={classes.dropdownItem}
-                    >
-                      Another One
+                      No tienes nuevas notificaciones
                     </MenuItem>
                   </MenuList>
                 </ClickAwayListener>
@@ -212,12 +178,6 @@ export default function AdminNavbarLinks() {
                       className={classes.dropdownItem}
                     >
                       Perfil
-                    </MenuItem>
-                    <MenuItem
-                      onClick={handleCloseProfile}
-                      className={classes.dropdownItem}
-                    >
-                      Configuración
                     </MenuItem>
                     <Divider light />
                     <MenuItem

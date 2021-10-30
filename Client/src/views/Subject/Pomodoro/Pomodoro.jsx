@@ -102,8 +102,6 @@ const Pomodoro = () => {
 
   },[secondsLeft]);
   
-console.log(`bColor-${subjectInformation.color}`);
-
   return (
     <div className="App">
         <div id="container">

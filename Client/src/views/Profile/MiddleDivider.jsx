@@ -11,14 +11,16 @@ import Slide from "@material-ui/core/Slide";
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 // import Icon from '@material-ui/core/Icon';
-import AddAPhotoIcon from '@material-ui/icons/AddAPhoto';
+import QuestionAnswerIcon from '@material-ui/icons/QuestionAnswer';
 import CloseIcon from "@material-ui/icons/Close";
 import FacebookIcon from '@material-ui/icons/Facebook';
 import LinkedInIcon from '@material-ui/icons/LinkedIn';
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import TwitterIcon from '@material-ui/icons/Twitter';
+import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import ProfileForm from './ProfileForm';
 import HighlightOffIcon from '@material-ui/icons/HighlightOff';
+
 
 import { UserContext } from '../../hooks/UserContext';
 
@@ -49,6 +51,11 @@ const useStyles = makeStyles((theme) => ({
   large: {
     width: theme.spacing(24),
     height: theme.spacing(24),
+  },
+  largeAvatar: {
+    width: theme.spacing(24),
+    height: theme.spacing(24),
+    backgroundColor: '#0D47A1',
   },
   paper: {
     display: 'flex',
@@ -95,7 +102,17 @@ const MiddleDividers = () => {
           "Authorization": "Bearer " + localStorage.getItem("JWT_TOKEN"),
         }
       }
-    }]
+    },
+    {
+      query: GET_PROFILE_BY_ID,
+      variables: { followedId: getIdParameter() },
+      context: {
+        headers: {
+          "Authorization": "Bearer " + localStorage.getItem("JWT_TOKEN"),
+        }
+      }
+    }
+  ]
   });
 
   const[createOrGetChat, { data: dataCreateOrGetChat, loading: loadingCreateOrGetChat, called: calledCreateOrGetChat, error: errorCreateOrGetChat }] = useMutation(CREATE_NEW_CHAT, {
@@ -138,8 +155,9 @@ const MiddleDividers = () => {
         linkedinURL: profile.getProfileById.linkedinURL,
         twitterURL: profile.getProfileById.twitterURL,
       });
-      (getIdParameter() === "0" || userInformation.id === getIdParameter()) ? setEditable(true) : null;
-      (getIdParameter() !== "0" && userInformation.id !== getIdParameter()) ? setShowSendMessageAction(true) : null;
+      console.log("id",getIdParameter());
+      (getIdParameter() === 0 || userInformation.id === getIdParameter()) ? setEditable(true) : null;
+      (getIdParameter() !== 0 && userInformation.id !== getIdParameter()) ? setShowSendMessageAction(true) : null;
     }
     if (error) {
       // console.log(error);
@@ -249,7 +267,9 @@ const MiddleDividers = () => {
                 //TODO: use images for users
                 //<Avatar alt="Remy Sharp" src="assets/img/faces/marc.jpg" className={classes.large} />
               }
-              <Avatar alt="Remy Sharp" src="https://source.unsplash.com/random" className={classes.large} />
+              <Avatar alt="User" className={classes.largeAvatar} >
+                <AccountCircleIcon className={classes.large} />
+              </Avatar>
             </div>
           </Grid>
           <div className={classes.root}>
@@ -267,7 +287,7 @@ const MiddleDividers = () => {
                     variant="contained"
                     color="primary"
                     className={classes.button}
-                    endIcon={<PersonAddIcon>follow</PersonAddIcon>}
+                    endIcon={<QuestionAnswerIcon>follow</QuestionAnswerIcon>}
                     onClick={() => handleClickMessage(getIdParameter())}
                   >
                     Mensaje...
@@ -277,14 +297,7 @@ const MiddleDividers = () => {
             {
               showEditableActions ?
                 <label htmlFor="contained-button-file">         
-                  <Button 
-                    variant="contained" 
-                    color="primary" 
-                    component="span"
-                    endIcon={<AddAPhotoIcon>upload</AddAPhotoIcon>}
-                    >
-                    Subir imagen
-                  </Button>
+                  
                 </label>
               : followButtonAble ?
                 <Button
@@ -339,23 +352,26 @@ const MiddleDividers = () => {
       <Divider variant="middle" />
 
       <div className={classes.section3}>
-        <Grid item xs={6}>
-          <FacebookIcon fontSize="large"/>
-          <Typography color="textSecondary" variant="body1" align="justify">
-            {profileInfo.facebookURL}
-          </Typography>
-        </Grid>
-        <Grid item>
-          <LinkedInIcon fontSize="large"/>
-          <Typography color="textSecondary" variant="body1" align="justify">
-            {profileInfo.linkedinURL}
-          </Typography>
-        </Grid>
-        <Grid item>
-          <TwitterIcon fontSize="large"/>
-          <Typography color="textSecondary" variant="body1" align="justify">
-            {profileInfo.twitterURL}
-          </Typography>
+        <Grid container
+          direction="row"
+          justifyContent="center"
+          alignItems="center"
+        >
+          <Grid item>
+          <IconButton aria-label="Linkedin.com" onClick={() => window.open(profileInfo.facebookURL)}>
+            <FacebookIcon fontSize="large"/>
+          </IconButton>
+          </Grid>
+          <Grid item>
+            <IconButton aria-label="Linkedin.com" onClick={() => window.open(profileInfo.linkedinURL)}>
+              <LinkedInIcon fontSize="large"/>
+            </IconButton>
+          </Grid>
+          <Grid item>
+            <IconButton aria-label="Linkedin.com" onClick={() => window.open(profileInfo.twitterURL)}>
+              <TwitterIcon fontSize="large"/>
+            </IconButton>
+          </Grid>
         </Grid>
         <br />
         {

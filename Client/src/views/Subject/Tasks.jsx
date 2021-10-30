@@ -22,7 +22,7 @@ import { SubjectContext } from './../../hooks/SubjectContext';
 import TaskForm from "./Tasks/TaskForm";
 import TaskEditForm from "./Tasks/TaskEditForm";
 import IconButton from '@material-ui/core/IconButton';
-import DeleteIcon from '@material-ui/icons/Delete';
+import DoneIcon from '@material-ui/icons/Done';
 import EditIcon from '@material-ui/icons/Edit';
 import Slide from "@material-ui/core/Slide";
 import CloseIcon from "@material-ui/icons/Close";
@@ -209,7 +209,7 @@ export default function Tasks() {
                           <div className={classes.container}>
                             <IconButton 
                               aria-label="edit" 
-                              color="primary"
+                              color="secondary"
                               onClick={() => {
                                 // console.log("esto vale row:", row);
                                 handleClickEditTaskForm(row)
@@ -221,9 +221,10 @@ export default function Tasks() {
                               onClick={() => handleDeleteTask(row)}
                             > */}
                             <IconButton aria-label="delete"
+                              color="secondary"
                               onClick={() => handleClickOpenAlertMessage(row)}
                             >
-                              <DeleteIcon />
+                              <DoneIcon />
                             </IconButton>
                           </div>
                         </TableCell>
