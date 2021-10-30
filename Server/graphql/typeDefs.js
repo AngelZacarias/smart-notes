@@ -99,6 +99,7 @@ module.exports = gql`
 
         getTasks: [Task]
         getTask(id: ID!): Task
+        createTask(assignment: String!, description: String!, deadline: String!, subjectId: ID!): Task
 
         normalLogin(email: String!, password: String!): Token
         getUser(email: String!): User
@@ -111,6 +112,7 @@ module.exports = gql`
 
         getFollow(followedId: String!): Follow
 
+        getMyCurrentTasks(subjectId: ID!): [Task]
         getChats: [Chat]
 
         getChatMessages(chatId: ID!): [ChatMessage]
@@ -127,6 +129,8 @@ module.exports = gql`
         deleteSchedule(id: ID!) : Schedule!
 
         createTask(subjectId: ID!, assignment: String!, description: String!, deadline: String!) : Task!
+        deleteTask(taskId: ID!): Boolean
+        editTask(subjectId: ID!, assignment: String, description: String, deadline: String, taskId: ID!): Boolean
 
         createUserFromGoogleAuth(name: String!, lastName: String!, email: String!, token: String!) : User
         createUserFromNormalSignUp(name: String!, lastName: String!, email: String!, password: String!, confirmPassword: String!) : User!

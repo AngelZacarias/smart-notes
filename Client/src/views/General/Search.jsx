@@ -67,7 +67,7 @@ const Search = () => {
             : error && error.message ?
                 <Alert severity="error">
                     <AlertTitle>Error</AlertTitle>
-                    <strong>Ocurrio un error al obtener las materias</strong> - {error.message}
+                    <strong>Ocurrió un error al obtener los perfiles</strong> - {error.message}
                 </Alert>
             : !loading && called && data.getProfiles.length < 1 ?
                 <Alert severity="info">

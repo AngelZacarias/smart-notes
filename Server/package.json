@@ -12,6 +12,7 @@
   "dependencies": {
     "apollo-server": "^2.24.0",
     "bcrypt": "^5.0.1",
+    "date-format": "^3.0.0",
     "dotenv": "^10.0.0",
     "email-templates": "^8.0.8",
     "graphql": "^15.5.0",
