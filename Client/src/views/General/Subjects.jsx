@@ -156,7 +156,7 @@ const Subjects = () => {
                                         </h4>
                                     </CardHeader>
                                     <CardBody>
-                                        <p>No hay tareas pendientes...</p>
+                                        {subject.tasks.length > 0 ? `Tienes ${subject.tasks.length} tareas pendientes` : 'No tienes tareas pendientes...'}
                                     </CardBody>
                                     <CardFooter chart>
                                         <Grid container justify="space-between" alignItems="center">
@@ -213,6 +213,9 @@ query{
     name
     color
     numberOfPendingTasks
+    tasks{
+        id
+    }
   }
 }
 `;

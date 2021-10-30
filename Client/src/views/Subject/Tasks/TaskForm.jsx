@@ -35,7 +35,8 @@ const useStyles = makeStyles((theme) => ({
       alignItems: 'center',
   },
   margin: {
-      margin: theme.spacing(3),
+      marginTop: theme.spacing(1),
+      marginBottom: theme.spacing(1),
   },
   input: {
       width: '380px'
@@ -56,7 +57,7 @@ export default function AlertDialog() {
 
 	const [taskFormShow, setTaskFormShow] = useState(false);
   const [saveTask, setSaveTask] = useState(false);
-	const { subjectInformation } = useContext(SubjectContext);
+	const {subjectInformation } = useContext(SubjectContext);
 	const [showMessage, setShowMessage] = useState(false);
 	const [message, setMessage] = useState("");
   
@@ -195,17 +196,18 @@ export default function AlertDialog() {
                 onClose={handleClose}
                 aria-labelledby="alert-dialog-title"
                 aria-describedby="alert-dialog-description"
-                className={classes.poperContainer}
-
+                scroll="body"
+                fullWidth={true}
+                maxWidth={'sm'}
               >
-                <DialogTitle id="alert-dialog-title">{"CREAR TAREA PENDIENTE"}</DialogTitle>
+                <DialogTitle>CREAR TAREA PENDIENTE</DialogTitle>
                 <DialogContent
                   className={classes.rootContainer}
                 >
-                  <DialogContentText id="alert-dialog-description">
+                  <DialogContentText>
                     En este espacio puedes crear tu nueva tarea pendiente, recuerda asignarle una fecha de entrega para recibir notificación por correo sobre la entrega próxima.
                   </DialogContentText>
-                  <FormControl fullWidth className={classes.title && classes.input}>
+                  <FormControl fullWidth className={classes.margin} variant="outlined">
                     <TextField 
                       variant="outlined" 
                       label="Tarea"
@@ -219,8 +221,8 @@ export default function AlertDialog() {
                     {errors.assignment && touched.assignment && (
                       <div>{errors.assignment}</div>
                     )}
-                    <br/>
-
+                  </FormControl>
+                  <FormControl fullWidth className={classes.margin} variant="outlined">
                     <TextField 
                       variant="outlined" 
                       label="Descripción"
@@ -234,7 +236,8 @@ export default function AlertDialog() {
                     {errors.description && touched.description && (
                       <div>{errors.description}</div>
                     )}
-                    <br/>
+                  </FormControl>
+                  <FormControl fullWidth className={classes.margin} variant="outlined">
                     <TextField
                         id="deadline"
                         variant="outlined"

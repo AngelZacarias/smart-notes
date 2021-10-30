@@ -34,7 +34,8 @@ const useStyles = makeStyles((theme) => ({
       alignItems: 'center',
   },
   margin: {
-      margin: theme.spacing(3),
+      marginTop: theme.spacing(1),
+      marginBottom: theme.spacing(1),
   },
   input: {
       width: '380px'
@@ -177,17 +178,15 @@ const TaskEditForm = ({ showEditForm, handleCloseEditFormShow, task}) => {
                 onClose={() => handleCloseEditFormShow(!showEditForm)}
                 aria-labelledby="alert-dialog-title"
                 aria-describedby="alert-dialog-description"
-                className={classes.poperContainer}
-
+                fullWidth={true}
+                maxWidth={'sm'}
               >
                 <DialogTitle id="alert-dialog-title">{"EDITAR TAREA PENDIENTE"}</DialogTitle>
-                <DialogContent
-                  className={classes.rootContainer}
-                >
+                <DialogContent>
                   <DialogContentText id="alert-dialog-description">
                     En este espacio puedes editar tu nueva tarea pendiente, recuerda asignarle una fecha de entrega para recibir notificación por correo sobre la entrega próxima.
                   </DialogContentText>
-                  <FormControl fullWidth className={classes.title && classes.input}>
+                  <FormControl fullWidth className={classes.margin}>
                     <TextField 
                       variant="outlined" 
                       label="Tarea"
@@ -201,8 +200,8 @@ const TaskEditForm = ({ showEditForm, handleCloseEditFormShow, task}) => {
                     {errors.assignment && touched.assignment && (
                       <div>{errors.assignment}</div>
                     )}
-                    <br/>
-
+                  </FormControl>
+                  <FormControl fullWidth className={classes.margin}>
                     <TextField 
                       variant="outlined" 
                       label="Descripción"
@@ -216,7 +215,8 @@ const TaskEditForm = ({ showEditForm, handleCloseEditFormShow, task}) => {
                     {errors.description && touched.description && (
                       <div>{errors.description}</div>
                     )}
-                    <br/>
+                  </FormControl>
+                  <FormControl fullWidth className={classes.margin}>
                     <TextField
                         id="deadline"
                         variant="outlined"

@@ -20,6 +20,7 @@ module.exports = {
         //the user owner of this subject
         user: userResolvers.NestedUserReference.user,
         schedule: scheduleResolvers.Subject.schedule,
+        tasks: tasksResolvers.NestedTaskReference.task,
     },
     Schedule: {
         subject: subjectsResolvers.Task.subject,
