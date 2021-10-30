@@ -48,6 +48,7 @@
     "react-scripts": "^4.0.3",
     "react-swipeable-views": "0.13.9",
     "subscriptions-transport-ws": "^0.9.19",
+    "use-sound": "^4.0.1",
     "web-vitals": "^1.0.1",
     "yup": "^0.32.9"
   },
