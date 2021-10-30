@@ -1,0 +1,67 @@
+#container {
+  width: 400px;
+  margin: 20px auto;
+  padding: 20px;
+  text-align: center;
+}
+
+#timer {
+  font-size: 50px;
+
+  border-radius: 50%;
+  width: 300px;
+  height: 300px;
+  overflow: hidden;
+  position: relative;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  cursor: default;
+
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.time {
+  z-index: 1;
+  color: #ffff;
+
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-right: -50%;
+  transform: translate(-50%, -50%);
+}
+
+#filler {
+  background: #ddffcc;
+  height: 0px;
+  width: 200px;
+  position: absolute;
+  bottom: 0;
+}
+
+.bColor-primary {
+  background-color: #0d47a1;
+}
+.bColor-secondary {
+  background-color: #282f36;
+}
+.bColor-info {
+  background-color: #00bcd4;
+}
+.bColor-warning {
+  background-color: #ff9800;
+}
+.bColor-success {
+  background-color: #4caf50;
+}
+.bColor-error {
+  background-color: #f44336;
+}
+.bColor-rose {
+  background-color: #e22e6d;
+}

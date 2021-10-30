@@ -1,5 +1,5 @@
 // Icons from @material-ui/icons/
-import { Dashboard, Today, Forum, Info, List, LibraryBooks, ScatterPlot } from "@material-ui/icons/";
+import { Dashboard, Today, Forum, Info, List, LibraryBooks, ScatterPlot, AccessAlarm } from "@material-ui/icons/";
 
 // Component Views
 import Subjects from "./views/General/Subjects";
@@ -11,6 +11,7 @@ import Search from "./views/General/Search";
 import Notes from "./views/Subject/Notes";
 import QuestionAnswer from "./views/Subject/AI/QuestionAnswer";
 import Tasks from "./views/Subject/Tasks";
+import Pomodoro from './views/Subject/Pomodoro/Pomodoro';
 
 const dashboardRoutes = [
   {
@@ -90,6 +91,16 @@ const dashboardRoutes = [
     rtlName: "",
     icon: LibraryBooks,
     component: Notes,
+    layout: "/subject",
+    menu: true,
+    returnTo: "",
+  },
+  {
+    path: "/subject-pomodoro",
+    name: "Pomodoro",
+    rtlName: "",
+    icon: AccessAlarm,
+    component: Pomodoro,
     layout: "/subject",
     menu: true,
     returnTo: "",
