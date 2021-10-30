@@ -31,6 +31,7 @@ const QuestionAnswer = () => {
   const [notes, setNotes] = useState('');
   const [question, setQuestion] = useState('');
   const [askedQuestion, setAskedQuestion] = useState('');
+  const [waiting, setWaiting] = useState(false);
 
   // Context
   const { subjectInformation, getColor } = useContext(SubjectContext);
@@ -89,7 +90,9 @@ const QuestionAnswer = () => {
         const newQuestion = question;
         setAskedQuestion(question);
         setQuestion('');
+        setWaiting(true);
         const answers = await model.findAnswers(newQuestion, passage);
+        setWaiting(false);
         setAnswer(answers)
         setListening(false);
       }
@@ -130,6 +133,10 @@ const QuestionAnswer = () => {
                   loadingNotes?
                   <MovingLetters
                     text="Estamos cargando tus notas, espera un momento..."
+                  />
+                  : waiting ? 
+                  <MovingLetters
+                    text="Estamos buscanto tu respuesta..."
                   />
                   : listening && model !== null ? 
                   <MovingLetters
@@ -219,6 +226,7 @@ const QuestionAnswer = () => {
                 variant="outlined" 
                 name="question"
                 value={question}
+                disabled={waiting}
                 onChange={(e)=>setQuestion(e.target.value)}
                 onKeyPress={(e)=> handleFoundAnswer(e)}
               />
