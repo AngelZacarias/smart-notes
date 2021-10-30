@@ -1,0 +1,70 @@
+.spinner {
+  width: 100px;
+  height: 100px;
+
+  position: relative;
+  margin: 100px auto;
+}
+
+.bColor-primary {
+  background-color: #0D47A1;
+}
+.bColor-secondary {
+  background-color: #282f36;
+}
+.bColor-blue {
+  background-color: #00bcd4;
+}
+.bColor-orange {
+  background-color: #ff9800;
+}
+.bColor-green {
+  background-color: #4caf50;
+}
+.bColor-red {
+  background-color: #f44336;
+}
+.bColor-rose {
+  background-color: #E22E6D;
+}
+
+.double-bounce1,
+.double-bounce2 {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  opacity: 0.6;
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  -webkit-animation: sk-bounce 2s infinite ease-in-out;
+  animation: sk-bounce 2s infinite ease-in-out;
+}
+
+.double-bounce2 {
+  -webkit-animation-delay: -1s;
+  animation-delay: -1s;
+}
+
+@-webkit-keyframes sk-bounce {
+  0%,
+  100% {
+    -webkit-transform: scale(0);
+  }
+  50% {
+    -webkit-transform: scale(1);
+  }
+}
+
+@keyframes sk-bounce {
+  0%,
+  100% {
+    transform: scale(0);
+    -webkit-transform: scale(0);
+  }
+  50% {
+    transform: scale(1);
+    -webkit-transform: scale(1);
+  }
+}
