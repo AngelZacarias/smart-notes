@@ -86,7 +86,7 @@ const Subjects = () => {
             getSelectedSubject({
                 variables:{
                     subjectId: id,
-                },
+                }, 
             });
         }
         getSubject();
