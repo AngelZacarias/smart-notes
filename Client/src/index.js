@@ -1,5 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import dotenv from 'dotenv';
 import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
 import { ApolloProvider } from '@apollo/client/react';
 import { WebSocketLink } from '@apollo/client/link/ws';
@@ -25,14 +26,17 @@ import Search from "views/General/Search";
 import SubjectProvider from "hooks/SubjectContext";
 import UserProvider from "hooks/UserContext";
 
+//Gets ENV vars
+dotenv.config();
+
 //Apollo Client Link for Queries and Mutations
 const httpLink = createHttpLink({
-  uri: 'http://localhost:5000'
+  uri: process.env.REACT_APP_APOLLO_HTTP
 });
 
 //WebSocket Link for subscriptions
 const wsLink = new WebSocketLink({
-  uri: 'ws://localhost:5000/subscriptions',
+  uri: process.env.REACT_APP_APOLLO_WS,
   options: {
     reconnect: true
   }
