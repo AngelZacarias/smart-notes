@@ -1,5 +1,5 @@
-import schedule from "node-schedule";
-import { remindOfPendingTasks } from "../../services/reminder/reminder-service";
+const schedule = require("node-schedule");
+const { remindOfPendingTasks } = require("../../services/reminder/reminder-service");
 
 async function taskReminder() {
   schedule.scheduleJob(

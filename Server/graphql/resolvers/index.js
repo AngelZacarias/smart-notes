@@ -1,11 +1,11 @@
-import scheduleResolvers from './schedule';
-import subjectsResolvers from './subjects';
-import tasksResolvers from './tasks';
-import noteResolvers from './notes';
-import userResolvers from './users';
-import followResolvers from './follows';
-import chatResolvers from './chats';
-import chatMessageResolvers from './chatMessages';
+const scheduleResolvers = require('./schedule');
+const subjectsResolvers = require('./subjects');
+const tasksResolvers = require('./tasks');
+const noteResolvers = require('./notes');
+const userResolvers = require('./users');
+const followResolvers = require('./follows');
+const chatResolvers = require('./chats');
+const chatMessageResolvers = require('./chatMessages');
 
 module.exports = {
     //Nested Queries

@@ -1,6 +1,6 @@
-import Follow from "../../models/Follow";
-import User from "../../models/User";
-import { createFollow } from "../../services/follow/follow-service";
+const Follow = require("../../models/Follow");
+const User = require("../../models/User");
+const { createFollow } = require("../../services/follow/follow-service");
 const checkAuth = require("../../utils/check-auth");
 
 module.exports = {

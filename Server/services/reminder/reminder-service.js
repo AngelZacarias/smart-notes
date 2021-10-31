@@ -1,4 +1,4 @@
-import { sendMail } from "../email/email-sender";
+const { sendMail } = require("../email/email-sender");
 const { getTasksToRemind } = require("../task/task-service");
 const { getUserTaskOwner } = require("../user/user-service");
 var format = require("date-format");

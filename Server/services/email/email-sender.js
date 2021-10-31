@@ -1,6 +1,6 @@
-import Email from "email-templates";
-import path from "path";
-import { createTransport } from "nodemailer";
+const Email = require("email-templates");
+const path = require("path");
+const { createTransport } = require("nodemailer");
 
 async function sendMail(to, template, locals) {
   const transporter = createTransport({

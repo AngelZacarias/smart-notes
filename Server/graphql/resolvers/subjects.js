@@ -2,9 +2,9 @@ const { Query } = require('mongoose');
 const Subject = require('../../models/Subject');
 const checkAuth = require("../../utils/check-auth");
 
-import Schedule from '../../models/Schedule';
+const Schedule = require('../../models/Schedule');
 // Usefull for query to relationship
-import scheduleResolver from './schedule';
+const scheduleResolver = require('./schedule');
 
 module.exports = {
     Query: {
