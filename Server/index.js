@@ -21,6 +21,7 @@ mongoose.connect( process.env.MONGODB, { useNewUrlParser: true, useUnifiedTopolo
     })
     .then(res =>{
         console.log(`Server running at ${res.url}`)
+        console.log(`Subscriptions running at ${res.subscriptionsUrl}`)
     })
     .catch((e) => {
         console.error('Connection error', e.message);
