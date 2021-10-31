@@ -4,7 +4,7 @@ const { MONGODB } = require('./config');
 const typeDefs = require('./graphql/typeDefs');
 const resolvers = require('./graphql/resolvers');
 require("dotenv").config();
-import { taskReminder } from "./utils/jobs/scheduler";
+const { taskReminder } = require("./utils/jobs/scheduler");
 
 const server = new ApolloServer({
     subscriptions: {
