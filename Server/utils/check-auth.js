@@ -1,6 +1,5 @@
 const jwt = require("jsonwebtoken");
 const { AuthenticationError } = require("apollo-server");
-const { GOOGLE_SECRET_KEY } = require("../config");
 //TODO: Implement with Google
 module.exports = (context) => {
   const authHeader = context.req.headers.authorization;
